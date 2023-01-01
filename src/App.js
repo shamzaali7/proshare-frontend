@@ -1,9 +1,9 @@
 import './App.css';
-import {useEffect, useState, React} from 'react'
+import {useState, React} from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
-const CLIENT_ID = "6539597b82efe5bb73ba";
+// const CLIENT_ID = "6539597b82efe5bb73ba";
 
 function App() {
   const [authorized, setAuthorized] = useState(false)
@@ -28,7 +28,7 @@ function App() {
       {!authorized ? 
         <button onClick={handleGoogleLogin}>Login with Google</button>  
       :
-        <h1>Hi {userEmail} you're id is: {userID} Youre Signed In!</h1>
+        <h1>Hi {userEmail} you're id is: {userID} You're Signed In!</h1>
       }
     </div>
       
@@ -38,7 +38,7 @@ function App() {
 export default App;
 
 
-{/* <button onClick={handleGithubLogin}>Login with Github</button> */}
+/* <button onClick={handleGithubLogin}>Login with Github</button> */
 // const [renderAgain, setRenderAgain] = useState(false);
 
 // const handleGithubLogin = () => {
