@@ -3,8 +3,6 @@ import {useState, React} from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
-// const CLIENT_ID = "6539597b82efe5bb73ba";
-
 function App() {
   const [authorized, setAuthorized] = useState(false)
   const [userID, setUserID] = useState("")
@@ -38,6 +36,7 @@ function App() {
 export default App;
 
 
+// const CLIENT_ID = "6539597b82efe5bb73ba";
 /* <button onClick={handleGithubLogin}>Login with Github</button> */
 // const [renderAgain, setRenderAgain] = useState(false);
 
