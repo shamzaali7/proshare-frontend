@@ -1,7 +1,10 @@
-import './App.css';
 import {useState, React} from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import { Routes, Route} from 'react-router-dom'
+import Home from './Components/Home';
+import Header from './Components/Header';
+import Footer from './Components/Footer';
 
 function App() {
   const [authorized, setAuthorized] = useState(false)
@@ -24,9 +27,24 @@ function App() {
   return (
     <div className="App">
       {!authorized ? 
-        <button onClick={handleGoogleLogin}>Login with Google</button>  
+        <div className="box-signin">
+          <button class="bg-sky-500 hover:bg-sky-700 ... rounded-full ... text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
+            Login with Google
+          </button> 
+        </div>
       :
-        <h1>Hi {userEmail} you're id is: {userID}. You're Signed In!</h1>
+        <div>
+            <h1>
+              Hi {userEmail} you're id is: {userID}. You're Signed In!
+            </h1>
+          <Header/>
+          <Footer/>
+          <main>
+            <Routes>
+              <Route path="/" element={<Home/>}/>
+            </Routes>
+          </main>
+        </div>
       }
     </div>
       
