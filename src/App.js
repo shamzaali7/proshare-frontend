@@ -26,7 +26,7 @@ function App() {
       {!authorized ? 
         <button onClick={handleGoogleLogin}>Login with Google</button>  
       :
-        <h1>Hi {userEmail} you're id is: {userID} You're Signed In!</h1>
+        <h1>Hi {userEmail} you're id is: {userID}. You're Signed In!</h1>
       }
     </div>
       
