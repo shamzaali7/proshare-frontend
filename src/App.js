@@ -6,11 +6,13 @@ import Home from './Components/Home';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Profile from './Components/Profile';
+import IDE from './Components/IDE';
 
 function App() {
   const [authorized, setAuthorized] = useState(false)
   const [userID, setUserID] = useState("")
   const [userEmail, setUserEmail] = useState("")
+  const [userCred, setUserCred] = useState({})
 
   const handleGoogleLogin = () => {
     firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
@@ -19,6 +21,7 @@ function App() {
           setUserID(userCredentials.additionalUserInfo.profile.id)
           setUserEmail(userCredentials.additionalUserInfo.profile.email)
           setAuthorized(true)
+          setUserCred(userCredentials)
         }
         console.log(userCredentials);
         console.log(userID)
@@ -36,16 +39,13 @@ function App() {
         </div>
       :
         <div>
-            <h1>
-              Hi {userEmail} you're id is: {userID}. You're Signed In!
-            </h1>
-          <Header userID={userID}/>
+          <Header userID={userID} userCred={userCred}/>
           <Footer/>
           <main>
             <Routes>
               <Route path="/" element={<Home/>}/>
               <Route path="/accounts/:id" element={<Profile/>}/>
-              
+              <Route path="/ide" element={<IDE/>}/>
             </Routes>
           </main>
         </div>

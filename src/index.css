@@ -43,3 +43,16 @@ button{
   bottom: 0;
   margin: 0 0 4px 8px;
 }
+
+.box-header{
+  text-align: right;
+}
+
+.box-header span{
+  margin-right: 20px;
+}
+
+.box-header .link-ide{
+  margin-right: 40px;
+}
+
