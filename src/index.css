@@ -56,3 +56,32 @@ button{
   margin-right: 40px;
 }
 
+a:hover{
+  color:rgba(0, 0, 0, .6);
+}
+
+a{
+  color:darkgrey;
+}
+
+.container-home{
+  display: flex;
+  flex-direction: column;
+}
+
+.container-home div{
+  border-style: solid;
+  border-radius: 10px;
+  border-color: black;
+  text-align: center;
+}
+
+.container-showcase{
+  display: flex;
+  margin: 0 auto;
+}
+
+.container-showcase div{
+  align-items: center;
+  flex: 1;
+}
