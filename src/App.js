@@ -5,6 +5,7 @@ import { Routes, Route} from 'react-router-dom'
 import Home from './Components/Home';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
+import Profile from './Components/Profile';
 
 function App() {
   const [authorized, setAuthorized] = useState(false)
@@ -20,6 +21,7 @@ function App() {
           setAuthorized(true)
         }
         console.log(userCredentials);
+        console.log(userID)
       }
     )
   };
@@ -28,7 +30,7 @@ function App() {
     <div className="App">
       {!authorized ? 
         <div className="box-signin">
-          <button class="bg-sky-500 hover:bg-sky-700 ... rounded-full ... text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
+          <button className="bg-sky-500 hover:bg-sky-700 ... rounded-full ... text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
             Login with Google
           </button> 
         </div>
@@ -37,11 +39,13 @@ function App() {
             <h1>
               Hi {userEmail} you're id is: {userID}. You're Signed In!
             </h1>
-          <Header/>
+          <Header userID={userID}/>
           <Footer/>
           <main>
             <Routes>
               <Route path="/" element={<Home/>}/>
+              <Route path="/accounts/:id" element={<Profile/>}/>
+              
             </Routes>
           </main>
         </div>

@@ -16,3 +16,30 @@ button{
   text-align: center;
   margin-top: 300px;
 }
+
+.box-links{
+  display: flex;
+}
+
+.box-links div{
+  margin-right: 4px;
+}
+
+.creator{
+  font-size: 14px;
+
+}
+
+.links{
+  margin-top: 2px;
+}
+
+.sp-creator{
+  font-weight: bold;
+}
+
+.container-footer{
+  position: fixed;
+  bottom: 0;
+  margin: 0 0 4px 8px;
+}

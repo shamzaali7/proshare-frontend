@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function Header(){
+function Header(userID){
+
     return(
         <div className="container-header">
             <div className="box-header">
@@ -11,9 +12,9 @@ function Header(){
                     </Link>
                 </span>
                 <span className="link-account">
-                    <Link style={{textDecoration: "none"}} to="/accounts/:id">
+                    <a style={{textDecoration: "none"}} href={"/accounts/" + userID.userID}>
                         My Account
-                    </Link>
+                    </a>
                 </span>
                 <span className="link-ide">
                     <Link style={{textDecoration: "none"}} to="/ide">
