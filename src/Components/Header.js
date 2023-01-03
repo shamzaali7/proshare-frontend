@@ -86,9 +86,9 @@ function Header({userID, userCred}){
                             <button class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 rounded-md flex w-full sm:w-auto items-center sm:items-stretch justify-end sm:justify-start">
                                 <Link to="/">
                                     <div  class="flex items-center">
-                                        <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg3.svg" alt="logo" />
-                                        <h2 class="hidden sm:block text-base text-gray-700 font-bold leading-normal px-3">
-                                            Proshare
+                                        <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
+                                        <h2 class="hidden text-lg sm:block text-base text-gray-500 font-bold leading-normal px-3">
+                                            CODESHARE
                                         </h2>
                                     </div>
                                 </Link>
