@@ -7,12 +7,24 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Profile from './Components/Profile';
 import IDE from './Components/IDE';
+import axios from 'axios';
+import Search from './Components/Search';
 
 function App() {
   const [authorized, setAuthorized] = useState(false)
   const [userID, setUserID] = useState("")
   const [userEmail, setUserEmail] = useState("")
   const [userCred, setUserCred] = useState({})
+  const axiosUsers = {
+    method: 'GET',
+    url: `https://proshare-backend.herokuapp.com/api/users/${userID}`
+  }
+  const [user, setUser] = useState({
+    googleid: "",
+    email: "",
+    name: "",
+    profilePicture: ""
+  })
 
   const handleGoogleLogin = () => {
     firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
@@ -22,12 +34,24 @@ function App() {
           setUserEmail(userCredentials.additionalUserInfo.profile.email)
           setAuthorized(true)
           setUserCred(userCredentials)
+          getUsers()
         }
-        console.log(userCredentials);
-        console.log(userID)
       }
     )
   };
+
+  function getUsers(){
+    axios.request(axiosUsers)
+      .then(function(res){
+        setUser({
+          googleid: res.data[0].googleid,
+          email: res.data[0].email,
+          name: res.data[0].name,
+          profilePicture: res.data[0].profilePicture
+        })
+      })
+      .catch(err => {console.log(err)})
+  }
 
   return (
     <div className="App">
@@ -39,13 +63,14 @@ function App() {
         </div>
       :
         <div>
-          <Header userID={userID} userCred={userCred}/>
+          <Header userID={userID} userCred={userCred} user={user}/>
           <Footer/>
           <main>
             <Routes>
               <Route path="/" element={<Home/>}/>
               <Route path="/accounts/:id" element={<Profile/>}/>
               <Route path="/ide" element={<IDE/>}/>
+              <Route path="/search" element={<Search/>}/>
             </Routes>
           </main>
         </div>
