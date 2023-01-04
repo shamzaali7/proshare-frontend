@@ -2,11 +2,19 @@ import axios from 'axios';
 import {useState, React, useEffect} from 'react'
 
 function Profile({userID}){
-    const [projects, setProjects] = useState([])
+    const [projects, setProjects] = useState([]);
+    const [modal, setModal] = useState(false);
+    const [form, setForm] = useState({
+        title: "",
+        github: "",
+        deployedLink: "",
+        picture: "",
+        gid: userID
+    });
     const axiosProjects = {
         method: "GET",
         url: `https://proshare-backend.herokuapp.com/api/projects/${userID}`
-    }
+    };
 
     useEffect(() => {
         getProjects()
@@ -19,13 +27,22 @@ function Profile({userID}){
             }).then(err => console.log(err))
     }
 
+    const handleModal = () => {
+        setModal(!modal)
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        handleModal();
+    }
+
     return(
         <div className="container-home">
             <div class="container-new-project">
                 <div></div>
                 <div className="explore">My Projects</div>
                 <div className="explore">
-                    <p><button className="button">
+                    <p><button onClick={handleModal} className="button">
                         New Project
                     </button>
                     </p>
@@ -56,6 +73,33 @@ function Profile({userID}){
                     </div>
                 )
             })}
+            {modal && (
+                <div className="modal">
+                <div onClick={handleModal} className="overlay"></div>
+                <div className="modal-content">
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-box">
+                            <label>Title:</label>
+                            <input type="text" className="input-form" onChange={(e) => setForm({ title: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <label>Repo:</label>
+                            <input type="text" className="input-form" onChange={(e) => setForm({ github: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <label>Deployed Link:</label>
+                            <input type="text" className="input-form" onChange={(e) => setForm({ deployedLink: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <label>Picture:</label>
+                            <input type="text" className="input-form" onChange={(e) => setForm({ picture: e.target.value})}/>
+                        </div>
+                        <button onClick={handleSubmit} className="">Submit</button>
+                    </form>
+                    <button onClick={handleModal} className="close-modal">Close</button>
+                </div>             
+            </div>
+            )}
         </div>
     )
 }
