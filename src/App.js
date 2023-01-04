@@ -14,34 +14,57 @@ function App() {
   const [authorized, setAuthorized] = useState(false)
   const [userID, setUserID] = useState("")
   const [userEmail, setUserEmail] = useState("")
+  const [userName, setUserName] = useState("")
   const [userCred, setUserCred] = useState({})
-  const axiosUsers = {
-    method: 'GET',
-    url: `https://proshare-backend.herokuapp.com/api/users/${userID}`
-  }
   const [user, setUser] = useState({
     googleid: "",
     email: "",
     name: "",
     profilePicture: ""
   })
+  const axiosUsers = {
+    method: 'GET',
+    url: `https://proshare-backend.herokuapp.com/api/users/${userID}`
+  }
 
   const handleGoogleLogin = () => {
     firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
-      (userCredentials)=>{
+      async (userCredentials)=>{
         if(userCredentials){
-          setUserID(userCredentials.additionalUserInfo.profile.id)
-          setUserEmail(userCredentials.additionalUserInfo.profile.email)
-          setAuthorized(true)
-          setUserCred(userCredentials)
-          getUsers()
+          setUserID(userCredentials.additionalUserInfo.profile.id);
+          setUserEmail(userCredentials.additionalUserInfo.profile.email);
+          setUserName(userCredentials.additionalUserInfo.profile.name);
+          setAuthorized(true);
+          setUserCred(userCredentials);
+          getUserByID();
         }
       }
     )
   };
+  async function createUser(){
+    const newUser = {
+      googleid: userID,
+      email: userEmail,
+      name: userName
+    }
+    const createAxiosUser = {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      url: "https://proshare-backend.herokuapp.com/api/users/",
+      body: JSON.stringify(newUser)
+    }
+    await axios.request(createAxiosUser)
+      .then((res) => {
+        getUserByID()
+        console.log(res)
+      })
+      .then(err => {console.log(err)})
+  }
 
-  function getUsers(){
-    axios.request(axiosUsers)
+  async function getUserByID(){
+    await axios.request(axiosUsers)
       .then(function(res){
         setUser({
           googleid: res.data[0].googleid,
@@ -49,9 +72,30 @@ function App() {
           name: res.data[0].name,
           profilePicture: res.data[0].profilePicture
         })
-      })
-      .catch(err => {console.log(err)})
+      }).then((err) => {console.log(err)})
   }
+  // function checkID(){
+  //   const axiosUserGet = {
+  //     method: 'GET',
+  //     url: "https://proshare-backend.herokuapp.com/api/users/"
+  //   }
+  //   axios.request(axiosUserGet)
+  //     .then((res) => {
+  //       console.log(res)
+  //       let counter = 0;
+  //       res.data.map(user => {
+  //         if(user.googleid == userID){
+  //           counter++;
+  //         }
+  //       })
+  //       if(counter > 0){
+  //         getUserByID()
+  //       }else{
+  //         createUser()
+  //         getUserByID()
+  //       }
+  //     })
+  // }
 
   return (
     <div className="App">
@@ -68,7 +112,7 @@ function App() {
           <main>
             <Routes>
               <Route path="/" element={<Home/>}/>
-              <Route path="/accounts/:id" element={<Profile/>}/>
+              <Route path="/accounts/:id" element={<Profile userID={userID}/>}/>
               <Route path="/ide" element={<IDE/>}/>
               <Route path="/search" element={<Search/>}/>
             </Routes>

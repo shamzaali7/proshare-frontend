@@ -16,23 +16,34 @@ function Home(){
         axios.request(axiosProjects)
             .then(function(res){
                 setProjects(res.data)
-            })
+            }).then(err => console.log(err))
     }
     return(
         <div className="container-home">
+            <div className="explore">Explore</div>
             {projects.map((project) => {
                 return(
                     <div className="home-projects">
-                        <div>Title: {project.title}</div>
-                        <div>Deployed Link: <a href={project.deployedLink} target="_blank">{project.deployedLink}</a></div>
-                        <div>Repo: <a href={project.github} target="_blank">{project.github}</a></div>
-                        <div>Showcase:</div>
-                        <div className="container-showcase"> <div></div><div className="showcase"><img src={project.picture}/></div><div></div></div>
-                        <div>Comments: {project.comments.map((comment)=> {
-                            return(
-                                <div>{comment}</div>
-                            )
-                        })}</div>
+                        <div className="container-title">
+                            <div></div>
+                            <div className="project-titles-box"><p className="project-titles">{project.title}</p></div>
+                            <div></div>
+                        </div>
+                        <div className="home-showcase">
+                            <div className="container-showcase">
+                                <div>
+                                    <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank"><p className="side-elements slink">Deployed Link</p></a></p></div>
+                                    <div className="home-repo"><p><a href={project.github} target="_blank"><p className="side-elements slinks">Repo</p></a></p></div>
+                                </div>
+                                <div className="box-showcase"><img className="project-pic" src={project.picture}/></div>
+                                <div className="home-comments"><p className="side-elements">Comments</p> {project.comments.map((comment)=> {
+                                    return(
+                                        <div>{comment}</div>
+                                    )})}
+                                </div>
+                            </div>
+                        </div>
+                        ----------------
                     </div>
                 )
             })}

@@ -56,8 +56,8 @@ button{
   margin-right: 40px;
 }
 
-a:hover{
-  color:rgba(0, 0, 0, .6);
+a .side-elements:hover{
+  color:rgba(0, 0, 0, .2);
 }
 
 a{
@@ -70,9 +70,6 @@ a{
 }
 
 .container-home div{
-  border-style: solid;
-  border-radius: 10px;
-  border-color: black;
   text-align: center;
 }
 
@@ -84,4 +81,52 @@ a{
 .container-showcase div{
   align-items: center;
   flex: 1;
+}
+
+.project-titles{
+  font-weight: bold;
+  font-size: 22px;
+  color: rgba(0,0,0,.6);
+  border-style: double;
+  border-width: 3px;
+  border-color: rgba(0,0,0,.7);
+  border-radius: 4px;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.side-elements{
+  font-weight: bold;
+  font-size: 14px;
+  color: rgba(0,0,0,.6);
+  border-style: double;
+  border-color: rgba(0,0,0,.7);
+  border-width: 3px;
+  border-radius: 4px;
+  margin-left: 150px;
+  margin-right: 150px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.side-elements.slink{
+  margin-bottom: 20px;
+}
+
+.explore{
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.container-title div{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.project-pic{
+  margin-bottom: 10px;
 }

@@ -76,9 +76,9 @@ function Header({userID, userCred, user}){
                                                 </div>
                                             </li>
                                         </ul>
-                                        <img class="show-m-menu icon icon-tabler icon-tabler-menu" onclick="MenuHandler(this,true)" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg2.svg" alt="icon" />
+                                        <img class="show-m-menu icon icon-tabler icon-tabler-menu" onClick="MenuHandler(this,true)" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg2.svg" alt="icon" />
                                     </div>
-                                    <div class="hidden close-m-menu text-gray-700" onclick="MenuHandler(this,false)">
+                                    <div class="hidden close-m-menu text-gray-700" onClick="MenuHandler(this,false)">
                                         <img  src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg1.svg" alt="icon-2" />
                                     </div>
                                 </div>
@@ -95,7 +95,7 @@ function Header({userID, userCred, user}){
                             </button>
                             <div class="flex">
                                 <div class="hidden xl:flex md:mr-6 xl:mr-16">
-                                    <Link to={"/accounts/" + userID} class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                    <Link to={"/accounts/" + userID} className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                                         <span class="mr-2">
                                             <img class="icon icon-tabler icon-tabler-grid" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
                                         </span>
@@ -127,16 +127,33 @@ function Header({userID, userCred, user}){
                 </nav>
                 <nav>
                     <div class="py-4 px-6 w-full flex xl:hidden justify-between items-center bg-white fixed top-0 z-40">
-                        <div aria-label="logo" role="img" tabindex="0" class="focus:outline-none w-24">
-                            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg9.svg" alt="logo" />
-                        </div>
+                                <Link to="/">
+                                    <div  class="flex items-center">
+                                        <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
+                                        <h2 class="hidden text-lg sm:block text-base text-gray-500 font-bold leading-normal px-3">
+                                            CODESHARE
+                                        </h2>
+                                    </div>
+                                </Link>
                         <div class="flex items-center">
-                            <div class="relative mr-6">
-                                <button class="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 focus:outline-none bg-gray-100 border-gray-300 border transition duration-150 ease-in-out hover:bg-gray-300 rounded text-gray-600 px-5 py-2 text-xs">Manage</button>
-                            </div>
-                            <button id="menu" aria-label="open menu" class="focus:outline-none focus:ring-2 focus:ring-gray-600 rounded-md text-gray-800" onclick="sidebarHandler(true)">
-                                <img class="icon icon-tabler icon-tabler-menu-2" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg10.svg" alt="menu" />
-                            </button>
+                                <Link to={"/accounts/" + userID} className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                    <span class="mr-2">
+                                        <img class="icon icon-tabler icon-tabler-grid" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
+                                    </span>
+                                    Dashboard
+                                </Link>
+                                <Link to="/ide" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                    <span class="mr-2">
+                                        <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                                    </span>
+                                    IDE
+                                </Link>
+                                <Link to="/search" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                    <span class="mr-2">
+                                        <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg16.svg" alt="products" />
+                                    </span>
+                                    Search
+                                </Link>
                         </div>
                     </div>
                     <div class="absolute w-full h-full transform -translate-x-full z-40 xl:hidden" id="mobile-nav">
@@ -149,7 +166,7 @@ function Header({userID, userCred, user}){
                                             <div class="flex items-center justify-between w-full">
                                                 <div class="flex items-center">
                                                     <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg9.svg" alt="logo" />
-                                                    <p tabindex="0" class="focus:outline-none text-base md:text-2xl text-gray-800 ml-3">The North</p>
+                                                    <p tabindex="0" class="focus:outline-none text-base md:text-2xl text-gray-800 ml-3">CODESHARE</p>
                                                 </div>
                                                 <button id="cross" aria-label="close menu" class="focus:outline-none focus:ring-2 rounded-md text-gray-800" onclick="sidebarHandler(false)">
                                                     <img class="icon icon-tabler icon-tabler-x" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg11.svg" alt="cross" />
@@ -220,7 +237,7 @@ function Header({userID, userCred, user}){
                                             <div class="w-full flex items-center justify-between pt-1">
                                                 <div class="flex items-center">
                                                     <img alt="profile-pic" src="https://tuk-cdn.s3.amazonaws.com/assets/components/boxed_layout/bl_1.png" tabindex="0" class="focus:outline-none  w-8 h-8 rounded-md" />
-                                                    <p tabindex="0" class="focus:outline-none text-gray-800 text-base leading-4 ml-2">Jane Doe</p>
+                                                    <p tabindex="0" class="focus:outline-none text-gray-800 text-base leading-4 ml-2">{user.name}</p>
                                                 </div>
                                                 <ul class="flex">
                                                     <li class="cursor-pointer text-gray-800 pt-5 pb-3">
