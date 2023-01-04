@@ -125,7 +125,7 @@ function Profile({userID}){
                             </div>
                             <p>
                                 <button onClick={() => {
-                                        setFormPut({_id : project._id})
+                                        setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, picture: project.picture})
                                         handlePutModalState()}} className="button">
                                     Update
                                 </button>
@@ -139,7 +139,7 @@ function Profile({userID}){
                 <div onClick={handleModalState} className="overlay"></div>
                 <div className="modal-content">
                     <form onSubmit={handleSubmit}>
-                        <div className="title-form">Create Form</div>
+                        <div className="title-form">Create</div>
                         <div className="input-box">
                             <h3 className="input-lbl">Title</h3>
                             <input type="text" className="input-form" onChange={(e) => editForm({ title: e.target.value})}/>
@@ -167,7 +167,7 @@ function Profile({userID}){
                 <div onClick={handlePutModalState} className="overlay"></div>
                 <div className="modal-content">
                     <form onSubmit={handlePutSubmit}>
-                        <div className="title-form">Update Form</div>
+                        <div className="title-form">Update</div>
                         <div className="input-box">
                             <h3 className="input-lbl">Title</h3>
                             <input type="text" value={formPut.title} className="input-form" onChange={(e) => editFormTwo({ title: e.target.value})}/>
@@ -178,11 +178,11 @@ function Profile({userID}){
                         </div>
                         <div className="input-box">
                             <h3 className="input-lbl">Deployed Link</h3>
-                            <input type="text" className="input-form" onChange={(e) => editFormTwo({ deployedLink: e.target.value})}/>
+                            <input type="text" value={formPut.deployedLink} className="input-form" onChange={(e) => editFormTwo({ deployedLink: e.target.value})}/>
                         </div>
                         <div className="input-box">
                             <h3 className="input-lbl">Picture Link</h3>
-                            <input type="text" className="input-form" onChange={(e) => editFormTwo({ picture: e.target.value})}/>
+                            <input type="text" value={formPut.picture} className="input-form" onChange={(e) => editFormTwo({ picture: e.target.value})}/>
                         </div>
                         <button onClick={handlePutSubmit} className="modal-submit">Submit</button>
                     </form>
