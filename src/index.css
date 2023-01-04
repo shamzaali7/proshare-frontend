@@ -150,15 +150,24 @@ div .button{
   border-style: outset;
   border-color: rgba(0,0,0,.2);
   background-color: lightgrey;
-  color: rgba(0,0,0,.8);
+  color: green;
   border-width: 2px;
   border-radius: 4px;
   padding-left: 4px;
   padding-right: 4px;
+  margin-right: 4px;
 }
 
 div .button:hover{
-  color:rgba(0, 0, 0, .2);
+  color: rgba(0, 128, 0, 0.3);
+}
+
+.new-project.button{
+  color:rgba(0,0,0,.7)
+}
+
+.new-project.button:hover{
+  color:rgba(0,0,0,.2)
 }
 
 body.active-modal {
@@ -242,4 +251,22 @@ body.active-modal {
   margin-left: 75px;
   margin-right: 75px;
   margin-bottom: 6px;
+}
+
+.btn-delete-project{
+  font-size: 16px;
+  border-style: outset;
+  border-color: rgba(0,0,0,.2);
+  background-color: lightgrey;
+  color: rgba(0,0,0,.8);
+  border-width: 2px;
+  border-radius: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  color: red;
+  margin-left: 4px;
+}
+
+.btn-delete-project:hover{
+  color: rgb(236, 152, 152);
 }

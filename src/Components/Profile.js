@@ -23,16 +23,15 @@ function Profile({userID}){
     })
     const [formDelete, setFormDelete] = useState({_id: ""})
 
-    const axiosProjects = {
-        method: "GET",
-        url: `https://proshare-backend.herokuapp.com/api/projects/${userID}`
-    };
-
     useEffect(() => {
         getProjects()
       }, []);
 
     function getProjects(){
+        const axiosProjects = {
+            method: "GET",
+            url: `https://proshare-backend.herokuapp.com/api/projects/${userID}`
+        };
         axios.request(axiosProjects)
             .then(function(res){
                 setProjects(res.data)
@@ -97,8 +96,6 @@ function Profile({userID}){
 
     const handleDeleteSubmit = async (e) => {
         e.preventDefault();
-        console.log("in the delete function")
-        e.preventDefault()
         await fetch(`https://proshare-backend.herokuapp.com/api/projects`, {
             method: "DELETE",
             headers: {
@@ -116,7 +113,7 @@ function Profile({userID}){
                 <div></div>
                 <div className="explore">My Projects</div>
                 <div className="explore">
-                    <p><button onClick={handleModalState} className="button">
+                    <p><button onClick={handleModalState} className="new-project button">
                         New Project
                     </button>
                     </p>
@@ -151,7 +148,7 @@ function Profile({userID}){
                                 </button>
                                 <button onClick={() => {
                                         setFormDelete({_id : project._id})
-                                        handleDeleteModalState()}} className="button">
+                                        handleDeleteModalState()}} className="btn-delete-project">
                                     Delete
                                 </button>
                             </p>
@@ -227,9 +224,7 @@ function Profile({userID}){
                 </div>             
             </div>
             )}
-
         </div>
-    )
-}
+    )}
 
 export default Profile;
