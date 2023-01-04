@@ -21,7 +21,16 @@ function Profile({userID}){
 
     return(
         <div className="container-home">
-            <div className="explore">Explore</div>
+            <div class="container-new-project">
+                <div></div>
+                <div className="explore">My Projects</div>
+                <div className="explore">
+                    <p><button className="button">
+                        New Project
+                    </button>
+                    </p>
+                </div>
+            </div>
             {projects.map((project) => {
                 return(
                     <div className="home-projects">
@@ -44,7 +53,6 @@ function Profile({userID}){
                                 </div>
                             </div>
                         </div>
-                        ---------------
                     </div>
                 )
             })}
