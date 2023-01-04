@@ -5,6 +5,7 @@ function Profile({userID}){
     const [projects, setProjects] = useState([]);
     const [modal, setModal] = useState(false);
     const [modalTwo, setModalTwo] = useState(false);
+    const [modalDelete, setModalDelete] = useState(false);
     const [form, setForm] = useState({
         title: "",
         github: "",
@@ -20,6 +21,7 @@ function Profile({userID}){
         picture: "",
         gid: userID,
     })
+    const [formDelete, setFormDelete] = useState({_id: ""})
 
     const axiosProjects = {
         method: "GET",
@@ -40,9 +42,11 @@ function Profile({userID}){
     const handleModalState = () => {
         setModal(!modal)
     }
-
     const handlePutModalState = () => {
         setModalTwo(!modalTwo)
+    }
+    const handleDeleteModalState = () => {
+        setModalDelete(!modalDelete)
     }
 
     const editForm = (value) => {
@@ -50,13 +54,16 @@ function Profile({userID}){
             return {...last, ...value}
         })
     }
-
     const editFormTwo = (value) => {
         return setFormPut((last) => {
             return {...last, ...value}
         })
     }
-
+    const editFormThree = (value) => {
+        return setFormDelete((last) => {
+            return {...last, ...value}
+        })
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -76,7 +83,6 @@ function Profile({userID}){
         })
     }
     
-
     const handlePutSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -88,7 +94,21 @@ function Profile({userID}){
         handlePutModalState();
         getProjects();
     }
-    console.log(formPut)
+
+    const handleDeleteSubmit = async (e) => {
+        e.preventDefault();
+        console.log("in the delete function")
+        e.preventDefault()
+        await fetch(`https://proshare-backend.herokuapp.com/api/projects`, {
+            method: "DELETE",
+            headers: {
+           'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({_id : formDelete._id})
+        });
+        handleDeleteModalState();
+        getProjects();
+    }
 
     return(
         <div className="container-home">
@@ -128,6 +148,11 @@ function Profile({userID}){
                                         setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, picture: project.picture})
                                         handlePutModalState()}} className="button">
                                     Update
+                                </button>
+                                <button onClick={() => {
+                                        setFormDelete({_id : project._id})
+                                        handleDeleteModalState()}} className="button">
+                                    Delete
                                 </button>
                             </p>
                         </div>
@@ -187,6 +212,18 @@ function Profile({userID}){
                         <button onClick={handlePutSubmit} className="modal-submit">Submit</button>
                     </form>
                     <button onClick={handlePutModalState} className="close-modal">Exit</button>
+                </div>             
+            </div>
+            )}
+            {modalDelete && (
+                <div className="modal">
+                <div onClick={handleDeleteModalState} className="overlay"></div>
+                <div className="modal-content">
+                    <form onSubmit={handleDeleteSubmit}>
+                        <div className="delete-modal-question">Confirm Delete</div>
+                        <button onClick={handleDeleteSubmit} className="modal-submit">Delete</button>
+                    </form>
+                    <button onClick={handleDeleteModalState} className="close-modal">Cancel</button>
                 </div>             
             </div>
             )}
