@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function Header({userID, userCred, user}){
+function Header({userID, user}){
 
     return(
         <div className="container-header">   

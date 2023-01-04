@@ -41,27 +41,27 @@ function App() {
       }
     )
   };
-  async function createUser(){
-    const newUser = {
-      googleid: userID,
-      email: userEmail,
-      name: userName
-    }
-    const createAxiosUser = {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      url: "https://proshare-backend.herokuapp.com/api/users/",
-      body: JSON.stringify(newUser)
-    }
-    await axios.request(createAxiosUser)
-      .then((res) => {
-        getUserByID()
-        console.log(res)
-      })
-      .then(err => {console.log(err)})
-  }
+  // async function createUser(){
+  //   const newUser = {
+  //     googleid: userID,
+  //     email: userEmail,
+  //     name: userName
+  //   }
+  //   const createAxiosUser = {
+  //     method: "POST",
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     url: "https://proshare-backend.herokuapp.com/api/users/",
+  //     body: JSON.stringify(newUser)
+  //   }
+  //   await axios.request(createAxiosUser)
+  //     .then((res) => {
+  //       getUserByID()
+  //       console.log(res)
+  //     })
+  //     .then(err => {console.log(err)})
+  // }
 
   async function getUserByID(){
     await axios.request(axiosUsers)
@@ -72,7 +72,7 @@ function App() {
           name: res.data[0].name,
           profilePicture: res.data[0].profilePicture
         })
-      }).then((err) => {console.log(err)})
+      }).catch((err) => {console.log(err)})
   }
   // function checkID(){
   //   const axiosUserGet = {
@@ -101,7 +101,7 @@ function App() {
     <div className="App">
       {!authorized ? 
         <div className="box-signin">
-          <button className="bg-sky-500 hover:bg-sky-700 ... rounded-full ... text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
+          <button className="hover:bg-slate-500 ... rounded-full ... text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
             Login with Google
           </button> 
         </div>

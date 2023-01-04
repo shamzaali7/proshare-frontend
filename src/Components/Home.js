@@ -16,7 +16,7 @@ function Home(){
         axios.request(axiosProjects)
             .then(function(res){
                 setProjects(res.data)
-            }).then(err => console.log(err))
+            }).catch(err => console.log(err))
     }
     return(
         <div className="container-home">
@@ -32,10 +32,10 @@ function Home(){
                         <div className="home-showcase">
                             <div className="container-showcase">
                                 <div>
-                                    <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank"><p className="side-elements slink">Deployed Link</p></a></p></div>
-                                    <div className="home-repo"><p><a href={project.github} target="_blank"><p className="side-elements slinks">Repo</p></a></p></div>
+                                    <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Link</p></a></p></div>
+                                    <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slinks">Repo</p></a></p></div>
                                 </div>
-                                <div className="box-showcase"><img className="project-pic" src={project.picture}/></div>
+                                <div className="box-showcase"><img className="project-pic" src={project.picture} alt="N/A"/></div>
                                 <div className="home-comments"><p className="side-elements">Comments</p> {project.comments.map((comment)=> {
                                     return(
                                         <div>{comment}</div>
