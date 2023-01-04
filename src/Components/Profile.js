@@ -218,7 +218,7 @@ function Profile({userID}){
                 <div className="modal-content">
                     <form onSubmit={handleDeleteSubmit}>
                         <div className="delete-modal-question">Confirm Delete</div>
-                        <button onClick={handleDeleteSubmit} className="modal-submit">Delete</button>
+                        <button onClick={handleDeleteSubmit} className="dark-border">Delete</button>
                     </form>
                     <button onClick={handleDeleteModalState} className="close-modal">Cancel</button>
                 </div>             

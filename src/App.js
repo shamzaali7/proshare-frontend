@@ -41,27 +41,6 @@ function App() {
       }
     )
   };
-  // async function createUser(){
-  //   const newUser = {
-  //     googleid: userID,
-  //     email: userEmail,
-  //     name: userName
-  //   }
-  //   const createAxiosUser = {
-  //     method: "POST",
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     url: "https://proshare-backend.herokuapp.com/api/users/",
-  //     body: JSON.stringify(newUser)
-  //   }
-  //   await axios.request(createAxiosUser)
-  //     .then((res) => {
-  //       getUserByID()
-  //       console.log(res)
-  //     })
-  //     .then(err => {console.log(err)})
-  // }
 
   async function getUserByID(){
     await axios.request(axiosUsers)
@@ -74,28 +53,6 @@ function App() {
         })
       }).catch((err) => {console.log(err)})
   }
-  // function checkID(){
-  //   const axiosUserGet = {
-  //     method: 'GET',
-  //     url: "https://proshare-backend.herokuapp.com/api/users/"
-  //   }
-  //   axios.request(axiosUserGet)
-  //     .then((res) => {
-  //       console.log(res)
-  //       let counter = 0;
-  //       res.data.map(user => {
-  //         if(user.googleid == userID){
-  //           counter++;
-  //         }
-  //       })
-  //       if(counter > 0){
-  //         getUserByID()
-  //       }else{
-  //         createUser()
-  //         getUserByID()
-  //       }
-  //     })
-  // }
 
   return (
     <div className="App">
@@ -125,7 +82,6 @@ function App() {
 }
 
 export default App;
-
 
 // const CLIENT_ID = "6539597b82efe5bb73ba";
 /* <button onClick={handleGithubLogin}>Login with Github</button> */
@@ -158,3 +114,48 @@ export default App;
 //     getAccessToken();
 //   }
 // },[]);
+
+  // function checkID(){
+  //   const axiosUserGet = {
+  //     method: 'GET',
+  //     url: "https://proshare-backend.herokuapp.com/api/users/"
+  //   }
+  //   axios.request(axiosUserGet)
+  //     .then((res) => {
+  //       console.log(res)
+  //       let counter = 0;
+  //       res.data.map(user => {
+  //         if(user.googleid == userID){
+  //           counter++;
+  //         }
+  //       })
+  //       if(counter > 0){
+  //         getUserByID()
+  //       }else{
+  //         createUser()
+  //         getUserByID()
+  //       }
+  //     })
+  // }
+
+    // async function createUser(){
+  //   const newUser = {
+  //     googleid: userID,
+  //     email: userEmail,
+  //     name: userName
+  //   }
+  //   const createAxiosUser = {
+  //     method: "POST",
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     url: "https://proshare-backend.herokuapp.com/api/users/",
+  //     body: JSON.stringify(newUser)
+  //   }
+  //   await axios.request(createAxiosUser)
+  //     .then((res) => {
+  //       getUserByID()
+  //       console.log(res)
+  //     })
+  //     .then(err => {console.log(err)})
+  // }
