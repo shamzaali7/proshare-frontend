@@ -107,6 +107,7 @@ a{
   margin-right: 150px;
   margin-bottom: 5px;
   margin-top: 5px;
+  text-align: center
 }
 
 .side-elements.slink{
@@ -271,14 +272,18 @@ body.active-modal {
   color: rgb(236, 152, 152);
 }
 
+.delete-modal-question{
+  font-size: 20px;
+}
+
 .dark-border{
   font-size: 16px;
   border-style: outset;
   border-color: rgba(0,0,0,.4);
-  background-color: lightgrey;
-  color: rgba(0,0,0,.8);
   border-width: 2px;
   border-radius: 4px;
+  background-color: lightgrey;
+  color: rgba(0,0,0,.8);
   padding-left: 4px;
   padding-right: 4px;
   color: red;
@@ -298,4 +303,59 @@ body.active-modal {
 
 .search-button{
   color: #374151;
+}
+
+.iframe-style{
+  width:100%; 
+  height:500px; 
+  border:0; 
+  border-radius: 10px; 
+  overflow:hidden;
+  border-style: outset;
+  border-color: rgba(0,0,0,.8);
+  border-width: 2px;
+  border-radius: 4px;
+}
+
+.container-ide{
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.container-ide div{
+  flex: 1;
+  text-align: center;
+}
+
+.container-ide .frame-box{
+  flex: 5;
+}
+
+.ide-title{
+  text-align: center;
+  margin-top: 10px;
+}
+
+.google-blue{
+  color: rgb(66, 133, 244)
+}
+
+.google-red{
+  color: rgb(219, 68, 55)
+}
+
+.google-yellow{
+  color: rgb(244, 180, 0)
+}
+
+.google-green{
+  color: rgb(15, 157, 88)
+}
+
+.search-comments{
+  text-align: center;
 }

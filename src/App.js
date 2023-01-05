@@ -59,7 +59,7 @@ function App() {
       {!authorized ? 
         <div className="box-signin">
           <button className="hover:bg-slate-500 ... rounded-full ... text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
-            Login with Google
+            Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
           </button> 
         </div>
       :
