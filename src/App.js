@@ -64,8 +64,8 @@ function App() {
           <Footer/>
           <main>
             <Routes>
-              <Route path="/" element={<Home/>}/>
-              <Route path="/accounts/:id" element={<Profile userID={userID}/>}/>
+              <Route path="/" element={<Home userCred={userCred}/>}/>
+              <Route path="/accounts/:id" element={<Profile userID={userID} userCred={userCred}/>}/>
               <Route path="/ide" element={<IDE/>}/>
               <Route path="/search" element={<Search/>}/>
             </Routes>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useState, React, useEffect} from 'react'
 
-function Profile({userID}){
+function Profile({userID, userCred}){
     const [projects, setProjects] = useState([]);
     const [modal, setModal] = useState(false);
     const [modalTwo, setModalTwo] = useState(false);
@@ -12,6 +12,7 @@ function Profile({userID}){
         deployedLink: "",
         picture: "",
         gid: userID,
+        creator: userCred.additionalUserInfo.profile.name
     });
     const [formPut, setFormPut] = useState({
         _id: "",
@@ -20,6 +21,7 @@ function Profile({userID}){
         deployedLink: "",
         picture: "",
         gid: userID,
+        creator: userCred.additionalUserInfo.profile.name
     })
     const [formDelete, setFormDelete] = useState({_id: ""})
 
@@ -58,11 +60,7 @@ function Profile({userID}){
             return {...last, ...value}
         })
     }
-    const editFormThree = (value) => {
-        return setFormDelete((last) => {
-            return {...last, ...value}
-        })
-    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -78,7 +76,8 @@ function Profile({userID}){
             github: "",
             deployedLink: "",
             picture: "",
-            gid: userID
+            gid: userID,
+            creator:  userCred.additionalUserInfo.profile.name
         })
     }
     
@@ -133,14 +132,14 @@ function Profile({userID}){
                                     <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Link</p></a></p></div>
                                     <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slinks">Repo</p></a></p></div>
                                 </div>
-                                <div className="box-showcase"><img className="project-pic" src={project.picture} alt=""/></div>
+                                <div><img className="project-pic" src={project.picture} alt=""/></div>
                                 <div className="home-comments"><p className="side-elements">Comments</p> {project.comments.map((comment)=> {
                                     return(
                                         <div>{comment}</div>
                                     )})}
                                 </div>
                             </div>
-                            <p>
+                            <div className="change-buttons">
                                 <button onClick={() => {
                                         setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, picture: project.picture})
                                         handlePutModalState()}} className="button">
@@ -151,7 +150,7 @@ function Profile({userID}){
                                         handleDeleteModalState()}} className="btn-delete-project">
                                     Delete
                                 </button>
-                            </p>
+                            </div>
                         </div>
                     </div>
                 )

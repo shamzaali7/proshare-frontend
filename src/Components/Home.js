@@ -27,7 +27,7 @@ function Home(){
                         <div className="container-title">
                             <div></div>
                             <div className="project-titles-box"><p className="project-titles">{project.title}</p></div>
-                            <div></div>
+                            <div className="project-creator">by: {project.creator}</div>
                         </div>
                         <div className="home-showcase">
                             <div className="container-showcase">

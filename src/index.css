@@ -95,6 +95,12 @@ a{
   padding-right: 7px;
 }
 
+.project-titles-box{
+  margin-bottom: 0;
+  margin-top: 0;
+  
+}
+
 .side-elements{
   font-weight: bold;
   font-size: 14px;
@@ -118,6 +124,7 @@ a{
   color: rgba(0,0,0,.8);
   font-size: 20px;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .container-title div{
@@ -126,7 +133,11 @@ a{
   flex: 1;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding-bottom: 4px;
+}
+
+.box-showcase{
+  margin-bottom: 10px
 }
 
 .project-pic{
@@ -193,6 +204,7 @@ body.active-modal {
 .overlay {
   background: rgba(49,49,49,0.8);
 }
+
 .modal-content {
   position: absolute;
   top: 40%;
@@ -255,6 +267,10 @@ body.active-modal {
   margin-left: 75px;
   margin-right: 75px;
   margin-bottom: 6px;
+}
+
+.change-buttons{
+  margin-bottom: 16px;
 }
 
 .btn-delete-project{
@@ -361,6 +377,10 @@ body.active-modal {
 
 .search-comments{
   text-align: center;
+}
+
+.project-creator{
+  font-size: 12px
 }
 
 @media screen and (max-width: 1280px){
