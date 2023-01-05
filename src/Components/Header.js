@@ -14,7 +14,7 @@ function Header({userID, user}){
                                     <div  class="flex items-center">
                                         <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
                                         <h2 class="hidden text-lg sm:block text-base text-gray-500 font-bold leading-normal px-3">
-                                            CODESHARE
+                                            PROSHARE
                                         </h2>
                                     </div>
                                 </Link>
@@ -57,7 +57,7 @@ function Header({userID, user}){
                             <div  class="flex items-center">
                                 <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
                                 <h2 class="hidden text-lg sm:block text-base text-gray-500 font-bold leading-normal px-3">
-                                    CODESHARE
+                                    PROSHARE
                                 </h2>
                             </div>
                         </Link>
