@@ -32,7 +32,6 @@ function Search(){
         )
         setFilteredProjects(filter)
     }
-    console.log(filteredProjects)
 
     return(
         <div>
@@ -51,32 +50,31 @@ function Search(){
                 </div>
             </form>
             <div>
-            {filteredProjects.map((project) => {
-                return(
-                    <div className="home-projects">
-                        <div className="container-title">
-                            <div></div>
-                            <div className="project-titles-box"><p className="project-titles">{project.title}</p></div>
-                            <div></div>
-                        </div>
-                        <div className="home-showcase">
-                            <div className="container-showcase">
-                                <div>
-                                    <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Link</p></a></p></div>
-                                    <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slinks">Repo</p></a></p></div>
-                                </div>
-                                <div className="box-showcase"><img className="project-pic" src={project.picture} alt="N/A"/></div>
-                                <div className="home-comments"><p className="side-elements">Comments</p> {project.comments.map((comment)=> {
-                                    return(
-                                        <div className="search-comments">{comment}</div>
-                                    )})}
+                {filteredProjects.map((project) => {
+                    return(
+                        <div className="home-projects">
+                            <div className="container-title">
+                                <div></div>
+                                <div className="project-titles-box"><p className="project-titles">{project.title}</p></div>
+                                <div></div>
+                            </div>
+                            <div className="home-showcase">
+                                <div className="container-showcase">
+                                    <div>
+                                        <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Link</p></a></p></div>
+                                        <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slinks">Repo</p></a></p></div>
+                                    </div>
+                                    <div className="box-showcase"><img className="project-pic" src={project.picture} alt="N/A"/></div>
+                                    <div className="home-comments"><p className="side-elements">Comments</p> {project.comments.map((comment)=> {
+                                        return(
+                                            <div className="search-comments">{comment}</div>
+                                        )})}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                       
-                    </div>
-                )
-            })}
+                    )
+                })}
             </div>
         </div>
     )

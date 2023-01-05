@@ -119,7 +119,7 @@ function Profile({userID}){
                     </p>
                 </div>
             </div>
-            {projects.map((project) => {
+            {projects && (projects.map((project) => {
                 return(
                     <div className="home-projects">
                         <div className="container-title">
@@ -155,7 +155,7 @@ function Profile({userID}){
                         </div>
                     </div>
                 )
-            })}
+            }))}
             {modal && (
                 <div className="modal">
                 <div onClick={handleModalState} className="overlay"></div>

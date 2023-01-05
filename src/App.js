@@ -13,8 +13,6 @@ import Search from './Components/Search';
 function App() {
   const [authorized, setAuthorized] = useState(false)
   const [userID, setUserID] = useState("")
-  const [userEmail, setUserEmail] = useState("")
-  const [userName, setUserName] = useState("")
   const [userCred, setUserCred] = useState({})
   const [user, setUser] = useState({
     googleid: "",
@@ -32,8 +30,6 @@ function App() {
       async (userCredentials)=>{
         if(userCredentials){
           setUserID(userCredentials.additionalUserInfo.profile.id);
-          setUserEmail(userCredentials.additionalUserInfo.profile.email);
-          setUserName(userCredentials.additionalUserInfo.profile.name);
           setAuthorized(true);
           setUserCred(userCredentials);
           getUserByID();
@@ -77,85 +73,6 @@ function App() {
         </div>
       }
     </div>
-      
   );
 }
-
 export default App;
-
-// const CLIENT_ID = "6539597b82efe5bb73ba";
-/* <button onClick={handleGithubLogin}>Login with Github</button> */
-// const [renderAgain, setRenderAgain] = useState(false);
-
-// const handleGithubLogin = () => {
-//   window.location.assign("https://github.com/login/oauth/authorize?client_id=" + CLIENT_ID);
-// };
-
-// useEffect(() => {
-//   const query = window.location.search;
-//   const urlParam = new URLSearchParams(query);
-//   const code = urlParam.get("code");
-//   console.log(code);
-
-//   if(code && (localStorage.getItem("accessToken") === null)){
-//     async function getAccessToken(){
-//       await fetch("http://localhost:4000/getAccessToken?code=" + code, {
-//         method: "GET"
-//       }).then((response) => {
-//         return response.json()
-//       }).then((data) => {
-//         console.log(data)
-//         if(data.access_token){
-//           localStorage.setItem("accessToken", data.access_token);
-//           setRenderAgain(!renderAgain);
-//         }
-//       })
-//     }
-//     getAccessToken();
-//   }
-// },[]);
-
-  // function checkID(){
-  //   const axiosUserGet = {
-  //     method: 'GET',
-  //     url: "https://proshare-backend.herokuapp.com/api/users/"
-  //   }
-  //   axios.request(axiosUserGet)
-  //     .then((res) => {
-  //       console.log(res)
-  //       let counter = 0;
-  //       res.data.map(user => {
-  //         if(user.googleid == userID){
-  //           counter++;
-  //         }
-  //       })
-  //       if(counter > 0){
-  //         getUserByID()
-  //       }else{
-  //         createUser()
-  //         getUserByID()
-  //       }
-  //     })
-  // }
-
-    // async function createUser(){
-  //   const newUser = {
-  //     googleid: userID,
-  //     email: userEmail,
-  //     name: userName
-  //   }
-  //   const createAxiosUser = {
-  //     method: "POST",
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     url: "https://proshare-backend.herokuapp.com/api/users/",
-  //     body: JSON.stringify(newUser)
-  //   }
-  //   await axios.request(createAxiosUser)
-  //     .then((res) => {
-  //       getUserByID()
-  //       console.log(res)
-  //     })
-  //     .then(err => {console.log(err)})
-  // }
