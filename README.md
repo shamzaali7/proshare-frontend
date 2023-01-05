@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+# Proshare
+- 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Site Map
 
-## Available Scripts
+![]()
+![]()
+![]()
 
-In the project directory, you can run:
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Project Links
+- [Github FrontEnd Repo]()
+- [Github BackEnd Repo]()
+- [Vercel Deploy]()
+- [Heroku Depoy]()
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# Wireframes & React Component Hierarchy
+![]()
+![]()
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### MVP
+- A frontend and backend connected with full CRUD functionality on a MERN stack.
+- - Implement User Auth.
+### Backend
+- Making components [index, connections, seed.js, seed.json].
+- iIndex requires cors & contains .env file with URL connecting to MongoDb database.
 
-### `npm run build`
+### Frontend
+- An app page that connects all components.
+- Contains Routes for all routing within the App. 
+- Consist of a profile page for creating, getting, updating, and deleting the contacts.
+- Sending request to the deployed backend to to receive a desirable output that will be displayed. 
+- A css file that allows the app to be used on all screen displays.
+- A friendly Ui experience with interactive components
+- Header and Footer. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Post MVP
+- Implement a Nav Bar 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### User Stories
+- As a User I want to ... so that I can ...
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Components
 
-### `npm run eject`
+| Components   | Description                                                                                 |
+|------------- |:-------------------------------------------------------------------------------------------:|
+| App          | Contains the main Routing componets with and imported links.|
+| Intro        | The intro / how-to of the App.                                           |
+| Main         | Renders the main page setup with the create new and update Contacts.                     |
+| Login        | set up for Google sign in with Firebase along with the layout of the container                                            |
+| CreateContact| Contains the operations to do a fetch call on built api. To create | post a new contact                            |
+| UpdateContact| Contains the operations to do a fetch call on built api. To update | delete a new contact                              |
+| Header       | Contains the Title of the application & have it renders in a banner across the top of app.
+| Footer       | Contains the dev names with links to Github and Linkedin & it renders in a banner across the bottom of app.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Time Frames
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Component | Priority | Estimated Time | Time Invested | Actual Time
+---- | ---- | ---- | ---- | ----
+Creating Components | H | 2hr | 3hrs | 3hrs   
+Setting up + Initializing API | H | 8hrs | 10hrs | 10hrs
+Making links and lining routes- | M | 4hr | 5hrs | 5hrs
+Adding Form and passing its changes/Connecting fronend to backend | M | 6hrs | 7hrs | 7hrs
+Passing states/ propts and updating component | H | 6hrs | 7hrs | 7hrs
+Retrieving and implementing new API with separate url | H | 6hrs | 7hrs | 7hrs
+Total | N/A | 32hrs | 39hrs | 39hrs
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Additional Libraries
+- Axios was used to assist the import and implement API's from the backend.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Issues and Resolutions
+#### Error: Access-Control-Allow-Origin-header missing-also blocked by cors 
+#### Resolution: Issue was receiving the api call from frontend due to use params being used but not funtional.
