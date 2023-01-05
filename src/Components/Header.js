@@ -1,10 +1,18 @@
-import {React, useState} from 'react'
-import { Link } from 'react-router-dom'
+import React, {useState} from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-function Header({userID, user}){
+function Header({userID, user, authorized, setAuthorized}){
     const [show, setShow] = useState(null);
     const [profile, setProfile] = useState(false);
-    return(
+    const navigate = useNavigate();
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        navigate("/");
+        await setAuthorized(!authorized)
+    }
+
+    return (
         <div className="container-header">   
             <div className="bg-gray-200 h-full w-full">
                 {/* Code block starts */}
@@ -138,13 +146,13 @@ function Header({userID, user}){
                                                                 <circle cx={12} cy={7} r={4} />
                                                                 <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                                                             </svg>
-                                                            <span className="ml-2">Logout</span>
+                                                            <button  onClick={handleLogout} className="ml-2">Logout</button>
                                                         </div>
                                                     </li>
                                                 </ul>
                                             )}
                                             <div className="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out">
-                                                <img class="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" />                                            </div>
+                                                <img class="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" /></div>
                                             <div className="ml-2 text-gray-600">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-chevron-down cursor-pointer" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" />

@@ -60,7 +60,7 @@ function App() {
         </div>
       :
         <div>
-          <Header userID={userID} userCred={userCred} user={user}/>
+          <Header userID={userID} user={user} authorized={authorized} setAuthorized={setAuthorized}/>
           <Footer/>
           <main>
             <Routes>

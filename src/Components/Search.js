@@ -21,10 +21,6 @@ function Search(){
         }
     }
 
-    const handleClick = (e) => {
-        e.preventDefault();
-    }
-
     const handleChange = (e) => {
         setInput(e.target.value)
         let filter = projects.filter((project) => 
