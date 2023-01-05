@@ -140,13 +140,13 @@ function Header({userID, user, authorized, setAuthorized}){
                                             {profile && (
                                                 <ul className="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 ">
                                                     <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                                                        <div className="flex items-center">
+                                                        <div onClick={handleLogout} className="flex items-center">
                                                             <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-user" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                                 <path stroke="none" d="M0 0h24v24H0z" />
                                                                 <circle cx={12} cy={7} r={4} />
                                                                 <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                                                             </svg>
-                                                            <button  onClick={handleLogout} className="ml-2">Logout</button>
+                                                            <span className="ml-2">Logout</span>
                                                         </div>
                                                     </li>
                                                 </ul>
