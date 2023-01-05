@@ -20,27 +20,57 @@
 <img width="749" alt="Screen Shot 2023-01-05 at 4 27 59 PM" src="https://user-images.githubusercontent.com/115019127/210883485-75743ee9-bc05-40c6-b286-b56104f2496f.png">
 
 
+### Tech Stack
+-Front-end: JS, HTML, CSS, CSS Tailwind, React, Netlify
+-Back-end: Node.js, Express, Mongoose, MongoDB, Heroku
+
 ### MVP
-- A frontend and backend connected with full CRUD functionality on a MERN stack.
-- - Implement User Auth.
-### Backend
-- Making components [index, connections, seed.js, seed.json].
-- iIndex requires cors & contains .env file with URL connecting to MongoDb database.
 
 ### Frontend
-- An app page that connects all components.
-- Contains Routes for all routing within the App. 
-- Consist of a profile page for creating, getting, updating, and deleting the contacts.
-- Sending request to the deployed backend to to receive a desirable output that will be displayed. 
-- A css file that allows the app to be used on all screen displays.
+- A frontend routing in App.js to:
+  - 2 main components 
+    - Home.js: Displays all projects and their details
+    - Profile.js: Displays projects of the current user, allows user to update or delete them, and presents button to create a new project
+  - 2 Side components: Header.js, Footer.js
+- User authentication with google
+- Full CRUD functionality connected to the backend
 - A friendly Ui experience with interactive components
-- Header and Footer. 
+- Tablet and Mobile design
+
+
+### Backend
+- A backend routing in index.js to:
+  - 2 Models:
+    - projectModel.js
+      -Properties: title, github, deployedLinks, picture, code, gid(googleID), user(id of creator), creator(name of creator)
+    - userModel.js
+      -Properties: googleid, email, name, profilePicture 
+  - 2 Controllers:
+    - projectController.js
+      -Routes: get, getByID, post, put, delete 
+    - userController.js
+      -Routes: get, getByGoogleID, post, put, delete 
+  - 4 database files:
+    - connection.js
+    - seed.js
+    - projectSeed.json
+    - userSeed.json
+- Functional and connected MERN stack 
+
 
 ### Post MVP
-- Implement a Nav Bar 
+- 2 frontend side components:     
+  - IDE.js: Code Editor
+  - Search.js: Presents user with ability to search through all projects
+- Implement a Nav Bar
 
 ### User Stories
-- As a User I want to ... so that I can ...
+- As a user, I want to make an account so that I can enter the website
+- As a user, I want to go to my profile page so that I can add a project for others to see
+- As a user, I want to update or delete my projects so change their values if an error occured
+- As a user, I want to scroll through the homepage so that I can see everyone else's posted projects
+- As a user, I want to navigate to the IDE tab so that I can input my code and check for errors
+- As a user, I want to navigate to the Search tab so that I can look for a specific project
 
 # Components
 
