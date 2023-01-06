@@ -72,30 +72,18 @@
 - As a user, I want to navigate to the IDE tab so that I can input my code and check for errors
 - As a user, I want to navigate to the Search tab so that I can look for a specific project
 
-# Components
-
-| Components   | Description                                                                                 
-|------------- |:-------------------------------------------------------------------------------------------:|
-| App          | Contains the main Routing componets with and imported links.|
-| Intro        | The intro / how-to of the App.|
-| Main         | Renders the main page setup with the create new and update Contacts.                |
-| Login        | set up for Google sign in with Firebase along with the layout of the container                                            |
-| CreateContact| Contains the operations to do a fetch call on built api. To create | post a new contact                            |
-| UpdateContact| Contains the operations to do a fetch call on built api. To update | delete a new contact                              |
-| Header       | Contains the Title of the application & have it renders in a banner across the top of app.                             |
-| Footer       | Contains the dev names with links to Github and Linkedin & it renders in a banner across the bottom of app.              |
-
 # Time Frames
 
-Component | Priority | Estimated Time | Time Invested | Actual Time
----- | ---- | ---- | ---- | ----
-Creating Components | H | 2hr | 3hrs | 3hrs   
-Setting up + Initializing API | H | 8hrs | 10hrs | 10hrs
-Making links and lining routes- | M | 4hr | 5hrs | 5hrs
-Adding Form and passing its changes/Connecting fronend to backend | M | 6hrs | 7hrs | 7hrs
-Passing states/ propts and updating component | H | 6hrs | 7hrs | 7hrs
-Retrieving and implementing new API with separate url | H | 6hrs | 7hrs | 7hrs
-Total | N/A | 32hrs | 39hrs | 39hrs
+Task | Priority | Estimated Time | Actual Time Invested
+---- | ---- | ---- | ----
+Creating Components | H | 2hrs | 3hrs  
+Setting up + Initializing API | H | 6hrs | 8hrs 
+Making links and lining routes | M | 4hrs | 5hrs
+Adding Modals/forms and passing it changes | M | 6hrs | 7hrs
+Connecting frontend to backend(CRUD) | H | 6hrs | 8hrs
+Passing parameters and updating component | H | 3hrs | 4hrs
+Implementing navbar | H | 2hrs | 3hrs 
+Total | N/A | 29hrs | 38hrs 
 
 # Additional Libraries
 - Axios was used to assist the import and implement API's from the backend.
