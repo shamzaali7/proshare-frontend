@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-function Header({userID, user, authorized, setAuthorized}){
+function Header({userID, user, authorized, setAuthorized, userCred}){
     const [show, setShow] = useState(null);
     const [profile, setProfile] = useState(false);
     const navigate = useNavigate();
@@ -11,6 +11,8 @@ function Header({userID, user, authorized, setAuthorized}){
         navigate("/");
         await setAuthorized(!authorized)
     }
+
+    const hi = "Hi " + userCred.additionalUserInfo.profile.given_name + "!"
 
     return (
         <div className="container-header">   
@@ -158,6 +160,7 @@ function Header({userID, user, authorized, setAuthorized}){
                                                     <polyline points="6 9 12 15 18 9" />
                                                 </svg>
                                             </div>
+                                            <div className="hi">{hi}</div>
                                         </div>
                                     </div>
                                 </div>

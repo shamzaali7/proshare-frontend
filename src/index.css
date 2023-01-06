@@ -383,6 +383,10 @@ body.active-modal {
   font-size: 12px
 }
 
+.hi{
+  margin-left: 8px;
+}
+
 @media screen and (max-width: 1280px){
   .explore{
     margin-top: 75px;
