@@ -21,8 +21,8 @@
 
 
 ### Tech Stack
--Front-end: JS, HTML, CSS, CSS Tailwind, React, Netlify
--Back-end: Node.js, Express, Mongoose, MongoDB, Heroku
+-Front-end: JS, HTML, CSS, CSS Tailwind, React, AWS Amplify, Netlify
+-Back-end: Node.js, Express, Mongoose, MongoDB, Heroku, AWS EC2
 
 # MVP
 
