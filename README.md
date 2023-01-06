@@ -61,7 +61,7 @@
 ### Post MVP
 - 2 frontend side components:     
   - IDE.js: Code Editor
-  - Search.js: Presents user with ability to search through all projects
+  - Search.js: Presents user with ability to search through all of the projects in the server
 - Implement a Nav Bar
 
 ### User Stories
