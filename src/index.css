@@ -109,8 +109,8 @@ a{
   border-color: rgba(0,0,0,.5);
   border-width: 3px;
   border-radius: 4px;
-  margin-left: 150px;
-  margin-right: 150px;
+  margin-left: 100px;
+  margin-right: 100px;
   margin-bottom: 5px;
   margin-top: 5px;
   text-align: center
@@ -118,6 +118,7 @@ a{
 
 .side-elements.slink{
   margin-bottom: 20px;
+  background-color: white;
 }
 
 .explore{
@@ -142,7 +143,6 @@ a{
 
 .project-pic{
   margin-bottom: 10px;
-  padding-bottom: 6px;
   border-color: rgba(0,0,0,.6);
   border-width: 2px;
   border-radius: 4px;
@@ -385,6 +385,20 @@ body.active-modal {
 
 .hi{
   margin-left: 8px;
+}
+
+.home-projects{
+  background-color: lightgrey;
+  margin-left: 150px;
+  margin-right: 150px;
+  margin-bottom: 50px;
+  border-radius: 10px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.home-deployedLink{
+
 }
 
 @media screen and (max-width: 1280px){

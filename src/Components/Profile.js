@@ -120,20 +120,20 @@ function Profile({userID, userCred}){
             </div>
             {projects && (projects.map((project) => {
                 return(
-                    <div className="home-projects">
+                    <div className="home-projects shadow-xl">
                         <div className="container-title">
                             <div></div>
-                            <div className="project-titles-box"><p className="project-titles">{project.title}</p></div>
+                            <div className="project-titles-box"><p className="project-titles bg-white">{project.title}</p></div>
                             <div></div>
                         </div>
                         <div className="home-showcase">
                             <div className="container-showcase">
                                 <div>
                                     <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Link</p></a></p></div>
-                                    <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slinks">Repo</p></a></p></div>
+                                    <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slink">Repo</p></a></p></div>
                                 </div>
                                 <div><img className="project-pic" src={project.picture} alt=""/></div>
-                                <div className="home-comments"><p className="side-elements">Comments</p> {project.comments.map((comment)=> {
+                                <div className="home-comments"><p className="side-elements slink">Comments</p> {project.comments.map((comment)=> {
                                     return(
                                         <div>{comment}</div>
                                     )})}
