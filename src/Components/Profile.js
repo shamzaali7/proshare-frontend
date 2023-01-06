@@ -12,6 +12,8 @@ function Profile({userID, userCred}){
         deployedLink: "",
         picture: "",
         gid: userID,
+        backendRepo: "",
+        backendDeploy: "",
         creator: userCred.additionalUserInfo.profile.name
     });
     const [formPut, setFormPut] = useState({
@@ -21,6 +23,8 @@ function Profile({userID, userCred}){
         deployedLink: "",
         picture: "",
         gid: userID,
+        backendRepo: "",
+        backendDeploy: "",
         creator: userCred.additionalUserInfo.profile.name
     })
     const [formDelete, setFormDelete] = useState({_id: ""})
@@ -77,6 +81,8 @@ function Profile({userID, userCred}){
             deployedLink: "",
             picture: "",
             gid: userID,
+            backendRepo: "",
+            backendDeploy: "",
             creator:  userCred.additionalUserInfo.profile.name
         })
     }
@@ -129,8 +135,10 @@ function Profile({userID, userCred}){
                         <div className="home-showcase">
                             <div className="container-showcase">
                                 <div>
-                                    <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Link</p></a></p></div>
-                                    <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slink">Repo</p></a></p></div>
+                                    <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Front-End</p></a></p></div>
+                                    <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slink">Frontend Repo</p></a></p></div>
+                                    <div className="home-deployedLink"><p><a href={project.backendDeploy} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Back-End</p></a></p></div>
+                                    <div className="home-repo"><p><a href={project.backendRepo} target="_blank" rel="noreferrer"><p className="side-elements slink">Backend Repo</p></a></p></div>
                                 </div>
                                 <div><img className="project-pic" src={project.picture} alt=""/></div>
                                 <div className="home-comments"><p className="side-elements slink">Comments</p> {project.comments.map((comment)=> {
@@ -141,7 +149,7 @@ function Profile({userID, userCred}){
                             </div>
                             <div className="change-buttons">
                                 <button onClick={() => {
-                                        setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, picture: project.picture})
+                                        setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, backendRepo: project.backendRepo, backendDeploy: project.backendDeploy, picture: project.picture})
                                         handlePutModalState()}} className="button">
                                     Update
                                 </button>
@@ -166,12 +174,20 @@ function Profile({userID, userCred}){
                             <input type="text" className="input-form" onChange={(e) => editForm({ title: e.target.value})}/>
                         </div>
                         <div className="input-box">
-                            <h3 className="input-lbl">Repo</h3>
+                            <h3 className="input-lbl">Front-End Repo</h3>
                             <input type="text" className="input-form" onChange={(e) => editForm({ github: e.target.value})}/>
                         </div>
                         <div className="input-box">
-                            <h3 className="input-lbl">Deployed Link</h3>
+                            <h3 className="input-lbl">Front-End Site</h3>
                             <input type="text" className="input-form" onChange={(e) => editForm({ deployedLink: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Back-End Repo</h3>
+                            <input type="text" className="input-form" onChange={(e) => editForm({ backendRepo: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Back-End Site</h3>
+                            <input type="text" className="input-form" onChange={(e) => editForm({ backendDeploy: e.target.value})}/>
                         </div>
                         <div className="input-box">
                             <h3 className="input-lbl">Picture Link</h3>
@@ -194,12 +210,20 @@ function Profile({userID, userCred}){
                             <input type="text" value={formPut.title} className="input-form" onChange={(e) => editFormTwo({ title: e.target.value})}/>
                         </div>
                         <div className="input-box">
-                            <h3 className="input-lbl">Repo</h3>
+                            <h3 className="input-lbl">Front-End Repo</h3>
                             <input type="text" value={formPut.github} className="input-form" onChange={(e) => editFormTwo({ github: e.target.value})}/>
                         </div>
                         <div className="input-box">
-                            <h3 className="input-lbl">Deployed Link</h3>
+                            <h3 className="input-lbl">Front-End Site</h3>
                             <input type="text" value={formPut.deployedLink} className="input-form" onChange={(e) => editFormTwo({ deployedLink: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Back-End Repo</h3>
+                            <input type="text" value={formPut.backendRepo} className="input-form" onChange={(e) => editFormTwo({ backendRepo: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Back-End Site</h3>
+                            <input type="text" value={formPut.backendDeploy} className="input-form" onChange={(e) => editFormTwo({ backendDeploy: e.target.value})}/>
                         </div>
                         <div className="input-box">
                             <h3 className="input-lbl">Picture Link</h3>
