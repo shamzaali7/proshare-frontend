@@ -15,7 +15,6 @@ function Header({userID, user, authorized, setAuthorized}){
     return (
         <div className="container-header">   
             <div className="bg-gray-200 h-full w-full">
-                {/* Code block starts */}
                 <nav className="bg-white shadow xl:block hidden">
                     <div className="mx-auto container px-6 py-2 xl:py-0">
                         <div className="flex items-center justify-between">
@@ -183,7 +182,6 @@ function Header({userID, user, authorized, setAuthorized}){
                             </div>
                         </div>
                     </div>
-                    {/*Mobile responsive sidebar*/}
                     <div className={show ? "w-full xl:hidden h-full absolute z-40  transform  translate-x-0 " : "   w-full xl:hidden h-full absolute z-40  transform -translate-x-full"}>
                         <div className="bg-gray-800 opacity-50 w-full h-full" onClick={() => setShow(!show)} />
                         <div className="w-64 z-40 fixed overflow-y-auto z-40 top-0 bg-white shadow h-full flex-col justify-between xl:hidden pb-4 transition duration-150 ease-in-out">
@@ -276,7 +274,6 @@ function Header({userID, user, authorized, setAuthorized}){
                         </div>
                     </div>
                 </nav>
-                {/* Code block ends */}
             </div>
         </div>
     )
