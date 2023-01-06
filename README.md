@@ -24,7 +24,7 @@
 -Front-end: JS, HTML, CSS, CSS Tailwind, React, Netlify
 -Back-end: Node.js, Express, Mongoose, MongoDB, Heroku
 
-### MVP
+# MVP
 
 ### Frontend
 - A frontend routing in App.js to:
@@ -86,8 +86,15 @@ Implementing navbar | H | 2hrs | 3hrs
 Total | N/A | 29hrs | 38hrs 
 
 # Additional Libraries
-- Axios was used to assist the import and implement API's from the backend.
+- Axios was used to assist the import and implemention of API's from the backend
+- Css Tailwind was used to implement the navbar
+  - Citation: https://app.tailwinduikit.com/listing/webapp/navigation/horizontal_navigation
+- iframe
+  - Citation: https://codesandbox.io/s/new
 
 # Issues and Resolutions
 #### Error: Access-Control-Allow-Origin-header missing-also blocked by cors 
-#### Resolution: Issue was receiving the api call from frontend due to use params being used but not funtional.
+#### Resolution: Issue was receiving the api call from frontend due to incorrect api call function.
+
+####
+
