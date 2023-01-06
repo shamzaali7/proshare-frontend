@@ -137,8 +137,13 @@ function Profile({userID, userCred}){
                                 <div>
                                     <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Front-End</p></a></p></div>
                                     <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slink">Frontend Repo</p></a></p></div>
-                                    <div className="home-deployedLink"><p><a href={project.backendDeploy} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Back-End</p></a></p></div>
-                                    <div className="home-repo"><p><a href={project.backendRepo} target="_blank" rel="noreferrer"><p className="side-elements slink">Backend Repo</p></a></p></div>
+                                    {project.backendRepo && (
+                                        <div>
+                                        <div className="home-deployedLink"><p><a href={project.backendDeploy} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Back-End</p></a></p></div>
+                                        <div className="home-repo"><p><a href={project.backendRepo} target="_blank" rel="noreferrer"><p className="side-elements slink">Backend Repo</p></a></p></div>
+                                        </div>
+                                    )}
+                                    
                                 </div>
                                 <div><img className="project-pic" src={project.picture} alt=""/></div>
                                 <div className="home-comments"><p className="side-elements slink">Comments</p> {project.comments.map((comment)=> {
