@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, {useState} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import firebase from 'firebase/compat/app';;
 
-function Header({userID, user, authorized, setAuthorized, userCred}){
+function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin}){
     const [show, setShow] = useState(null);
     const [profile, setProfile] = useState(false);
     const navigate = useNavigate();
@@ -10,9 +11,13 @@ function Header({userID, user, authorized, setAuthorized, userCred}){
         e.preventDefault();
         navigate("/");
         await setAuthorized(!authorized)
+        firebase.auth().signOut();
     }
 
-    const hi = "Hi " + userCred.additionalUserInfo.profile.given_name + "!"
+    let hi;
+    if(authorized){
+        hi = "Hi " + userCred.additionalUserInfo.profile.given_name + "!"
+    }
 
     return (
         <div className="container-header">   
@@ -116,28 +121,32 @@ function Header({userID, user, authorized, setAuthorized, userCred}){
                             </div>
                             <div className="flex">
                                 <div className="hidden xl:flex md:mr-6 xl:mr-16">
-                                <Link to={"/accounts/" + userID} className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
-                                <span class="mr-2">
-                                    <img class="icon icon-tabler icon-tabler-grid" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
-                                </span>
-                                Dashboard
-                            </Link>
-                            <Link to="/ide" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
-                                <span class="mr-2">
-                                    <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
-                                </span>
-                                IDE
-                            </Link>
-                            <Link to="/search" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
-                                <span class="mr-2">
-                                    <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg16.svg" alt="products" />
-                                </span>
-                                Search
-                            </Link>
+                                {authorized && (        
+                                    <Link to="/accounts" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <span class="mr-2">
+                                            <img class="icon icon-tabler icon-tabler-grid" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
+                                        </span>
+                                        Dashboard
+                                    </Link>
+                                )}
+                                    <Link to="/ide" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <span class="mr-2">
+                                            <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                                        </span>
+                                        IDE
+                                    </Link>
+                                    <Link to="/search" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <span class="mr-2">
+                                            <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg16.svg" alt="products" />
+                                        </span>
+                                        Search
+                                    </Link>
                                 </div>
+                                {authorized && (
                                 <div className="hidden xl:flex items-center">
                                     <div className="ml-6 relative">
                                         <div className="flex items-center relative" onClick={() => setProfile(!profile)}>
+                                        <div className="hi mx-2">{hi}</div>
                                             {profile && (
                                                 <ul className="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 ">
                                                     <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
@@ -153,17 +162,31 @@ function Header({userID, user, authorized, setAuthorized, userCred}){
                                                 </ul>
                                             )}
                                             <div className="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out">
-                                                <img class="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" /></div>
+                                                {user.profilePicture ? (
+                                                    <img class="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" />
+                                                ) : (
+                                                    <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png"/>
+                                                )}
+                                            </div>
                                             <div className="ml-2 text-gray-600">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-chevron-down cursor-pointer" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" />
                                                     <polyline points="6 9 12 15 18 9" />
                                                 </svg>
                                             </div>
-                                            <div className="hi">{hi}</div>
                                         </div>
                                     </div>
                                 </div>
+                                )}
+                                {!authorized && (
+                                    <div onClick={handleGoogleLogin} class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <div className="box-signin">
+                                        <button>
+                                            Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
+                                        </button> 
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -209,22 +232,24 @@ function Header({userID, user, authorized, setAuthorized, userCred}){
                                             </div>
                                         </div>
                                         <ul className="f-m-m">
-                                            <Link to={"/accounts/" + userID} className="cursor-pointer">
-                                                <li className="text-gray-800 pt-10">
-                                                    <div className="flex items-center">
-                                                        <div className="w-6 h-6 md:w-8 md:h-8 text-indigo-700">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-grid" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                                                <path stroke="none" d="M0 0h24v24H0z" />
-                                                                <rect x={4} y={4} width={6} height={6} rx={1} />
-                                                                <rect x={14} y={4} width={6} height={6} rx={1} />
-                                                                <rect x={4} y={14} width={6} height={6} rx={1} />
-                                                                <rect x={14} y={14} width={6} height={6} rx={1} />
-                                                            </svg>
+                                            {authorized && (
+                                                <Link to="/accounts" className="cursor-pointer">
+                                                    <li className="text-gray-800 pt-10">
+                                                        <div className="flex items-center">
+                                                            <div className="w-6 h-6 md:w-8 md:h-8 text-indigo-700">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-grid" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" />
+                                                                    <rect x={4} y={4} width={6} height={6} rx={1} />
+                                                                    <rect x={14} y={4} width={6} height={6} rx={1} />
+                                                                    <rect x={4} y={14} width={6} height={6} rx={1} />
+                                                                    <rect x={14} y={14} width={6} height={6} rx={1} />
+                                                                </svg>
+                                                            </div>
+                                                            <p className="text-indigo-700 xl:text-base text-base ml-3">Dashboard</p>
                                                         </div>
-                                                        <p className="text-indigo-700 xl:text-base text-base ml-3">Dashboard</p>
-                                                    </div>
-                                                </li>
-                                            </Link>
+                                                    </li>
+                                                </Link>
+                                            )}
                                             <Link to="/ide" className="cursor-pointer">
                                                 <li className="text-gray-800 pt-8">
                                                     <div className="flex items-center justify-between">
@@ -235,43 +260,62 @@ function Header({userID, user, authorized, setAuthorized, userCred}){
                                                                     <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
                                                                 </svg>
                                                             </div>
-                                                            <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">IDE</p>
+                                                            <p className="text-gray-800 xl:text-base md:text-xl text-base ml-3">Test Code</p>
                                                         </div>
                                                     </div>
                                                 </li>
                                             </Link>
                                             <Link to="/search" className="cursor-pointer">
                                                 <li className="text-gray-800 pt-8">
-                                                    <div className="flex items-center">
-                                                    <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg16.svg" alt="products" />
-                                                        <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">Search</p>
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center">
+                                                            <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800 ml-1">
+                                                                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+                                                                    <path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/>
+                                                                </svg>
+                                                            </div>
+                                                            <p className="text-gray-800 xl:text-base md:text-xl text-base ml-3">Search</p>
+                                                        </div>
                                                     </div>
                                                 </li>
                                             </Link>
                                         </ul>
                                     </div>
+                                    {authorized && (
                                     <div className="w-full pt-4">
-                                        <div className="flex justify-center mb-4 w-full">
-                                            <div className="relative w-full">
-                                                <div className="text-gray-500 absolute ml-4 inset-0 m-auto w-4 h-4">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-search" width={16} height={16} viewBox="0 0 24 24" strokeWidth={1} stroke="#A0AEC0" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                        <div className="flex mb-4 w-full justify-center cursor-pointer" onClick={handleLogout}>
+                                            <div className="flex items-center text-right">
+                                            <div className="flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-user" width={30} height={30} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" />
-                                                        <circle cx={10} cy={10} r={7} />
-                                                        <line x1={21} y1={21} x2={15} y2={15} />
+                                                        <circle cx={12} cy={7} r={4} />
+                                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                                                     </svg>
+                                                    <span className="ml-2">Logout</span>
                                                 </div>
-                                                <input className="bg-gray-100 focus:outline-none rounded w-full text-sm text-gray-500  pl-10 py-2" type="text" placeholder="Search" />
                                             </div>
                                         </div>
-                                        <div className="border-t border-gray-300">
-                                            <div className="w-full flex items-center justify-between pt-1">
-                                                <div className="flex items-center">
-                                                    <img alt="profile-pic" src={user.profilePicture} className="w-8 h-8 rounded-md" />
+                                        <div className="border-t border-gray-300 items-center text-right">
+                                            <div className="w-full flex items-center justify-center pt-1">
+                                                <div className="flex items-center text-right">
+                                                    {user.profilePicture ? (
+                                                        <img src={user.profilePicture} alt="" className="w-8 h-8 rounded-md" />
+                                                    ) : (
+                                                        <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png"/>
+                                                    )}
                                                     <p className=" text-gray-800 text-base leading-4 ml-2">{user.name}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    )}
+                                    {!authorized && 
+                                        <div className="box-signin">
+                                        <button className="hover:bg-slate-500 ... text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
+                                            Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
+                                        </button> 
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -283,3 +327,15 @@ function Header({userID, user, authorized, setAuthorized, userCred}){
 }
 
 export default Header;
+
+
+{/* <div className="relative w-full">
+<div className="text-gray-500 absolute ml-4 inset-0 m-auto w-4 h-4">
+<svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-search" width={16} height={16} viewBox="0 0 24 24" strokeWidth={1} stroke="#A0AEC0" fill="none" strokeLinecap="round" strokeLinejoin="round">
+<path stroke="none" d="M0 0h24v24H0z" />
+<circle cx={10} cy={10} r={7} />
+<line x1={21} y1={21} x2={15} y2={15} />
+</svg>
+</div>
+<input className="bg-gray-100 focus:outline-none rounded w-full text-sm text-gray-500  pl-10 py-2" type="text" placeholder="Search" />
+</div> */}
