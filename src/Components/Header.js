@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import { getAuth, signOut } from "firebase/auth";
 
-function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin}){
+function Header({user, authorized, setAuthorized, userCred, handleGoogleLogin}){
     const [show, setShow] = useState(null);
     const [profile, setProfile] = useState(false);
     const navigate = useNavigate();
