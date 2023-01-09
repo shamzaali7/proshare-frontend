@@ -156,11 +156,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                 <ul className="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 ">
                                                     <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                                                         <div onClick={handleLogout} className="flex items-center">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-user" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                                                <path stroke="none" d="M0 0h24v24H0z" />
-                                                                <circle cx={12} cy={7} r={4} />
-                                                                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                                            </svg>
+                                                            <img className="w-8 h-8" src="https://img.icons8.com/sf-ultralight/50/null/exit.png"/>
                                                             <span className="ml-2">Logout</span>
                                                         </div>
                                                     </li>
@@ -265,7 +261,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                                     <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
                                                                 </svg>
                                                             </div>
-                                                            <p className="text-gray-800 xl:text-base md:text-xl text-base ml-3">Code Test</p>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Code Test</p>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -279,7 +275,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                                     <path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/>
                                                                 </svg>
                                                             </div>
-                                                            <p className="text-gray-800 xl:text-base md:text-xl text-base ml-3">Search</p>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Search</p>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -290,12 +286,8 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                     <div className="w-full pt-4">
                                         <div className="flex mb-4 w-full justify-center cursor-pointer" onClick={handleLogout}>
                                             <div className="flex items-center text-right">
-                                            <div className="flex items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-user" width={30} height={30} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" />
-                                                        <circle cx={12} cy={7} r={4} />
-                                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                                    </svg>
+                                                <div className="flex items-center">
+                                                    <img  className="h-8 w-8" src="https://img.icons8.com/external-tal-revivo-shadow-tal-revivo/96/null/external-smartphone-with-logout-option-with-sign-off-arrow-development-shadow-tal-revivo.png"/>
                                                     <span className="ml-2">Logout</span>
                                                 </div>
                                             </div>
