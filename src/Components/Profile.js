@@ -44,9 +44,16 @@ function Profile({userID, userCred, authorized}){
             }).catch(err => console.log(err))
     }
 
+    if(modal || modalTwo || modalDelete){
+        document.body.style.overflow = "hidden";
+    }else{
+        document.body.style.overflow = "auto"
+    }
+
     const handleModalState = () => {
         setModal(!modal)
     }
+    
     const handlePutModalState = () => {
         setModalTwo(!modalTwo)
     }
@@ -112,6 +119,10 @@ function Profile({userID, userCred, authorized}){
         getProjects();
     }
 
+    const handleClose = async (e) => {
+        document.body.style.overflow = "auto";
+    }
+
     if (authorized){
     return(
         <div className="container-home">
@@ -173,7 +184,7 @@ function Profile({userID, userCred, authorized}){
                 <div className="modal">
                 <div onClick={handleModalState} className="overlay"></div>
                 <div className="modal-content">
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} onClose={handleClose}>
                         <div className="title-form">Create</div>
                         <div className="input-box">
                             <h3 className="input-lbl">Title</h3>
@@ -257,8 +268,8 @@ function Profile({userID, userCred, authorized}){
     )}
     else {
         return(
-            <div>
-                Please Sign In!
+            <div className="breach">
+                Please Sign In
             </div>
         )
     }}

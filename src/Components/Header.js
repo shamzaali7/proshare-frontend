@@ -8,6 +8,12 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
     const [profile, setProfile] = useState(false);
     const navigate = useNavigate();
 
+    // if(show == null){
+    //     document.body.start.overflow = "hidden";
+    // }else{
+    //     document.body.start.overflow = "auto";
+    // }
+
     const handleLogout = async (e) => {
         e.preventDefault();
         navigate("/");
@@ -20,9 +26,14 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
           });
     }
 
-    const handleMarginTop = async (e) => {
+    const handleMarginTop = (e) => {
         e.preventDefault();
         setShow(!show)
+        document.body.style.overflow = "hidden";
+    }
+
+    if(show){
+        document.body.style.overflow = "auto";
     }
 
     let hi;
@@ -162,7 +173,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                 <ul className="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 ">
                                                     <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                                                         <div onClick={handleLogout} className="flex items-center">
-                                                            <img className="w-8 h-8" src="https://img.icons8.com/sf-ultralight/50/null/exit.png"/>
+                                                            <img className="w-8 h-8" src="https://img.icons8.com/sf-ultralight/50/null/exit.png" alt="Logout Icon"/>
                                                             <span className="ml-2">Logout</span>
                                                         </div>
                                                     </li>
@@ -172,7 +183,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                 {user.profilePicture ? (
                                                     <img class="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" />
                                                 ) : (
-                                                    <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" className="w-8 h-8"/>
+                                                    <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" className="w-8 h-8" alt="Profile Pic"/>
                                                 )}
                                             </div>
                                             <div className="ml-2 text-gray-600">
@@ -203,9 +214,9 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                         <div className="flex items-center">
                             <div id="menu" className="text-gray-800" onClick={handleMarginTop}>
                                 {show ? (
-                                    ""
+                                    <div className="filler"></div>
                                 ) : (
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu-2" width={24} height={24} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu-2 " width={24} height={24} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <line x1={4} y1={6} x2={20} y2={6} />
                                         <line x1={4} y1={12} x2={20} y2={12} />
@@ -215,7 +226,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                             </div>
                         </div>
                     </div>
-                    <div className={show ? "w-full xl:hidden h-full absolute z-40  transform  translate-x-0 " : "   w-full xl:hidden h-full absolute z-40  transform -translate-x-full"}>
+                    <div className={show ? "w-full xl:hidden h-full absolute z-40  transform  translate-x-0 absolute" : "w-full xl:hidden h-full absolute z-40 transform -translate-x-full"}>
                         <div className="bg-gray-800 opacity-50 w-full h-full" onClick={() => setShow(!show)} />
                         <div className="w-64 z-40 fixed overflow-y-auto z-40 top-0 bg-white shadow h-full flex-col justify-between xl:hidden pb-4 transition duration-150 ease-in-out">
                             <div className="px-6 h-full">
@@ -230,7 +241,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                     </Link>
                                                 </div>
                                                 <div id="cross" className="text-gray-800" onClick={() => setShow(!show)}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-x" width={24} height={24} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-x" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" />
                                                         <line x1={18} y1={6} x2={6} y2={18} />
                                                         <line x1={6} y1={6} x2={18} y2={18} />
@@ -283,43 +294,41 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                             </Link>
                                         </ul>
                                     </div>
-                                    {authorized && (
-                                    <div className="w-full pt-4">
-                                        <div className="flex mb-4 w-full justify-center cursor-pointer" onClick={handleLogout}>
-                                            <div className="flex items-center text-right">
-                                                <div className="flex items-center">
-                                                    <img  className="h-8 w-8" src="https://img.icons8.com/external-tal-revivo-shadow-tal-revivo/96/null/external-smartphone-with-logout-option-with-sign-off-arrow-development-shadow-tal-revivo.png"/>
-                                                    <span className="ml-2">Logout</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="border-t border-gray-300 items-center text-right">
-                                            <div className="w-full flex items-center justify-center pt-1">
+                                    {authorized ? (
+                                        <div className="w-full pt-4">
+                                            <div className="flex mb-4 w-full justify-center cursor-pointer" onClick={handleLogout}>
                                                 <div className="flex items-center text-right">
-                                                    {user.profilePicture ? (
-                                                        <img src={user.profilePicture} alt="" className="w-8 h-8 rounded-md" />
-                                                    ) : (
-                                                        <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" className="h-8 w-8"/>
-                                                    )}
-                                                    <p className=" text-gray-800 text-base leading-4 ml-2">{user.name}</p>
+                                                    <div className="flex items-center">
+                                                        <img  className="h-8 w-8" src="https://img.icons8.com/external-tal-revivo-shadow-tal-revivo/96/null/external-smartphone-with-logout-option-with-sign-off-arrow-development-shadow-tal-revivo.png" alt="Logout Icon"/>
+                                                        <span className="ml-2">Logout</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="border-t border-gray-300 items-center text-right">
+                                                <div className="w-full flex items-center justify-center pt-1">
+                                                    <div className="flex items-center text-right">
+                                                        {user.profilePicture ? (
+                                                            <img src={user.profilePicture} alt="" className="w-8 h-8 rounded-md" />
+                                                        ) : (
+                                                            <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" alt="ProfilePic" className="h-8 w-8"/>
+                                                        )}
+                                                        <p className=" text-gray-800 text-base leading-4 ml-2">{user.name}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    )}
-                                    {!authorized && 
-                                        <div className="box-signin">
-                                        <button className="hover:bg-slate-500 ... text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
+                                    ) : (
+                                        <div className="box-signin hover:bg-slate-200 ... rounded-2xl">
+                                        <button className="text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
                                             Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
                                         </button> 
                                         </div>
-                                    }
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
-                </nav>
-                
+                </nav>  
             </div>
         </div>
     )
@@ -328,7 +337,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
 export default Header;
 
 
-{/* <div className="relative w-full">
+/* <div className="relative w-full">
 <div className="text-gray-500 absolute ml-4 inset-0 m-auto w-4 h-4">
 <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-search" width={16} height={16} viewBox="0 0 24 24" strokeWidth={1} stroke="#A0AEC0" fill="none" strokeLinecap="round" strokeLinejoin="round">
 <path stroke="none" d="M0 0h24v24H0z" />
@@ -337,4 +346,4 @@ export default Header;
 </svg>
 </div>
 <input className="bg-gray-100 focus:outline-none rounded w-full text-sm text-gray-500  pl-10 py-2" type="text" placeholder="Search" />
-</div> */}
+</div> */
