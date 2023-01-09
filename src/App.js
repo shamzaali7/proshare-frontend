@@ -9,7 +9,6 @@ import Profile from './Components/Profile';
 import IDE from './Components/IDE';
 import axios from 'axios';
 import Search from './Components/Search';
-import { multiFactor } from 'firebase/auth';
 
 function App() {
   let [countUser, setCountUser] = useState(0)
@@ -18,6 +17,11 @@ function App() {
     email: "",
     name: "",
     profilePicture: ""
+  })
+  const [googleUser, setGoogleUser] = useState({
+    googleid: "",
+    email: "",
+    name: "",
   })
   const [userID, setUserID] = useState("")
   const [allUsers, setAllUsers] = useState([])
@@ -35,10 +39,10 @@ function App() {
   const authListener = async () => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setUser({
+        setGoogleUser({
           googleid: user.multiFactor.user.providerData[0].uid,
           email: user.multiFactor.user.email,
-          name: user.multiFactor.user.displayName
+          name: user.multiFactor.user.displayName,
         })
       }
     })
@@ -54,8 +58,14 @@ function App() {
           setUserCred(userCredentials);
           getUserByID();
           allUsers.map((currentUser) => {
-            if(user.email == currentUser.email){
+            if(googleUser.email == currentUser.email){
               setCountUser(countUser++);
+              setUser({
+                googleid: currentUser.googleid,
+                email: currentUser.email,
+                name: currentUser.name,
+                profilePicture: currentUser.profilePicture
+              })
             }
           })
           if(countUser == 0){
@@ -65,6 +75,8 @@ function App() {
       }
     )
   };
+
+  console.log(user)
 
   async function makeUser(){
     try{
