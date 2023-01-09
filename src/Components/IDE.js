@@ -3,7 +3,7 @@ import React from 'react'
 function IDE(){
     return(
         <div>
-            <h1 className="explore ide-title">Test Your Code</h1>
+            <h1 className="ide-title">Test Your Code</h1>
             <div className="container-ide">
                 <div className="box"></div>
                 <div className="frame-box">

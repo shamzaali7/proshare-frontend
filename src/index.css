@@ -355,7 +355,7 @@ body.active-modal {
 
 .ide-title{
   text-align: center;
-  margin-top: 10px;
+  padding-top: 10px;
 }
 
 .google-blue{
@@ -403,5 +403,15 @@ body.active-modal {
 @media screen and (max-width: 1280px){
   .explore{
     margin-top: 75px;
+  }
+  .home-projects{
+      /* margin-top: 100px; */
+  }
+  .ide-title{
+    padding-top: 50px
+  }
+  .search-field{
+    margin-top: 0px; 
+    padding-top: 75px;
   }
 }

@@ -14,6 +14,11 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
         firebase.auth().signOut();
     }
 
+    const handleMarginTop = async (e) => {
+        e.preventDefault();
+        setShow(!show)
+    }
+
     let hi;
     if(authorized){
         hi = "Hi " + userCred.additionalUserInfo.profile.given_name + "!"
@@ -165,7 +170,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                 {user.profilePicture ? (
                                                     <img class="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" />
                                                 ) : (
-                                                    <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png"/>
+                                                    <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" className="w-8 h-8"/>
                                                 )}
                                             </div>
                                             <div className="ml-2 text-gray-600">
@@ -192,9 +197,9 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                     </div>
                 </nav>
                 <nav>
-                    <div className="py-4 px-6 w-full flex xl:hidden justify-between items-center bg-white fixed top-0 z-40">
+                    <div className={show ? ("py-4 px-6 w-full flex xl:hidden justify-between items-center bg-white fixed top-0 z-40") : ("py-4 px-6 w-full flex xl:hidden justify-between items-center bg-white fixed top-0 z-40")}>
                         <div className="flex items-center">
-                            <div id="menu" className="text-gray-800" onClick={() => setShow(!show)}>
+                            <div id="menu" className="text-gray-800" onClick={handleMarginTop}>
                                 {show ? (
                                     ""
                                 ) : (
@@ -236,7 +241,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                 <Link to="/accounts" className="cursor-pointer">
                                                     <li className="text-gray-800 pt-10">
                                                         <div className="flex items-center">
-                                                            <div className="w-6 h-6 md:w-8 md:h-8 text-indigo-700">
+                                                            <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-grid" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                                     <path stroke="none" d="M0 0h24v24H0z" />
                                                                     <rect x={4} y={4} width={6} height={6} rx={1} />
@@ -245,14 +250,14 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                                     <rect x={14} y={14} width={6} height={6} rx={1} />
                                                                 </svg>
                                                             </div>
-                                                            <p className="text-indigo-700 xl:text-base text-base ml-3">Dashboard</p>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Dashboard</p>
                                                         </div>
                                                     </li>
                                                 </Link>
                                             )}
                                             <Link to="/ide" className="cursor-pointer">
                                                 <li className="text-gray-800 pt-8">
-                                                    <div className="flex items-center justify-between">
+                                                    <div className="flex items-center">
                                                         <div className="flex items-center">
                                                             <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-puzzle" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -260,14 +265,14 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                                     <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
                                                                 </svg>
                                                             </div>
-                                                            <p className="text-gray-800 xl:text-base md:text-xl text-base ml-3">Test Code</p>
+                                                            <p className="text-gray-800 xl:text-base md:text-xl text-base ml-3">Code Test</p>
                                                         </div>
                                                     </div>
                                                 </li>
                                             </Link>
-                                            <Link to="/search" className="cursor-pointer">
-                                                <li className="text-gray-800 pt-8">
-                                                    <div className="flex items-center justify-between">
+                                            <Link to="/search">
+                                                <li className="text-gray-800 pt-8 cursor-pointer">
+                                                    <div className="flex items-center">
                                                         <div className="flex items-center">
                                                             <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800 ml-1">
                                                                 <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
@@ -301,7 +306,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                     {user.profilePicture ? (
                                                         <img src={user.profilePicture} alt="" className="w-8 h-8 rounded-md" />
                                                     ) : (
-                                                        <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png"/>
+                                                        <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" className="h-8 w-8"/>
                                                     )}
                                                     <p className=" text-gray-800 text-base leading-4 ml-2">{user.name}</p>
                                                 </div>
@@ -321,6 +326,7 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                         </div>
                     </div>
                 </nav>
+                
             </div>
         </div>
     )

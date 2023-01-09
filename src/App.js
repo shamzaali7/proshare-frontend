@@ -71,7 +71,6 @@ function App() {
 
   return (
     <div className="App">
-        <div>
           <Header user={user} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
           <Footer/>
           <main>
@@ -82,7 +81,6 @@ function App() {
               <Route path="/search" element={<Search/>}/>
             </Routes>
           </main>
-        </div>
     </div>
   );
 }
