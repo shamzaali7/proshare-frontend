@@ -8,12 +8,6 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
     const [profile, setProfile] = useState(false);
     const navigate = useNavigate();
 
-    // if(show == null){
-    //     document.body.start.overflow = "hidden";
-    // }else{
-    //     document.body.start.overflow = "auto";
-    // }
-
     const handleLogout = async (e) => {
         e.preventDefault();
         navigate("/");

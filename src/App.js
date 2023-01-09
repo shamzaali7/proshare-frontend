@@ -1,4 +1,4 @@
-import {useState, React} from 'react'
+import {useState, React, useEffect} from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import { Routes, Route} from 'react-router-dom'
@@ -9,8 +9,10 @@ import Profile from './Components/Profile';
 import IDE from './Components/IDE';
 import axios from 'axios';
 import Search from './Components/Search';
+import { multiFactor } from 'firebase/auth';
 
 function App() {
+  let [countUser, setCountUser] = useState(0)
   const [user, setUser] = useState({
     googleid: "",
     email: "",
@@ -18,52 +20,72 @@ function App() {
     profilePicture: ""
   })
   const [userID, setUserID] = useState("")
+  const [allUsers, setAllUsers] = useState([])
+  const [authorized, setAuthorized] = useState(false)
+  const [userCred, setUserCred] = useState({})
   const axiosUsers = {
     method: 'GET',
     url: `https://proshare-backend.herokuapp.com/api/users/${userID}`
   }
-  const [authorized, setAuthorized] = useState(false)
-  const [userCred, setUserCred] = useState({})
   
+  useEffect(() => {
+    authListener();
+  }, [])
+  
+  const authListener = async () => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUser({
+          googleid: user.multiFactor.user.providerData[0].uid,
+          email: user.multiFactor.user.email,
+          name: user.multiFactor.user.displayName
+        })
+      }
+    })
+    await getAllUsers()
+  }
 
   const handleGoogleLogin = () => {
     firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
-      async (userCredentials)=>{
+      async (userCredentials) => {
         if(userCredentials){
           setUserID(userCredentials.additionalUserInfo.profile.id);
           setAuthorized(true);
           setUserCred(userCredentials);
           getUserByID();
-          setUser({
-            googleid: userCredentials.additionalUserInfo.profile.id,
-            email: userCredentials.additionalUserInfo.profile.email,
-            name: userCredentials.additionalUserInfo.profile.name
+          allUsers.map((currentUser) => {
+            if(user.email == currentUser.email){
+              setCountUser(countUser++);
+            }
           })
-          console.log(userCredentials)
+          if(countUser == 0){
+            await makeUser();
+          }
         }
       }
     )
   };
 
-  // async function makeUser(){
-  //   try{
-  //     await axios.post("https://proshare-backend.herokuapp.com/api/users", User)
-  //   }catch(err){
-  //     console.log(err)
-  //   }
-  // }
+  async function makeUser(){
+    try{
+      const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", user)
+    }catch(err){
+      console.log(err)
+    }
+  }
 
-
+  async function getAllUsers(){
+    try{
+      const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users")
+      setAllUsers(allUser.data)
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   async function getUserByID(){
     try{
       await axios.request(axiosUsers)
-      // setUser({
-      //   googleid: res.data[0].googleid,
-      //   email: res.data[0].email,
-      //   name: res.data[0].name,
-      //   profilePicture: res.data[0].profilePicture
-      // })
     }catch(err){
       console.log(err)
     }
@@ -85,3 +107,5 @@ function App() {
   );
 }
 export default App;
+
+
