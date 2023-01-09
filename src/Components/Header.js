@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import firebase from 'firebase/compat/app';;
+import firebase from 'firebase/compat/app';
+import { getAuth, signOut } from "firebase/auth";
 
 function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin}){
     const [show, setShow] = useState(null);
@@ -11,7 +12,12 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
         e.preventDefault();
         navigate("/");
         await setAuthorized(!authorized)
-        firebase.auth().signOut();
+        const auth = getAuth();
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+          }).catch((error) => {
+            // An error happened.
+          });
     }
 
     const handleMarginTop = async (e) => {
@@ -238,13 +244,9 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                     <li className="text-gray-800 pt-10">
                                                         <div className="flex items-center">
                                                             <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-grid" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                                                    <path stroke="none" d="M0 0h24v24H0z" />
-                                                                    <rect x={4} y={4} width={6} height={6} rx={1} />
-                                                                    <rect x={14} y={4} width={6} height={6} rx={1} />
-                                                                    <rect x={4} y={14} width={6} height={6} rx={1} />
-                                                                    <rect x={14} y={14} width={6} height={6} rx={1} />
-                                                                </svg>
+                                                                <span class="mr-2">
+                                                                    <img className="icon icon-tabler icon-tabler-grid w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
+                                                                </span>
                                                             </div>
                                                             <p className="text-gray-800 xl:text-base text-base ml-3">Dashboard</p>
                                                         </div>
@@ -256,10 +258,9 @@ function Header({ user, authorized, setAuthorized, userCred, handleGoogleLogin})
                                                     <div className="flex items-center">
                                                         <div className="flex items-center">
                                                             <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-puzzle" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                                                    <path stroke="none" d="M0 0h24v24H0z" />
-                                                                    <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
-                                                                </svg>
+                                                                <span class="mr-2">
+                                                                    <img class="icon icon-tabler icon-tabler-puzzle w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                                                                </span>
                                                             </div>
                                                             <p className="text-gray-800 xl:text-base text-base ml-3">Code Test</p>
                                                         </div>

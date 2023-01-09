@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useState, React, useEffect} from 'react'
 
-function Profile({userID, userCred}){
+function Profile({userID, userCred, authorized}){
     const [projects, setProjects] = useState([]);
     const [modal, setModal] = useState(false);
     const [modalTwo, setModalTwo] = useState(false);
@@ -112,6 +112,7 @@ function Profile({userID, userCred}){
         getProjects();
     }
 
+    if (authorized){
     return(
         <div className="container-home">
             <div class="container-new-project">
@@ -254,5 +255,12 @@ function Profile({userID, userCred}){
             )}
         </div>
     )}
+    else {
+        return(
+            <div>
+                Please Sign In!
+            </div>
+        )
+    }}
 
 export default Profile;

@@ -76,7 +76,7 @@ function App() {
           <main>
             <Routes>
               <Route path="/" element={<Home/>}/>
-              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred}/>}/>
+              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} authorized={authorized}/>}/>
               <Route path="/ide" element={<IDE/>}/>
               <Route path="/search" element={<Search/>}/>
             </Routes>
