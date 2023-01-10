@@ -13,6 +13,7 @@ import Search from './Components/Search';
 function App() {
   let [countUser, setCountUser] = useState(0)
   const [user, setUser] = useState({
+    _id: "",
     googleid: "",
     email: "",
     name: "",
@@ -48,6 +49,7 @@ function App() {
           email: user.multiFactor.user.email,
           name: user.multiFactor.user.displayName,
         })
+        setUserID(user.multiFactor.user.providerData[0].uid)
       }
     })
     await getAllUsers()
@@ -57,14 +59,14 @@ function App() {
     firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
       async (userCredentials) => {
         if(userCredentials){
-          setUserID(userCredentials.additionalUserInfo.profile.id);
           setAuthorized(true);
+          await getUserByID()
           setUserCred(userCredentials);
-          getUserByID();
           allUsers.map((currentUser) => {
             if(googleUser.email == currentUser.email){
               setCountUser(countUser++);
               setUser({
+                _id: currentUser._id,
                 googleid: currentUser.googleid,
                 email: currentUser.email,
                 name: currentUser.name,
@@ -92,6 +94,7 @@ function App() {
     try{
       const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", person)
       console.log(newUser)
+      setUser(newUser)
     }catch(err){
       console.log(err)
     }
@@ -108,7 +111,7 @@ function App() {
 
   async function getUserByID(){
     try{
-      await axios.request(axiosUsers)
+      const person = await axios.request(axiosUsers)
     }catch(err){
       console.log(err)
     }
@@ -116,7 +119,7 @@ function App() {
 
   return (
     <div className="App">
-          <Header user={user} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
+          <Header user={user} setUser={setUser} getUserByID={getUserByID} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
           <Footer/>
           <main>
             <Routes>
