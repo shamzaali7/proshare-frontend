@@ -16,12 +16,16 @@ function App() {
     googleid: "",
     email: "",
     name: "",
-    profilePicture: ""
+    profilePicture: "",
+    firstName: "",
+    lastName: ""
   })
   const [googleUser, setGoogleUser] = useState({
     googleid: "",
     email: "",
     name: "",
+    firstName: "",
+    lastName: ""
   })
   const [userID, setUserID] = useState("")
   const [allUsers, setAllUsers] = useState([])
@@ -64,23 +68,30 @@ function App() {
                 googleid: currentUser.googleid,
                 email: currentUser.email,
                 name: currentUser.name,
-                profilePicture: currentUser.profilePicture
+                profilePicture: currentUser.profilePicture,
+                firstName: currentUser.firstName,
+                lastName: currentUser.lastName
               })
             }
           })
-          if(countUser == 0){
-            await makeUser();
+          if((countUser == 0)){
+            await makeUser({
+              googleid: userCredentials.additionalUserInfo.profile.id,
+              email: userCredentials.additionalUserInfo.profile.email,
+              name: userCredentials.additionalUserInfo.profile.name,
+              firstName: userCredentials.additionalUserInfo.profile.given_name,
+              lastName: userCredentials.additionalUserInfo.profile.family_name
+            });
           }
         }
       }
     )
   };
 
-  console.log(user)
-
-  async function makeUser(){
+  async function makeUser(person){
     try{
-      const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", user)
+      const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", person)
+      console.log(newUser)
     }catch(err){
       console.log(err)
     }
