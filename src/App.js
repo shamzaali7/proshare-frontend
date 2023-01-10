@@ -32,10 +32,6 @@ function App() {
   const [allUsers, setAllUsers] = useState([])
   const [authorized, setAuthorized] = useState(false)
   const [userCred, setUserCred] = useState({})
-  const axiosUsers = {
-    method: 'GET',
-    url: `https://proshare-backend.herokuapp.com/api/users/${userID}`
-  }
   
   useEffect(() => {
     authListener();
@@ -44,6 +40,7 @@ function App() {
   const authListener = async () => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        getUserByID(user.multiFactor.user.providerData[0].uid);
         setGoogleUser({
           googleid: user.multiFactor.user.providerData[0].uid,
           email: user.multiFactor.user.email,
@@ -109,9 +106,10 @@ function App() {
     }
   }
 
-  async function getUserByID(){
+  async function getUserByID(userid){
     try{
-      const person = await axios.request(axiosUsers)
+      const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`)
+      setUser(person.data[0])
     }catch(err){
       console.log(err)
     }
@@ -119,7 +117,7 @@ function App() {
 
   return (
     <div className="App">
-          <Header user={user} setUser={setUser} getUserByID={getUserByID} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
+          <Header user={user} setUser={setUser} userID={userID} setUserID={setUserID} getUserByID={getUserByID} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
           <Footer/>
           <main>
             <Routes>

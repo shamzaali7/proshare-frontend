@@ -1,15 +1,27 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import { getAuth, signOut } from "firebase/auth";
 import axios from 'axios';
 
-function Header({user, setUser, getUserByID, authorized, setAuthorized, userCred, handleGoogleLogin}){
+function Header({user, setUser, userID, setUserID, getUserByID, authorized, setAuthorized, handleGoogleLogin}){
     const [show, setShow] = useState(null);
     const [profile, setProfile] = useState(false);
     const [profilePic, setProfilePic] = useState({
         profilePicture: ""
     })
+
+    useEffect(() => {
+        authListener();
+      }, [])
+      
+      const authListener = async () => {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            getUserByID(user.multiFactor.user.providerData[0].uid);
+          }
+        })
+      }
 
     const [proPicModal, setProPicModal] = useState(false);
     const navigate = useNavigate();
@@ -37,7 +49,7 @@ function Header({user, setUser, getUserByID, authorized, setAuthorized, userCred
         }
         setProPicModal(!proPicModal);
     }
-
+    console.log(user)
     const handleLogout = async (e) => {
         e.preventDefault();
         navigate("/");
@@ -59,7 +71,7 @@ function Header({user, setUser, getUserByID, authorized, setAuthorized, userCred
     if(show){
         document.body.style.overflow = "auto";
     }
-
+    console.log(user)
     let hi;
     if(authorized){
         hi = "Hi " + user.firstName + "!"
