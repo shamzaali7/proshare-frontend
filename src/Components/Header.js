@@ -2,11 +2,41 @@ import React, {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import { getAuth, signOut } from "firebase/auth";
+import axios from 'axios';
 
-function Header({user, authorized, setAuthorized, userCred, handleGoogleLogin}){
+function Header({user, setUser, getUserByID, authorized, setAuthorized, userCred, handleGoogleLogin}){
     const [show, setShow] = useState(null);
     const [profile, setProfile] = useState(false);
+    const [profilePic, setProfilePic] = useState({
+        profilePicture: ""
+    })
+
+    const [proPicModal, setProPicModal] = useState(false);
     const navigate = useNavigate();
+
+    const handleProfilePictureModal = () => {
+        setProPicModal(!proPicModal);
+    }
+
+    const fileViewer = (e) => {
+        setProfilePic({
+            profilePicture: e.target.value
+        })
+    }
+
+    const fileUploader = async (e) => {
+        e.preventDefault();
+        try{
+            const newProPic = await axios.put("https://proshare-backend.herokuapp.com/api/users/", {
+                _id: user._id,
+                profilePicture: profilePic.profilePicture
+            })
+            setUser({...user, profilePicture: newProPic.data.profilePicture})
+        }catch(err){
+            console.log(err)
+        }
+        setProPicModal(!proPicModal);
+    }
 
     const handleLogout = async (e) => {
         e.preventDefault();
@@ -32,7 +62,7 @@ function Header({user, authorized, setAuthorized, userCred, handleGoogleLogin}){
 
     let hi;
     if(authorized){
-        hi = "Hi " + userCred.additionalUserInfo.profile.given_name + "!"
+        hi = "Hi " + user.firstName + "!"
     }
 
     return (
@@ -153,7 +183,7 @@ function Header({user, authorized, setAuthorized, userCred, handleGoogleLogin}){
                                     </Link>
                                     <Link to="/search" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                                         <span class="mr-2">
-                                            <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg16.svg" alt="products" />
+                                            <img class="icon icon-tabler icon-tabler-puzzle h-6 w-6" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg16.svg" alt="products" />
                                         </span>
                                         Search
                                     </Link>
@@ -169,6 +199,12 @@ function Header({user, authorized, setAuthorized, userCred, handleGoogleLogin}){
                                                         <div onClick={handleLogout} className="flex items-center">
                                                             <img className="w-8 h-8" src="https://img.icons8.com/sf-ultralight/50/null/exit.png" alt="Logout Icon"/>
                                                             <span className="ml-2">Logout</span>
+                                                        </div>
+                                                    </li>
+                                                    <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                                                        <div onClick={handleProfilePictureModal} className="flex items-center">
+                                                            <img className="w-8 h-8" src="https://img.icons8.com/sf-ultralight/50/null/exit.png" alt="Logout Icon"/>
+                                                            <span className="ml-2">Change Picture</span>
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -324,6 +360,21 @@ function Header({user, authorized, setAuthorized, userCred, handleGoogleLogin}){
                     </div>
                 </nav>  
             </div>
+            {proPicModal && (
+                <div className="modal">
+                    <div onClick={handleProfilePictureModal} className="overlay"></div>
+                    <div className="modal-content">
+                        <div className="text-center ml-12 mr-12 hover:decoration-slate-100">
+                            <div className="mb-3">Enter the link address of the picture</div>
+                            <input onChange={fileViewer} className="h-8 w-30 text-center"/>
+                            <button onClick={fileUploader} className="modal-submit h-8 w-30 text-center">Submit Picture</button>
+                        </div>
+                        <div className="mb-1">
+                        <button onClick={handleProfilePictureModal} className="mt-2">Cancel</button>
+                        </div>
+                    </div>             
+                </div>
+            )}
         </div>
     )
 }
