@@ -145,13 +145,13 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                                 </div>
                                             </li>
                                         </ul>
-                                        <svg onclick="MenuHandler(this,true)" aria-haspopup="true" aria-label="Main Menu" xmlns="http://www.w3.org/2000/svg" className="show-m-menu icon icon-tabler icon-tabler-menu" width={28} height={28} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                        <svg aria-haspopup="true" aria-label="Main Menu" xmlns="http://www.w3.org/2000/svg" className="show-m-menu icon icon-tabler icon-tabler-menu" width={28} height={28} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" />
                                             <line x1={4} y1={8} x2={20} y2={8} />
                                             <line x1={4} y1={16} x2={20} y2={16} />
                                         </svg>
                                     </div>
-                                    <div className="hidden close-m-menu text-gray-700" onclick="MenuHandler(this,false)">
+                                    <div className="hidden close-m-menu text-gray-700">
                                         <svg aria-label="Close" xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" />
                                             <line x1={18} y1={6} x2={6} y2={18} />
@@ -186,7 +186,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                         <span className="mr-2">
                                             <img className="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
                                         </span>
-                                        Test
+                                        IDE
                                     </Link>
                                     <Link to="/search" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                                         <span className="mr-2">
@@ -306,11 +306,11 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                                     <div className="flex items-center">
                                                         <div className="flex items-center">
                                                             <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                                                                <span class="mr-2">
-                                                                    <img class="icon icon-tabler icon-tabler-puzzle w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                                                                <span className="mr-2">
+                                                                    <img className="icon icon-tabler icon-tabler-puzzle w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
                                                                 </span>
                                                             </div>
-                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Test</p>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Code Test</p>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -320,7 +320,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                                     <div className="flex items-center">
                                                         <div className="flex items-center">
                                                             <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800 ml-1">
-                                                                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+                                                                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd">
                                                                     <path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/>
                                                                 </svg>
                                                             </div>
@@ -377,7 +377,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                             <button onClick={fileUploader} className="modal-submit h-8 w-30 text-center">Submit Picture</button>
                         </div>
                         <div className="mb-1">
-                            <button onClick={handleProfilePictureModal} className="mt-2">Cancel</button>
+                        <button onClick={handleProfilePictureModal} className="mt-2">Cancel</button>
                         </div>
                     </div>             
                 </div>
