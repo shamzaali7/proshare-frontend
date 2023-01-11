@@ -199,12 +199,16 @@ body.active-modal {
   bottom: 0;
 }
 
-.modal-open .overlay{
+/* .modal-open .overlay{
   width: 100%;
   height: 100%;
-}
+} */
 
 .overlay {
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
   background: rgba(49,49,49,0.8);
 }
 
