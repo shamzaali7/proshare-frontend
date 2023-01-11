@@ -186,7 +186,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                         <span className="mr-2">
                                             <img className="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
                                         </span>
-                                        IDE
+                                        Test
                                     </Link>
                                     <Link to="/search" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                                         <span className="mr-2">
@@ -310,7 +310,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                                                     <img class="icon icon-tabler icon-tabler-puzzle w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
                                                                 </span>
                                                             </div>
-                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Code Test</p>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Test</p>
                                                         </div>
                                                     </div>
                                                 </li>

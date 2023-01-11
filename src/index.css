@@ -165,11 +165,11 @@ a{
   flex: 1;
 }
 
-div .button{
+div .btn-update-project{
   font-size: 16px;
   border-style: outset;
-  border-color: rgba(0,0,0,.2);
-  background-color: lightgrey;
+  border-color: rgba(0,0,0,.4);
+  background-color: rgba(55 65 81);
   color: green;
   border-width: 2px;
   border-radius: 4px;
@@ -178,16 +178,31 @@ div .button{
   margin-right: 4px;
 }
 
-div .button:hover{
-  color: rgba(0, 128, 0, 0.3);
+.btn-update-project:hover{
+  background-color: rgb(55, 65, 81, 0.4);
+  color: rgba(20, 146, 20, 0.854);
 }
 
-.new-project.button{
-  color:rgba(0,0,0,.7)
+.btn-delete-project{
+  font-size: 16px;
+  border-style: outset;
+  border-color: rgba(0,0,0,.4);
+  background-color: rgb(55, 65, 81);
+  color: rgba(0,0,0,.8);
+  border-width: 2px;
+  border-radius: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  color: red;
+  margin-left: 4px;
 }
 
-.new-project.button:hover{
-  color:rgba(0,0,0,.2)
+.btn-delete-project:hover{
+  background-color: rgb(55, 65, 81, 0.4);
+}
+
+.new-project:hover{
+  color: rgba(55 65 81 0.8);
 }
 
 body.active-modal {
@@ -205,6 +220,7 @@ body.active-modal {
   left: 0;
   right: 0;
   bottom: 0;
+  position: fixed;
 }
 
 /* .modal-open .overlay{
@@ -292,24 +308,6 @@ body.active-modal {
   margin-bottom: 16px;
 }
 
-.btn-delete-project{
-  font-size: 16px;
-  border-style: outset;
-  border-color: rgba(0,0,0,.2);
-  background-color: lightgrey;
-  color: rgba(0,0,0,.8);
-  border-width: 2px;
-  border-radius: 4px;
-  padding-left: 4px;
-  padding-right: 4px;
-  color: red;
-  margin-left: 4px;
-}
-
-.btn-delete-project:hover{
-  color: rgb(236, 152, 152);
-}
-
 .delete-modal-question{
   font-size: 20px;
 }
@@ -376,6 +374,7 @@ body.active-modal {
 .ide-title{
   text-align: center;
   padding-top: 10px;
+  font-size: 18px;
 }
 
 .google-blue{
