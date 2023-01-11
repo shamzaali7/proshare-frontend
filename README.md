@@ -93,8 +93,7 @@ Total | N/A | 29hrs | 38hrs
   - Citation: https://codesandbox.io/s/new
 
 # Issues and Resolutions
-#### Error: Access-Control-Allow-Origin-header missing-also blocked by cors 
-#### Resolution: Issue was receiving the api call from frontend due to incorrect api call function.
-
-####
+#### Error: Access-Control-Allow-Origin-header missing-also blocked by cors
+#### Issue was receiving the api call from frontend due to incorrect api call function
+#### Resolution: Changed the put request to match the requirements of the backend API
 
