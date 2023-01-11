@@ -193,7 +193,7 @@ div .btn-update-project{
   border-radius: 4px;
   padding-left: 4px;
   padding-right: 4px;
-  color: red;
+  color: rgba(255, 0, 0, 0.722);
   margin-left: 4px;
 }
 
