@@ -49,17 +49,13 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
         }
         setProPicModal(!proPicModal);
     }
-    console.log(user)
+
     const handleLogout = async (e) => {
         e.preventDefault();
         navigate("/");
         await setAuthorized(!authorized)
         const auth = getAuth();
-        firebase.auth().signOut().then(() => {
-            // Sign-out successful.
-          }).catch((error) => {
-            // An error happened.
-          });
+        firebase.auth().signOut();
     }
 
     const handleMarginTop = (e) => {
@@ -71,7 +67,6 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
     if(show){
         document.body.style.overflow = "auto";
     }
-    console.log(user)
     let hi;
     if(authorized){
         hi = "Hi " + user.firstName + "!"
