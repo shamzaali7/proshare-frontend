@@ -2,7 +2,7 @@ import React from 'react'
 
 function IDE(){
     return(
-        <div>
+        <div className="font-change ">
             <h1 className="ide-title">Test Your Code</h1>
             <div className="container-ide">
                 <div className="box"></div>

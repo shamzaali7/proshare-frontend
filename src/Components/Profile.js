@@ -130,7 +130,7 @@ function Profile({userID, userCred, authorized}){
                 <div></div>
                 <div className="explore">My Projects</div>
                 <div className="explore">
-                    <p><button onClick={handleModalState} className="new-project button">
+                    <p><button onClick={handleModalState} className="new-project">
                         New Project
                     </button>
                     </p>
@@ -164,14 +164,14 @@ function Profile({userID, userCred, authorized}){
                                 </div>
                             </div>
                             <div className="change-buttons">
-                                <button onClick={() => {
+                                <button className="btn-update-project" onClick={() => {
                                         setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, backendRepo: project.backendRepo, backendDeploy: project.backendDeploy, picture: project.picture})
-                                        handlePutModalState()}} className="button">
+                                        handlePutModalState()}}>
                                     Update
                                 </button>
-                                <button onClick={() => {
+                                <button className="btn-delete-project" onClick={() => {
                                         setFormDelete({_id : project._id})
-                                        handleDeleteModalState()}} className="btn-delete-project">
+                                        handleDeleteModalState()}}>
                                     Delete
                                 </button>
                             </div>
