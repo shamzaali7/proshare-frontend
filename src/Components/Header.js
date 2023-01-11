@@ -165,7 +165,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                 <Link to="/">
                                     <div  class="flex items-center">
                                         <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
-                                        <h2 class="hidden text-lg sm:block text-base text-gray-500 font-bold leading-normal px-3">
+                                        <h2 class="hidden change-text-title sm:block text-base text-gray-600 font-bold leading-normal px-3 font-change">
                                             PROSHARE
                                         </h2>
                                     </div>
@@ -190,7 +190,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                     </Link>
                                     <Link to="/search" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                                         <span class="mr-2">
-                                            <img class="icon icon-tabler icon-tabler-puzzle h-6 w-6" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg16.svg" alt="products" />
+                                            <img className="icon icon-tabler icon-tabler-puzzle h-5 w-5" src="https://img.icons8.com/external-tanah-basah-detailed-outline-tanah-basah/96/null/external-search-user-interface-tanah-basah-detailed-outline-tanah-basah.png" alt="products" />
                                         </span>
                                         Search
                                     </Link>
@@ -199,18 +199,18 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                 <div className="hidden xl:flex items-center">
                                     <div className="ml-6 relative">
                                         <div className="flex items-center relative" onClick={() => setProfile(!profile)}>
-                                        <div className="hi mx-2">{hi}</div>
+                                        <div className="hi mx-2 text-gray-700 font-change">{hi}</div>
                                             {profile && (
                                                 <ul className="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 ">
-                                                    <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                                                    <li className="cursor-pointer text-gray-800 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                                                         <div onClick={handleLogout} className="flex items-center">
-                                                            <img className="w-8 h-8" src="https://img.icons8.com/sf-ultralight/50/null/exit.png" alt="Logout Icon"/>
+                                                            <img className="w-6 h-6" src="https://img.icons8.com/windows/96/null/exit.png" alt="Logout Icon"/>
                                                             <span className="ml-2">Logout</span>
                                                         </div>
                                                     </li>
-                                                    <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                                                    <li className="cursor-pointer text-gray-800 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                                                         <div onClick={handleProfilePictureModal} className="flex items-center">
-                                                            <img className="w-8 h-8" src="https://img.icons8.com/sf-ultralight/50/null/exit.png" alt="Logout Icon"/>
+                                                            <img className="w-6 h-6" src="https://img.icons8.com/windows/96/null/edit-user.png" alt="Edit Icon"/>
                                                             <span className="ml-2">Change Picture</span>
                                                         </div>
                                                     </li>
