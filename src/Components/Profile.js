@@ -125,7 +125,7 @@ function Profile({userID, userCred, authorized}){
 
     if (authorized){
     return(
-        <div className="container-home">
+        <div className="container-home font-change">
             <div class="container-new-project">
                 <div></div>
                 <div className="explore">My Projects</div>

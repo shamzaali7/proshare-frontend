@@ -1,13 +1,22 @@
 import axios from 'axios';
 import {useState, React, useEffect} from 'react'
 
-function Home(){
+function Home({user, allUsers}){
     const [projects, setProjects] = useState([])
     const axiosProjects = {
         method: "GET",
         url: 'https://proshare-backend.herokuapp.com/api/projects'
     }
 
+    // const getUser = () => {
+    //     try{
+    //         axios.get(`https://proshare-backend.herokuapp.com/api/users/${projects}`)
+    //     }catch(err){
+
+    //     }
+    // }
+    console.log(allUsers)
+    console.log(projects)
     useEffect(() => {
         getProjects()
       }, []);
@@ -19,15 +28,24 @@ function Home(){
             }).catch(err => console.log(err))
     }
     return(
-        <div className="container-home">
+        <div className="container-home font-change">
             <div className="explore">Explore</div>
                 {projects.map((project) => {
                 return(
                     <div className="home-projects shadow-xl">
                         <div className="container-title">
                             <div></div>
-                            <div className="project-titles-box"><p className="project-titles bg-white">{project.title}</p></div>
-                            <div className="project-creator">by: {project.creator}</div>
+                            <div className="project-titles-box"><p className="project-titles bg-white text-grey-600">{project.title}</p></div>
+                            <div className="project-creator">
+                            <span className="mr-1">by: {project.creator}</span>
+                                {allUsers.map((person) => {return(
+                                    <span>
+                                    {(person.googleid === project.gid) && (
+                                        <img class="rounded-full h-10 w-10 object-cover" src={person.profilePicture} alt="logo" />
+                                    )}
+                                    </span>
+                                )})}
+                            </div>
                         </div>
                         <div className="home-showcase">
                             <div className="container-showcase">

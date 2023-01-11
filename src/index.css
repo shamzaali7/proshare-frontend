@@ -1,6 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Roboto:wght@300&display=swap');
+
+.app{
+  font-family: 'Roboto', sans-serif;
+}
 
 button:focus {
   outline: 1px dotted;
@@ -85,25 +90,28 @@ a{
 .project-titles{
   font-weight: bold;
   font-size: 22px;
-  color: rgba(0,0,0,.6);
-  border-style: double;
-  border-width: 3px;
+  border-style: solid;
+  border-width: 1.5px;
   border-color: rgba(0,0,0,.7);
   border-radius: 4px;
   padding-left: 7px;
   padding-right: 7px;
+  color: rgb(55 65 81);
 }
 
 .project-titles-box{
   margin-bottom: 0;
   margin-top: 0;
-  
+}
+
+.change-text-title{
+  font-size: 22px
 }
 
 .side-elements{
   font-weight: bold;
   font-size: 14px;
-  color: rgba(0,0,0,.6);
+  color: rgb(55 65 81);
   border-style: double;
   border-color: rgba(0,0,0,.5);
   border-width: 3px;
@@ -408,8 +416,8 @@ body.active-modal {
   padding-bottom: 10px;
 }
 
-.home-deployedLink{
-
+.font-change{
+  font-family: 'Roboto', sans-serif;
 }
 
 .breach{
