@@ -59,9 +59,9 @@ function App() {
           setAuthorized(true);
           await getUserByID()
           setUserCred(userCredentials);
+          let count = allUsers.length;
           allUsers.map((currentUser) => {
-            if(googleUser.email == currentUser.email){
-              setCountUser(countUser++);
+            if(googleUser.googleid == currentUser.googleid){
               setUser({
                 _id: currentUser._id,
                 googleid: currentUser.googleid,
@@ -71,17 +71,19 @@ function App() {
                 firstName: currentUser.firstName,
                 lastName: currentUser.lastName
               })
+            }else{
+              count--
+            }
+            if(count == 0){
+              makeUser({
+                googleid: userCredentials.additionalUserInfo.profile.id,
+                email: userCredentials.additionalUserInfo.profile.email,
+                name: userCredentials.additionalUserInfo.profile.name,
+                firstName: userCredentials.additionalUserInfo.profile.given_name,
+                lastName: userCredentials.additionalUserInfo.profile.family_name
+              });
             }
           })
-          if((countUser == 0)){
-            await makeUser({
-              googleid: userCredentials.additionalUserInfo.profile.id,
-              email: userCredentials.additionalUserInfo.profile.email,
-              name: userCredentials.additionalUserInfo.profile.name,
-              firstName: userCredentials.additionalUserInfo.profile.given_name,
-              lastName: userCredentials.additionalUserInfo.profile.family_name
-            });
-          }
         }
       }
     )
@@ -101,6 +103,7 @@ function App() {
     try{
       const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users")
       setAllUsers(allUser.data)
+      setCountUser(allUsers.length)
     }catch(err){
       console.log(err)
     }
