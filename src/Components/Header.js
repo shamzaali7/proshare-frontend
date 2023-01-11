@@ -163,9 +163,9 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                             <div className="flex w-full sm:w-auto items-center sm:items-stretch justify-end sm:justify-start">
                                 <div className="flex items-center">
                                 <Link to="/">
-                                    <div  class="flex items-center">
+                                    <div  className="flex items-center">
                                         <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
-                                        <h2 class="hidden change-text-title sm:block text-base text-gray-600 font-bold leading-normal px-3 font-change">
+                                        <h2 className="hidden change-text-title sm:block text-base text-gray-600 font-bold leading-normal px-3 font-change">
                                             PROSHARE
                                         </h2>
                                     </div>
@@ -176,20 +176,20 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                 <div className="hidden xl:flex md:mr-6 xl:mr-16">
                                 {authorized && (        
                                     <Link to="/accounts" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
-                                        <span class="mr-2">
-                                            <img class="icon icon-tabler icon-tabler-grid" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
+                                        <span className="mr-2">
+                                            <img className="icon icon-tabler icon-tabler-grid" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
                                         </span>
                                         Dashboard
                                     </Link>
                                 )}
-                                    <Link to="/ide" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
-                                        <span class="mr-2">
-                                            <img class="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                                    <Link to="/ide" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <span className="mr-2">
+                                            <img className="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
                                         </span>
                                         IDE
                                     </Link>
-                                    <Link to="/search" class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
-                                        <span class="mr-2">
+                                    <Link to="/search" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <span className="mr-2">
                                             <img className="icon icon-tabler icon-tabler-puzzle h-5 w-5" src="https://img.icons8.com/external-tanah-basah-detailed-outline-tanah-basah/96/null/external-search-user-interface-tanah-basah-detailed-outline-tanah-basah.png" alt="products" />
                                         </span>
                                         Search
@@ -218,7 +218,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                             )}
                                             <div className="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out">
                                                 {user.profilePicture ? (
-                                                    <img class="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" />
+                                                    <img className="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" />
                                                 ) : (
                                                     <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" className="w-8 h-8" alt="Profile Pic"/>
                                                 )}
@@ -234,7 +234,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                 </div>
                                 )}
                                 {!authorized && (
-                                    <div onClick={handleGoogleLogin} class="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                    <div onClick={handleGoogleLogin} className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                                         <div className="box-signin">
                                         <button>
                                             Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
@@ -356,9 +356,9 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                         </div>
                                     ) : (
                                         <div className="box-signin hover:bg-slate-200 ... rounded-2xl">
-                                        <button className="text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
-                                            Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
-                                        </button> 
+                                            <button className="text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
+                                                Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
+                                            </button> 
                                         </div>
                                     )}
                                 </div>
@@ -377,7 +377,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                             <button onClick={fileUploader} className="modal-submit h-8 w-30 text-center">Submit Picture</button>
                         </div>
                         <div className="mb-1">
-                        <button onClick={handleProfilePictureModal} className="mt-2">Cancel</button>
+                            <button onClick={handleProfilePictureModal} className="mt-2">Cancel</button>
                         </div>
                     </div>             
                 </div>

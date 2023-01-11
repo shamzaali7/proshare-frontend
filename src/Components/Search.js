@@ -30,7 +30,7 @@ function Search(){
     }
 
     return(
-        <div className="mt-0">
+        <div className="mt-0 font-change">
             <div>
                 <form>   
                     <label for="default-search" class="pb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
