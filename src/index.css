@@ -92,7 +92,7 @@ a{
   font-size: 22px;
   border-style: solid;
   border-width: 1.5px;
-  border-color: rgba(0,0,0,.7);
+  border-color: rgb(55 65 81);
   border-radius: 4px;
   padding-left: 7px;
   padding-right: 7px;
@@ -112,9 +112,9 @@ a{
   font-weight: bold;
   font-size: 14px;
   color: rgb(55 65 81);
-  border-style: double;
-  border-color: rgba(0,0,0,.5);
-  border-width: 3px;
+  border-style: solid;
+  border-color: rgb(55 65 81);
+  border-width: 1.5px;
   border-radius: 4px;
   margin-left: 100px;
   margin-right: 100px;

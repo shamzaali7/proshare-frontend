@@ -8,15 +8,6 @@ function Home({user, allUsers}){
         url: 'https://proshare-backend.herokuapp.com/api/projects'
     }
 
-    // const getUser = () => {
-    //     try{
-    //         axios.get(`https://proshare-backend.herokuapp.com/api/users/${projects}`)
-    //     }catch(err){
-
-    //     }
-    // }
-    console.log(allUsers)
-    console.log(projects)
     useEffect(() => {
         getProjects()
       }, []);
