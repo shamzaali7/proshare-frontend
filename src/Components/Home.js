@@ -59,11 +59,11 @@ function Home({user, allUsers, dropDown, setDropDown}){
                                         </div>
                                         <div className="container-repo">
                                             <div></div>
-                                        <div className="home-repo"><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements links">Repo</p></a></div>
+                                            <div className="home-repo"><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements links">Repo</p></a></div>
                                             <div></div>
                                         </div>
                                     </div>
-                                    <div className="box-showcase "><img className="project-pic" src={project.picture} alt="N/A"/></div>
+                                    <div className="box-showcase"><img className="project-pic" src={project.picture} alt="N/A"/></div>
                                     <div className="home-comments">
                                         <div className="container-comment-btn">
                                             <div></div>

@@ -112,7 +112,7 @@ a{
   border-color: rgb(55 65 81);
   border-width: 1.5px;
   border-radius: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin-top: 5px;
   text-align: center;
   background-color: white;
@@ -138,7 +138,7 @@ a{
 }
 
 .container-deployed .home-deployed, .container-repo .home-repo, .container-comment-btn .box-comment-btn{
-  flex: 2;
+  flex: 4;
 }
 
 .container-dropdown .comments-display{
@@ -451,11 +451,12 @@ body.active-modal {
 }
 
 .home-projects{
-  background-color: rgb(209 213 219);
   margin-bottom: 50px;
   border-radius: 10px;
   padding-top: 20px;
   padding-bottom: 10px;
+  border-bottom: 1px;
+
 }
 
 .container-spacer{
@@ -470,6 +471,17 @@ body.active-modal {
   flex: 4;
 }
 
+.container-back-link, .container-back-repo{
+  display: flex;
+}
+
+.container-back-link div, .container-back-repo div{
+  flex: 1;
+}
+
+.container-back-link .home-deployedLink, .container-back-repo .home-repo{
+  flex: 4;
+}
 
 .font-change{
   font-family: 'Roboto', sans-serif;
