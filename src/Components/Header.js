@@ -274,7 +274,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                                 <div className="flex items-center">
                                                     <Link to="/">
                                                         <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
-                                                        <p className="text-base md:text-2xl text-gray-800 ml-3">ProShare</p>
+                                                        <p className="font-change text-base md:text-2xl text-gray-800 ml-3">PROSHARE</p>
                                                     </Link>
                                                 </div>
                                                 <div id="cross" className="text-gray-800" onClick={() => setShow(!show)}>

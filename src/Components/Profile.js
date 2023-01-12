@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useState, React, useEffect} from 'react'
 
-function Profile({userID, userCred, authorized}){
+function Profile({userID, userCred, authorized, dropDown, setDropDown}){
     const [projects, setProjects] = useState([]);
     const [modal, setModal] = useState(false);
     const [modalTwo, setModalTwo] = useState(false);
@@ -123,6 +123,10 @@ function Profile({userID, userCred, authorized}){
         document.body.style.overflow = "auto";
     }
 
+    const handleDropDown = () => {
+        setDropDown(!dropDown)
+    }
+
     if (authorized){
     return(
         <div className="container-home font-change">
@@ -138,44 +142,89 @@ function Profile({userID, userCred, authorized}){
             </div>
             {projects && (projects.map((project) => {
                 return(
-                    <div className="home-projects shadow-xl">
-                        <div className="container-title">
-                            <div></div>
-                            <div className="project-titles-box"><p className="project-titles bg-white">{project.title}</p></div>
-                            <div></div>
-                        </div>
-                        <div className="home-showcase">
-                            <div className="container-showcase">
-                                <div>
-                                    <div className="home-deployedLink"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Front-End</p></a></p></div>
-                                    <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slink">Frontend Repo</p></a></p></div>
-                                    {project.backendRepo && (
-                                        <div>
-                                        <div className="home-deployedLink"><p><a href={project.backendDeploy} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Back-End</p></a></p></div>
-                                        <div className="home-repo"><p><a href={project.backendRepo} target="_blank" rel="noreferrer"><p className="side-elements slink">Backend Repo</p></a></p></div>
+                    <div className="container-spacer">
+                        <div></div>
+                        <div className="home-projects shadow-xl">
+                            <div className="container-title">
+                                <div></div>
+                                <div className="project-titles-box"><p className="project-titles bg-white">{project.title}</p></div>
+                                <div></div>
+                            </div>
+                            <div className="home-showcase">
+                                <div className="container-showcase">
+                                    <div>
+                                        <div className="container-deployed">
+                                            <div></div>
+                                            <div className="home-deployed"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Site</p></a></p></div>
+                                            <div></div>
                                         </div>
-                                    )} 
+                                        <div className="container-repo">
+                                            <div></div>
+                                            <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slink">Frontend Repo</p></a></p></div>
+                                            <div></div>
+                                        </div>
+                                        {project.backendRepo && (
+                                            <span>
+                                                <div className="container-back-link">
+                                                    <div></div>
+                                                    <div className="home-deployedLink"><p><a href={project.backendDeploy} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Back</p></a></p></div>
+                                                    <div></div>
+                                                </div>
+                                                <div className="container-back-repo">
+                                                    <div></div>
+                                                    <div className="home-repo"><p><a href={project.backendRepo} target="_blank" rel="noreferrer"><p className="side-elements slink">Backend Repo</p></a></p></div>
+                                                    <div></div>
+                                                </div>
+                                            </span>
+                                        )} 
+                                    </div>
+                                    <div className="box-showcase"><img className="project-pic" src={project.picture} alt=""/></div>
+                                    <div className="home-comments">
+                                        <div className="container-comment-btn">
+                                            <div></div>
+                                            <div className="box-comment-btn">
+                                                <button onClick={() => {setDropDown(!dropDown)}} className="side-elements slink focus:ring-2 focus:outline-none focus:ring-grey-700 font-medium rounded-lg text-sm px-1 py-.5 text-center inline-flex items-center dark:hover:bg-grey-700 dark:focus:ring-grey-800">
+                                                    Comments 
+                                                    <svg className="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7">
+                                                        </path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div></div>
+                                        </div>
+                                        <div className="container-dropdown">
+                                            <div></div>
+                                            {dropDown && (
+                                                <div className="comments-display items-center divide-y divide-gray-100 shadow rounded dark:bg-gray-600 cursor-default">          
+                                                    {project.comments.map((comment)=> {
+                                                        if(comment){
+                                                            return(
+                                                                <span className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-slate-300 text-slate-50 text-xs">{comment}</span> 
+                                                            )
+                                                        }
+                                                    })}
+                                                </div>
+                                            )}
+                                            <div></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div><img className="project-pic" src={project.picture} alt=""/></div>
-                                <div className="home-comments"><p className="side-elements slink">Comments</p> {project.comments.map((comment)=> {
-                                    return(
-                                        <div>{comment}</div>
-                                    )})}
+                                <div className="change-buttons">
+                                    <button className="btn-update-project" onClick={() => {
+                                            setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, backendRepo: project.backendRepo, backendDeploy: project.backendDeploy, picture: project.picture})
+                                            handlePutModalState()}}>
+                                        Update
+                                    </button>
+                                    <button className="btn-delete-project" onClick={() => {
+                                            setFormDelete({_id : project._id})
+                                            handleDeleteModalState()}}>
+                                        Delete
+                                    </button>
                                 </div>
-                            </div>
-                            <div className="change-buttons">
-                                <button className="btn-update-project" onClick={() => {
-                                        setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, backendRepo: project.backendRepo, backendDeploy: project.backendDeploy, picture: project.picture})
-                                        handlePutModalState()}}>
-                                    Update
-                                </button>
-                                <button className="btn-delete-project" onClick={() => {
-                                        setFormDelete({_id : project._id})
-                                        handleDeleteModalState()}}>
-                                    Delete
-                                </button>
                             </div>
                         </div>
+                        <div></div>
                     </div>
                 )
             }))}

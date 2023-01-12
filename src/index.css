@@ -3,10 +3,6 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Roboto:wght@300&display=swap');
 
-.app{
-  font-family: 'Roboto', sans-serif;
-}
-
 button:focus {
   outline: 1px dotted;
   outline: 5px auto -webkit-focus-ring-color;
@@ -116,7 +112,7 @@ a{
   border-color: rgb(55 65 81);
   border-width: 1.5px;
   border-radius: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin-top: 5px;
   text-align: center;
   background-color: white;
@@ -141,8 +137,39 @@ a{
   flex: 1;
 }
 
-div.home-deployed, div.home-repo, div.box-comment-btn{
-  flex: 2;
+.container-deployed .home-deployed, .container-repo .home-repo, .container-comment-btn .box-comment-btn{
+  flex: 4;
+}
+
+.container-dropdown .comments-display{
+  flex: 1;
+}
+
+.project-creator{
+  display: flex;
+}
+
+.project-creator div{
+  flex: 1;
+}
+
+.project-creator .box-project-creator{
+  flex: 3.5;
+}
+
+.add-btn button{
+  margin-top: 2px;
+  padding: 2px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(55 65 81);
+  background-color: white;
+  border-radius: 4px;
+}
+
+.project-creator .add-btn{
+  align-items: left;
+  justify-content: left;
 }
 
 .explore{
@@ -161,16 +188,17 @@ div.home-deployed, div.home-repo, div.box-comment-btn{
   padding-bottom: 4px;
 }
 
-.box-showcase{
-  margin-bottom: 10px
+.container-showcase .box-showcase {
+  flex: 3;
+  margin-bottom: 10px;
 }
 
 .project-pic{
   margin-bottom: 10px;
-  border-color: rgba(0,0,0,.6);
+  border-color: rgb(55 65 81);
   border-width: 2px;
   border-radius: 4px;
-  min-width: 250px;
+  /* min-width: 250px; */
 }
 
 .container-new-project{
@@ -423,13 +451,36 @@ body.active-modal {
 }
 
 .home-projects{
-  background-color: lightgrey;
-  margin-left: 150px;
-  margin-right: 150px;
   margin-bottom: 50px;
   border-radius: 10px;
   padding-top: 20px;
   padding-bottom: 10px;
+  border-bottom: 1px;
+
+}
+
+.container-spacer{
+  display: flex;
+}
+
+.container-spacer div{
+  flex: 1;
+}
+
+.container-spacer .home-projects{
+  flex: 4;
+}
+
+.container-back-link, .container-back-repo{
+  display: flex;
+}
+
+.container-back-link div, .container-back-repo div{
+  flex: 1;
+}
+
+.container-back-link .home-deployedLink, .container-back-repo .home-repo{
+  flex: 4;
 }
 
 .font-change{
@@ -444,8 +495,8 @@ body.active-modal {
   .explore{
     margin-top: 75px;
   }
-  .home-projects{
-      /* margin-top: 100px; */
+  .container-spacer .home-projects{
+    flex: 5;
   }
   .ide-title{
     padding-top: 50px
