@@ -116,16 +116,33 @@ a{
   border-color: rgb(55 65 81);
   border-width: 1.5px;
   border-radius: 4px;
-  margin-left: 100px;
-  margin-right: 100px;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
   margin-top: 5px;
-  text-align: center
+  text-align: center;
+  background-color: white;
+}
+
+.side-elements.links{
+  padding-top: 1.5px;
+  padding-bottom: 1.5px;
+  padding-right: 3px;
+  padding-left: 3px;
 }
 
 .side-elements.slink{
-  margin-bottom: 20px;
-  background-color: white;
+  margin-bottom: 4px;
+}
+
+.container-dropdown, .container-deployed, .container-repo, .container-comment-btn{
+  display:flex;
+}
+
+.container-dropdown div, .container-deployed div, .container-repo div, .container-comment-btn div{
+  flex: 1;
+}
+
+div.home-deployed, div.home-repo, div.box-comment-btn{
+  flex: 2;
 }
 
 .explore{
