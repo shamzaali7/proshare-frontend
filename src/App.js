@@ -11,7 +11,8 @@ import axios from 'axios';
 import Search from './Components/Search';
 
 function App() {
-  let [countUser, setCountUser] = useState(0)
+  let [countUser, setCountUser] = useState(0);
+  const [dropDown, setDropDown] = useState(false)
   const [user, setUser] = useState({
     _id: "",
     googleid: "",
@@ -124,7 +125,7 @@ function App() {
           <Footer/>
           <main>
             <Routes>
-              <Route path="/" element={<Home user={user} allUsers={allUsers}/>}/>
+              <Route path="/" element={<Home user={user} allUsers={allUsers} dropDown={dropDown} setDropDown={setDropDown}/>}/>
               <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} authorized={authorized}/>}/>
               <Route path="/ide" element={<IDE/>}/>
               <Route path="/search" element={<Search/>}/>
