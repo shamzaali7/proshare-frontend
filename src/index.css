@@ -164,7 +164,8 @@ a{
 
 .add-btn button{
   margin-top: 2px;
-  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
   border-style: solid;
   border-width: 1.5px;
   border-color: rgb(71 85 105);

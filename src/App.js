@@ -28,11 +28,16 @@ function App() {
     firstName: "",
     lastName: ""
   })
+  const [projects, setProjects] = useState([])
   const [userID, setUserID] = useState("")
   const [allUsers, setAllUsers] = useState([])
   const [authorized, setAuthorized] = useState(false)
   const [userCred, setUserCred] = useState({})
   const [addModal, setAddModal] = useState(false)
+  const [comment, setComment] = useState([])
+  const [currentProject, setCurrentProject] = useState({})
+  const [filteredProjects, setFilteredProjects] = useState([])
+  const [input, setInput] = useState("")
   
   useEffect(() => {
     authListener();
@@ -93,48 +98,74 @@ function App() {
 
   async function makeUser(person){
     try{
-      const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", person)
-      console.log(newUser)
-      setUser(newUser)
+      const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", person);
+      console.log(newUser);
+      setUser(newUser);
     }catch(err){
-      console.log(err)
+      console.log(err);
     }
   }
 
   async function getAllUsers(){
     try{
-      const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users")
-      setAllUsers(allUser.data)
+      const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users");
+      setAllUsers(allUser.data);
     }catch(err){
-      console.log(err)
+      console.log(err);
     }
   }
 
   async function getUserByID(userid){
     try{
-      const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`)
-      setUser(person.data[0])
+      const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
+      setUser(person.data[0]);
     }catch(err){
-      console.log(err)
+      console.log(err);
+    }
+  }
+
+  async function getAllProjects(){
+    try{
+      const pjts = await axios.get("https://proshare-backend.herokuapp.com/api/projects");
+      setProjects(pjts.data);
+    }catch(err){
+      console.log(err);
     }
   }
 
   const handleAddModal = () => {
-    setAddModal(!addModal)
+    setAddModal(!addModal);
   }
 
   const handleDropDownModal = () => {
-    setDropDown(!dropDown)
+    setDropDown(!dropDown);
   }
 
   const handleAddModalSubmit = async (e) => {
     e.preventDefault();
-    // try{
+    const allComments = currentProject.comments.map((comment) => {return(comment)})
+    allComments.push(comment)
+    const combinedComments = {
+      _id: currentProject._id,
+      comments: allComments
+    }
+    try{
+      await axios.put(`https://proshare-backend.herokuapp.com/api/projects`, combinedComments)
+    }catch(err){
+      console.log(err)
+    }
+    await getAllProjects();
+    setAddModal(!addModal);
+    setCurrentProject([])
+    let filter = projects.filter((project) => 
+            project.title.toLowerCase().includes(input.toLowerCase())
+      )
+    setFilteredProjects(filter)
+    setInput("")
+  }
 
-    // }catch(err){
-    //   console.log(err)
-    // }
-    setAddModal(!addModal)
+  const handleAddModalChange = async (e) => {
+    setComment(e.target.value);
   }
 
   return (
@@ -143,10 +174,10 @@ function App() {
           <Footer/>
           <main>
             <Routes>
-              <Route path="/" element={<Home user={user} allUsers={allUsers} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} handleAddModalSubmit={handleAddModalSubmit}/>}/>
-              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} authorized={authorized} dropDown={dropDown} handleDropDownModal={handleDropDownModal}/>}/>
+              <Route path="/" element={<Home user={user} allUsers={allUsers} projects={projects} setProjects={setProjects} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} setComment={setComment} handleAddModalChange={handleAddModalChange} handleAddModalSubmit={handleAddModalSubmit} setCurrentProject={setCurrentProject}/>}/>
+              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} projects={projects} setProjects={setProjects} authorized={authorized} dropDown={dropDown} handleDropDownModal={handleDropDownModal}/>}/>
               <Route path="/ide" element={<IDE/>}/>
-              <Route path="/search" element={<Search dropDown={dropDown} setDropDown={setDropDown} allUsers={allUsers} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} handleAddModalSubmit={handleAddModalSubmit}/>}/>
+              <Route path="/search" element={<Search allUsers={allUsers} projects={projects} setProjects={setProjects} filteredProjects={filteredProjects} setFilteredProjects={setFilteredProjects} input={input} setInput={setInput} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} setComment={setComment} handleAddModalChange={handleAddModalChange} handleAddModalSubmit={handleAddModalSubmit} setCurrentProject={setCurrentProject}/>}/>
             </Routes>
           </main>
     </div>
