@@ -349,7 +349,7 @@ body.active-modal {
   border-left:  none;
   border-right: none;
   border-width: 2px;
-  border-color: rgba(0,0,0,.7);
+  border-color: rgb(51 65 85);
   margin-left: 75px;
   margin-right: 75px;
   margin-bottom: 6px;

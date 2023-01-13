@@ -145,7 +145,6 @@ function Search({dropDown, setDropDown, allUsers, addModal, setAddModal, handleA
                     <form onSubmit={handleAddModalSubmit}>
                         <div className="title-form">Enter comment below</div>
                         <div className="input-box">
-                            <h3 className="input-lbl"></h3>
                             <input type="text" className="input-form" onChange={(e) => {}}/>
                         </div>
                         <button onClick={handleAddModalSubmit} className="modal-submit">Submit</button>

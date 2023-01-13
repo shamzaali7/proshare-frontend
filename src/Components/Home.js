@@ -105,9 +105,8 @@ function Home({user, allUsers, dropDown, setDropDown, addModal, setAddModal, han
                 <div onClick={handleAddModal} className="overlay"></div>
                 <div className="modal-content">
                     <form onSubmit={handleAddModalSubmit}>
-                        <div className="title-form">Create</div>
+                        <div className="title-form">Enter comment below</div>
                         <div className="input-box">
-                            <h3 className="input-lbl">Title</h3>
                             <input type="text" className="input-form" onChange={(e) => {}}/>
                         </div>
                         <button onClick={handleAddModalSubmit} className="modal-submit">Submit</button>

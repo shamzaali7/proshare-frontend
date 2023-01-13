@@ -1,7 +1,7 @@
 import axios from 'axios';
-import {useState, React, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 
-function Profile({userID, userCred, authorized, dropDown, setDropDown}){
+function Profile({userID, userCred, authorized, dropDown, handleDropDownModal}){
     const [projects, setProjects] = useState([]);
     const [modal, setModal] = useState(false);
     const [modalTwo, setModalTwo] = useState(false);
@@ -29,6 +29,7 @@ function Profile({userID, userCred, authorized, dropDown, setDropDown}){
     })
     const [formDelete, setFormDelete] = useState({_id: ""})
 
+    console.log(dropDown)
     useEffect(() => {
         getProjects()
       }, []);
@@ -123,10 +124,6 @@ function Profile({userID, userCred, authorized, dropDown, setDropDown}){
         document.body.style.overflow = "auto";
     }
 
-    const handleDropDown = () => {
-        setDropDown(!dropDown)
-    }
-
     if (authorized){
     return(
         <div className="container-home font-change">
@@ -183,7 +180,7 @@ function Profile({userID, userCred, authorized, dropDown, setDropDown}){
                                         <div className="container-comment-btn">
                                             <div></div>
                                             <div className="box-comment-btn">
-                                                <button onClick={() => {setDropDown(!dropDown)}} className="side-elements slink focus:ring-2 focus:outline-none focus:ring-grey-700 font-medium rounded-lg text-sm px-1 py-.5 text-center inline-flex items-center dark:hover:bg-grey-700 dark:focus:ring-grey-800">
+                                                <button onClick={handleDropDownModal} className="side-elements slink focus:ring-2 focus:outline-none focus:ring-grey-700 font-medium rounded-lg text-sm px-1 py-.5 text-center inline-flex items-center dark:hover:bg-grey-700 dark:focus:ring-grey-800">
                                                     Comments 
                                                     <svg className="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7">
@@ -197,7 +194,7 @@ function Profile({userID, userCred, authorized, dropDown, setDropDown}){
                                             <div></div>
                                             {dropDown && (
                                                 <div className="comments-display items-center divide-y divide-gray-100 shadow rounded dark:bg-gray-600 cursor-default">          
-                                                    {project.comments.map((comment)=> {
+                                                    {project.comments.map((comment) => {
                                                         if(comment){
                                                             return(
                                                                 <span className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-slate-300 text-slate-50 text-xs">{comment}</span> 

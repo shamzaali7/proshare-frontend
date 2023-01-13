@@ -123,6 +123,10 @@ function App() {
     setAddModal(!addModal)
   }
 
+  const handleDropDownModal = () => {
+    setDropDown(!dropDown)
+  }
+
   const handleAddModalSubmit = async (e) => {
     e.preventDefault();
     // try{
@@ -140,7 +144,7 @@ function App() {
           <main>
             <Routes>
               <Route path="/" element={<Home user={user} allUsers={allUsers} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} handleAddModalSubmit={handleAddModalSubmit}/>}/>
-              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} authorized={authorized} dropDown={dropDown} setDropDown={setDropDown}/>}/>
+              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} authorized={authorized} dropDown={dropDown} handleDropDownModal={handleDropDownModal}/>}/>
               <Route path="/ide" element={<IDE/>}/>
               <Route path="/search" element={<Search dropDown={dropDown} setDropDown={setDropDown} allUsers={allUsers} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} handleAddModalSubmit={handleAddModalSubmit}/>}/>
             </Routes>
