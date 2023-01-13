@@ -91,7 +91,7 @@ function Home({user, allUsers, dropDown, setDropDown, addModal, setAddModal, han
                                             <div></div>
                                         </div>
                                         <div className="add-btn">
-                                            <button onClick={handleAddModal} className="text-sm">Add</button>
+                                            <button onClick={handleAddModal} className="text-sm">+</button>
                                         </div>
                                     </div>
                                 </div>
