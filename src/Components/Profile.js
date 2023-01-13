@@ -262,7 +262,7 @@ function Profile({userID, userCred, authorized, dropDown, setDropDown}){
                     </form>
                     <button onClick={handleModalState} className="close-modal">Exit</button>
                 </div>             
-            </div>
+                </div>
             )}
             {modalTwo && (
                 <div className="modal">
