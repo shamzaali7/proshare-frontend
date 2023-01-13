@@ -84,6 +84,7 @@ a{
 }
 
 .project-titles{
+  text-align: center;
   font-weight: bold;
   font-size: 22px;
   border-style: solid;
@@ -137,8 +138,12 @@ a{
   flex: 1;
 }
 
-.container-deployed .home-deployed, .container-repo .home-repo, .container-comment-btn .box-comment-btn{
+.container-deployed .home-deployed, .container-repo .home-repo{
   flex: 4;
+}
+
+.container-comment-btn .box-comment-btn{
+  flex: 3;
 }
 
 .container-dropdown .comments-display{
@@ -161,8 +166,8 @@ a{
   margin-top: 2px;
   padding: 2px;
   border-style: solid;
-  border-width: 1px;
-  border-color: rgb(55 65 81);
+  border-width: 1.5px;
+  border-color: rgb(71 85 105);
   background-color: white;
   border-radius: 4px;
 }
@@ -198,7 +203,7 @@ a{
   border-color: rgb(55 65 81);
   border-width: 2px;
   border-radius: 4px;
-  /* min-width: 250px; */
+  min-width: 150px;
 }
 
 .container-new-project{
@@ -286,6 +291,7 @@ body.active-modal {
 }
 
 .modal-content {
+  text-align: center;
   position: absolute;
   top: 40%;
   left: 50%;
@@ -343,7 +349,7 @@ body.active-modal {
   border-left:  none;
   border-right: none;
   border-width: 2px;
-  border-color: rgba(0,0,0,.7);
+  border-color: rgb(51 65 85);
   margin-left: 75px;
   margin-right: 75px;
   margin-bottom: 6px;
@@ -378,12 +384,28 @@ body.active-modal {
 
 .search-field{
   margin-top: 50px;
-  margin-left: 400px;
-  margin-right: 400px;
+}
+
+.search-projects, .search-display, .container-add-btn{
+  display: flex;
+}
+
+.search-projects div, .search-display div, .container-add-btn div{
+  flex: 1;
+}
+
+.search-display .home-projects{
+  flex: 5;
 }
 
 .search-button{
   color: #374151;
+}
+
+.add-btn, .box-comment-btn{
+  text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .iframe-style{
@@ -507,5 +529,8 @@ body.active-modal {
   }
   .breach{
     padding-top: 50px;
+  }
+  .container-comment-btn .box-comment-btn{
+    flex: 2;
   }
 }

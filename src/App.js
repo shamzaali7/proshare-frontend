@@ -11,7 +11,6 @@ import axios from 'axios';
 import Search from './Components/Search';
 
 function App() {
-  let [countUser, setCountUser] = useState(0);
   const [dropDown, setDropDown] = useState(true)
   const [user, setUser] = useState({
     _id: "",
@@ -33,9 +32,11 @@ function App() {
   const [allUsers, setAllUsers] = useState([])
   const [authorized, setAuthorized] = useState(false)
   const [userCred, setUserCred] = useState({})
+  const [addModal, setAddModal] = useState(false)
   
   useEffect(() => {
     authListener();
+    getAllUsers()
   }, [])
   
   const authListener = async () => {
@@ -53,7 +54,7 @@ function App() {
     await getAllUsers()
   }
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
       async (userCredentials) => {
         if(userCredentials){
@@ -62,7 +63,7 @@ function App() {
           setUserCred(userCredentials);
           let count = allUsers.length;
           allUsers.map((currentUser) => {
-            if(googleUser.googleid == currentUser.googleid){
+            if(googleUser.googleid === currentUser.googleid){
               setUser({
                 _id: currentUser._id,
                 googleid: currentUser.googleid,
@@ -75,7 +76,7 @@ function App() {
             }else{
               count--
             }
-            if(count == 0){
+            if(count === 0){
               makeUser({
                 googleid: userCredentials.additionalUserInfo.profile.id,
                 email: userCredentials.additionalUserInfo.profile.email,
@@ -104,7 +105,6 @@ function App() {
     try{
       const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users")
       setAllUsers(allUser.data)
-      setCountUser(allUsers.length)
     }catch(err){
       console.log(err)
     }
@@ -119,16 +119,34 @@ function App() {
     }
   }
 
+  const handleAddModal = () => {
+    setAddModal(!addModal)
+  }
+
+  const handleDropDownModal = () => {
+    setDropDown(!dropDown)
+  }
+
+  const handleAddModalSubmit = async (e) => {
+    e.preventDefault();
+    // try{
+
+    // }catch(err){
+    //   console.log(err)
+    // }
+    setAddModal(!addModal)
+  }
+
   return (
     <div className="App">
           <Header user={user} setUser={setUser} userID={userID} setUserID={setUserID} getUserByID={getUserByID} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
           <Footer/>
           <main>
             <Routes>
-              <Route path="/" element={<Home user={user} allUsers={allUsers} dropDown={dropDown} setDropDown={setDropDown}/>}/>
-              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} authorized={authorized} dropDown={dropDown} setDropDown={setDropDown}/>}/>
+              <Route path="/" element={<Home user={user} allUsers={allUsers} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} handleAddModalSubmit={handleAddModalSubmit}/>}/>
+              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} authorized={authorized} dropDown={dropDown} handleDropDownModal={handleDropDownModal}/>}/>
               <Route path="/ide" element={<IDE/>}/>
-              <Route path="/search" element={<Search/>}/>
+              <Route path="/search" element={<Search dropDown={dropDown} setDropDown={setDropDown} allUsers={allUsers} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} handleAddModalSubmit={handleAddModalSubmit}/>}/>
             </Routes>
           </main>
     </div>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useState, React, useEffect} from 'react'
 
-function Home({user, allUsers, dropDown, setDropDown}){
+function Home({user, allUsers, dropDown, setDropDown, addModal, setAddModal, handleAddModal, handleAddModalSubmit}){
     const [projects, setProjects] = useState([])
     const axiosProjects = {
         method: "GET",
@@ -10,6 +10,7 @@ function Home({user, allUsers, dropDown, setDropDown}){
 
     useEffect(() => {
         getProjects()
+        setAddModal(addModal);
       }, []);
 
     function getProjects(){
@@ -18,10 +19,6 @@ function Home({user, allUsers, dropDown, setDropDown}){
                 setProjects(res.data)
             }).catch(err => console.log(err))
     }
-
-    // const handleDropDown = () => {
-    //     setDropDown(!dropDown)
-    // }
 
     return(
         <div className="container-home font-change">
@@ -54,7 +51,7 @@ function Home({user, allUsers, dropDown, setDropDown}){
                                     <div>
                                         <div className="container-deployed">
                                             <div></div>
-                                            <div className="home-deployed"><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements links">Deployed Link</p></a></div>
+                                            <div className="home-deployed"><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements links">Deployed Site</p></a></div>
                                             <div></div>
                                         </div>
                                         <div className="container-repo">
@@ -94,7 +91,7 @@ function Home({user, allUsers, dropDown, setDropDown}){
                                             <div></div>
                                         </div>
                                         <div className="add-btn">
-                                            <button className="text-sm">Add</button>
+                                            <button onClick={handleAddModal} className="text-sm">Add</button>
                                         </div>
                                     </div>
                                 </div>
@@ -103,6 +100,21 @@ function Home({user, allUsers, dropDown, setDropDown}){
                         <div></div>
                     </div>
                 )})}
+                {addModal && (
+                <div className="modal">
+                <div onClick={handleAddModal} className="overlay"></div>
+                <div className="modal-content">
+                    <form onSubmit={handleAddModalSubmit}>
+                        <div className="title-form">Enter comment below</div>
+                        <div className="input-box">
+                            <input type="text" className="input-form" onChange={(e) => {}}/>
+                        </div>
+                        <button onClick={handleAddModalSubmit} className="modal-submit">Submit</button>
+                    </form>
+                    <button onClick={handleAddModal} className="close-modal">Exit</button>
+                </div>             
+                </div>
+                )}
         </div>
     )
 }
