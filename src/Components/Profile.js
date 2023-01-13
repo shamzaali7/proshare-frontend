@@ -1,8 +1,7 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react'
 
-function Profile({userID, userCred, authorized, dropDown, handleDropDownModal}){
-    const [projects, setProjects] = useState([]);
+function Profile({userID, userCred, authorized, projects, setProjects, dropDown, handleDropDownModal}){
     const [modal, setModal] = useState(false);
     const [modalTwo, setModalTwo] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);

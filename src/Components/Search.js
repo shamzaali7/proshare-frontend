@@ -1,10 +1,7 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react'
 
-function Search({dropDown, setDropDown, allUsers, addModal, setAddModal, handleAddModal, handleAddModalSubmit}){
-    const [projects, setProjects] = useState([])
-    const [input, setInput] = useState("")
-    const [filteredProjects, setFilteredProjects] = useState([])
+function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModal, setAddModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject, filteredProjects, setFilteredProjects, input, setInput}){
 
     useEffect(() => {
         getData();
@@ -127,7 +124,10 @@ function Search({dropDown, setDropDown, allUsers, addModal, setAddModal, handleA
                                         <div className="container-add-btn">
                                             <div></div>
                                             <div className="add-btn">
-                                                <button onClick={handleAddModal} className="text-sm">+</button>
+                                            <button onClick={(e) => {
+                                                handleAddModal()
+                                                setCurrentProject({_id: project._id, comments: project.comments})
+                                            }} className="text-sm">+</button>
                                             </div>
                                             <div></div>
                                         </div>
@@ -145,7 +145,7 @@ function Search({dropDown, setDropDown, allUsers, addModal, setAddModal, handleA
                     <form onSubmit={handleAddModalSubmit}>
                         <div className="title-form">Enter comment below</div>
                         <div className="input-box">
-                            <input type="text" className="input-form" onChange={(e) => {}}/>
+                            <input type="text" className="input-form" onChange={(e) => setComment(e.target.value)}/>
                         </div>
                         <button onClick={handleAddModalSubmit} className="modal-submit">Submit</button>
                     </form>

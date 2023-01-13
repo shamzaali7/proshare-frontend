@@ -1,8 +1,7 @@
 import axios from 'axios';
 import {useState, React, useEffect} from 'react'
 
-function Home({user, allUsers, dropDown, setDropDown, addModal, setAddModal, handleAddModal, handleAddModalSubmit}){
-    const [projects, setProjects] = useState([])
+function Home({projects, setProjects, allUsers, dropDown, setDropDown, addModal, setAddModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject}){
     const axiosProjects = {
         method: "GET",
         url: 'https://proshare-backend.herokuapp.com/api/projects'
@@ -91,7 +90,10 @@ function Home({user, allUsers, dropDown, setDropDown, addModal, setAddModal, han
                                             <div></div>
                                         </div>
                                         <div className="add-btn">
-                                            <button onClick={handleAddModal} className="text-sm">+</button>
+                                            <button onClick={(e) => {
+                                                handleAddModal()
+                                                setCurrentProject({_id: project._id, comments: project.comments})
+                                            }} className="text-sm">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -101,19 +103,19 @@ function Home({user, allUsers, dropDown, setDropDown, addModal, setAddModal, han
                     </div>
                 )})}
                 {addModal && (
-                <div className="modal">
-                <div onClick={handleAddModal} className="overlay"></div>
-                <div className="modal-content">
-                    <form onSubmit={handleAddModalSubmit}>
-                        <div className="title-form">Enter comment below</div>
-                        <div className="input-box">
-                            <input type="text" className="input-form" onChange={(e) => {}}/>
-                        </div>
-                        <button onClick={handleAddModalSubmit} className="modal-submit">Submit</button>
-                    </form>
-                    <button onClick={handleAddModal} className="close-modal">Exit</button>
-                </div>             
-                </div>
+                    <div className="modal">
+                        <div onClick={handleAddModal} className="overlay"></div>
+                        <div className="modal-content">
+                            <form onSubmit={handleAddModalSubmit}>
+                                <div className="title-form">Enter comment below</div>
+                                <div className="input-box">
+                                    <input type="text" className="input-form" onChange={(e) => setComment(e.target.value)}/>
+                                </div>
+                                <button onClick={handleAddModalSubmit} className="modal-submit">Submit</button>
+                            </form>
+                            <button onClick={handleAddModal} className="close-modal">Exit</button>
+                        </div>             
+                    </div>
                 )}
         </div>
     )
