@@ -67,30 +67,32 @@ function App() {
           await getUserByID()
           setUserCred(userCredentials);
           let count = allUsers.length;
-          allUsers.map((currentUser) => {
-            if(googleUser.googleid === currentUser.googleid){
-              setUser({
-                _id: currentUser._id,
-                googleid: currentUser.googleid,
-                email: currentUser.email,
-                name: currentUser.name,
-                profilePicture: currentUser.profilePicture,
-                firstName: currentUser.firstName,
-                lastName: currentUser.lastName
-              })
-            }else{
-              count--
-            }
-            if(count === 0){
-              makeUser({
-                googleid: userCredentials.additionalUserInfo.profile.id,
-                email: userCredentials.additionalUserInfo.profile.email,
-                name: userCredentials.additionalUserInfo.profile.name,
-                firstName: userCredentials.additionalUserInfo.profile.given_name,
-                lastName: userCredentials.additionalUserInfo.profile.family_name
-              });
-            }
-          })
+          if(googleUser.googleid && allUsers){
+            allUsers.map((currentUser) => {
+              if(googleUser.googleid === currentUser.googleid){
+                setUser({
+                  _id: currentUser._id,
+                  googleid: currentUser.googleid,
+                  email: currentUser.email,
+                  name: currentUser.name,
+                  profilePicture: currentUser.profilePicture,
+                  firstName: currentUser.firstName,
+                  lastName: currentUser.lastName
+                })
+              }else{
+                count--
+              }
+              if(count === 0){
+                makeUser({
+                  googleid: userCredentials.additionalUserInfo.profile.id,
+                  email: userCredentials.additionalUserInfo.profile.email,
+                  name: userCredentials.additionalUserInfo.profile.name,
+                  firstName: userCredentials.additionalUserInfo.profile.given_name,
+                  lastName: userCredentials.additionalUserInfo.profile.family_name
+                });
+              }
+            })
+          }
         }
       }
     )
