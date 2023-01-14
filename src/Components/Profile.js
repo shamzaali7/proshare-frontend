@@ -28,7 +28,6 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
     })
     const [formDelete, setFormDelete] = useState({_id: ""})
 
-    console.log(dropDown)
     useEffect(() => {
         getProjects()
       }, []);

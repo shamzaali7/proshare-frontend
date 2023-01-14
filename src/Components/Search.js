@@ -5,7 +5,6 @@ function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModa
 
     useEffect(() => {
         getData();
-        setAddModal(addModal);
     }, [])
 
     async function getData(){

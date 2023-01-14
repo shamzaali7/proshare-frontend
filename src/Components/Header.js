@@ -292,7 +292,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
                                                     <li className="text-gray-800 pt-10">
                                                         <div className="flex items-center">
                                                             <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                                                                <span class="mr-2">
+                                                                <span className="mr-2">
                                                                     <img className="icon icon-tabler icon-tabler-grid w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
                                                                 </span>
                                                             </div>

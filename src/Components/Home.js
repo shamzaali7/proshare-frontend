@@ -9,7 +9,6 @@ function Home({projects, setProjects, allUsers, dropDown, setDropDown, addModal,
 
     useEffect(() => {
         getProjects()
-        setAddModal(addModal);
       }, []);
 
     function getProjects(){
