@@ -41,13 +41,13 @@ function App() {
   
   useEffect(() => {
     authListener();
-    getAllUsers();
   }, [])
   
   const authListener = async () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         await getUserByID(user.multiFactor.user.providerData[0].uid);
+        await getAllUsers()
         setGoogleUser({
           googleid: user.multiFactor.user.providerData[0].uid,
           email: user.multiFactor.user.email,
@@ -56,7 +56,6 @@ function App() {
         setUserID(user.multiFactor.user.providerData[0].uid)
       }
     })
-    await getAllUsers()
   }
 
   const handleGoogleLogin = async () => {
