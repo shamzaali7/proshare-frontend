@@ -34,20 +34,17 @@ function App() {
   const [googleUser, setGoogleUser] = useState({
     googleid: "",
     email: "",
-    name: "",
-    firstName: "",
-    lastName: ""
+    name: ""
   })
   
   useEffect(() => {
     authListener();
+    getAllUsers();
   }, [])
   
   const authListener = async () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        await getUserByID(user.multiFactor.user.providerData[0].uid);
-        await getAllUsers()
         setGoogleUser({
           googleid: user.multiFactor.user.providerData[0].uid,
           email: user.multiFactor.user.email,
@@ -56,18 +53,20 @@ function App() {
         setUserID(user.multiFactor.user.providerData[0].uid)
       }
     })
+    await getAllUsers()
   }
 
   const handleGoogleLogin = async () => {
+    console.log(allUsers)
     firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
       async (userCredentials) => {
         if(userCredentials){
           setAuthorized(true);
-          await getUserByID()
           setUserCred(userCredentials);
           let count = allUsers.length;
+          console.log(allUsers)
           if(googleUser.googleid && allUsers){
-            allUsers.map((currentUser) => {
+            allUsers.map(async (currentUser) => {
               if(googleUser.googleid === currentUser.googleid){
                 setUser({
                   _id: currentUser._id,
@@ -82,7 +81,7 @@ function App() {
                 count--
               }
               if(count === 0){
-                makeUser({
+                await makeUser({
                   googleid: userCredentials.additionalUserInfo.profile.id,
                   email: userCredentials.additionalUserInfo.profile.email,
                   name: userCredentials.additionalUserInfo.profile.name,
@@ -118,6 +117,7 @@ function App() {
   async function getUserByID(userid){
     try{
       const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
+      console.log(person.data[0])
       setUser(person.data[0]);
     }catch(err){
       console.log(err);

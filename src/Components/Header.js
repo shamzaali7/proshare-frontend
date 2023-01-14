@@ -16,9 +16,9 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
       }, [])
       
       const authListener = async () => {
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged(async (user) => {
           if (user) {
-            getUserByID(user.multiFactor.user.providerData[0].uid);
+            await getUserByID(user.multiFactor.user.providerData[0].uid);
           }
         })
       }
