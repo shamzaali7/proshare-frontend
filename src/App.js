@@ -39,7 +39,10 @@ function App() {
   
   useEffect(() => {
     authListener();
-    getAllUsers();
+    (async () => {
+        const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users");
+        setAllUsers(allUser.data)
+    })();
   }, [])
   
   const authListener = async () => {
@@ -53,44 +56,40 @@ function App() {
         setUserID(user.multiFactor.user.providerData[0].uid)
       }
     })
-    await getAllUsers()
   }
 
   const handleGoogleLogin = async () => {
-    console.log(allUsers)
     firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
       async (userCredentials) => {
-        if(userCredentials){
+        if(userCredentials, allUsers){
           setAuthorized(true);
           setUserCred(userCredentials);
           let count = allUsers.length;
-          console.log(allUsers)
-          if(googleUser.googleid && allUsers){
-            allUsers.map(async (currentUser) => {
-              if(googleUser.googleid === currentUser.googleid){
-                setUser({
-                  _id: currentUser._id,
-                  googleid: currentUser.googleid,
-                  email: currentUser.email,
-                  name: currentUser.name,
-                  profilePicture: currentUser.profilePicture,
-                  firstName: currentUser.firstName,
-                  lastName: currentUser.lastName
-                })
-              }else{
-                count--
-              }
-              if(count === 0){
-                await makeUser({
-                  googleid: userCredentials.additionalUserInfo.profile.id,
-                  email: userCredentials.additionalUserInfo.profile.email,
-                  name: userCredentials.additionalUserInfo.profile.name,
-                  firstName: userCredentials.additionalUserInfo.profile.given_name,
-                  lastName: userCredentials.additionalUserInfo.profile.family_name
-                });
-              }
-            })
-          }
+          allUsers.map(async (currentUser) => {
+            if(googleUser.googleid === currentUser.googleid){
+              setUser({
+                _id: currentUser._id,
+                googleid: currentUser.googleid,
+                email: currentUser.email,
+                name: currentUser.name,
+                profilePicture: currentUser.profilePicture,
+                firstName: currentUser.firstName,
+                lastName: currentUser.lastName
+              })
+            }else{
+              count--
+            }
+            if(count === 0){
+              await makeUser({
+                googleid: userCredentials.additionalUserInfo.profile.id,
+                email: userCredentials.additionalUserInfo.profile.email,
+                name: userCredentials.additionalUserInfo.profile.name,
+                firstName: userCredentials.additionalUserInfo.profile.given_name,
+                lastName: userCredentials.additionalUserInfo.profile.family_name
+              });
+              await getAllUsers()
+            }
+          })
         }
       }
     )
@@ -99,7 +98,7 @@ function App() {
   async function makeUser(person){
     try{
       const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", person);
-      setUser(newUser);
+      setUser(newUser.data);
     }catch(err){
       console.log(err);
     }
@@ -108,7 +107,7 @@ function App() {
   async function getAllUsers(){
     try{
       const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users");
-      setAllUsers(allUser.data);
+      setAllUsers(allUser.data)
     }catch(err){
       console.log(err);
     }
@@ -117,7 +116,6 @@ function App() {
   async function getUserByID(userid){
     try{
       const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
-      console.log(person.data[0])
       setUser(person.data[0]);
     }catch(err){
       console.log(err);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useState, React, useEffect} from 'react'
 
-function Home({projects, setProjects, allUsers, dropDown, setDropDown, addModal, setAddModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject}){
+function Home({projects, setProjects, allUsers, dropDown, setDropDown, addModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject}){
     const axiosProjects = {
         method: "GET",
         url: 'https://proshare-backend.herokuapp.com/api/projects'
