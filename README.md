@@ -14,9 +14,9 @@
 
 [Mobile Dashboard](https://user-images.githubusercontent.com/115019127/212469113-bb156155-3c27-43d6-a442-31203ac63d61.PNG)
 
-[Mobile IDE](https://user-images.githubusercontent.com/115019127/212469117-630f77f6-fa20-4b46-a50a-cb206b27f2f7.PNG)
+[Mobile New-Project](https://user-images.githubusercontent.com/115019127/212469117-630f77f6-fa20-4b46-a50a-cb206b27f2f7.PNG)
 
-[Mobile Search](https://user-images.githubusercontent.com/115019127/212469123-9fc74820-c78f-4bb5-a63a-90ffd64b61af.PNG)
+[Mobile Update](https://user-images.githubusercontent.com/115019127/212469123-9fc74820-c78f-4bb5-a63a-90ffd64b61af.PNG)
 
 
 
