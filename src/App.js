@@ -11,7 +11,17 @@ import axios from 'axios';
 import Search from './Components/Search';
 
 function App() {
+  const [userID, setUserID] = useState("")
+  const [allUsers, setAllUsers] = useState([])
+  const [authorized, setAuthorized] = useState(false)
+  const [userCred, setUserCred] = useState({})
   const [dropDown, setDropDown] = useState(true)
+  const [projects, setProjects] = useState([])
+  const [currentProject, setCurrentProject] = useState({})
+  const [filteredProjects, setFilteredProjects] = useState([])
+  const [addModal, setAddModal] = useState(false)
+  const [comment, setComment] = useState([])
+  const [input, setInput] = useState("")
   const [user, setUser] = useState({
     _id: "",
     googleid: "",
@@ -28,26 +38,16 @@ function App() {
     firstName: "",
     lastName: ""
   })
-  const [projects, setProjects] = useState([])
-  const [userID, setUserID] = useState("")
-  const [allUsers, setAllUsers] = useState([])
-  const [authorized, setAuthorized] = useState(false)
-  const [userCred, setUserCred] = useState({})
-  const [addModal, setAddModal] = useState(false)
-  const [comment, setComment] = useState([])
-  const [currentProject, setCurrentProject] = useState({})
-  const [filteredProjects, setFilteredProjects] = useState([])
-  const [input, setInput] = useState("")
   
   useEffect(() => {
     authListener();
-    getAllUsers()
+    getAllUsers();
   }, [])
   
   const authListener = async () => {
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        getUserByID(user.multiFactor.user.providerData[0].uid);
+        await getUserByID(user.multiFactor.user.providerData[0].uid);
         setGoogleUser({
           googleid: user.multiFactor.user.providerData[0].uid,
           email: user.multiFactor.user.email,
@@ -99,7 +99,6 @@ function App() {
   async function makeUser(person){
     try{
       const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", person);
-      console.log(newUser);
       setUser(newUser);
     }catch(err){
       console.log(err);
