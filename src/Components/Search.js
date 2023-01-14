@@ -1,7 +1,7 @@
 import axios from 'axios';
-import React, {useEffect, useState} from 'react'
+import React, { useEffect } from 'react'
 
-function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModal, setAddModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject, filteredProjects, setFilteredProjects, input, setInput}){
+function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject, filteredProjects, setFilteredProjects, input, setInput}){
 
     useEffect(() => {
         getData();
@@ -25,8 +25,6 @@ function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModa
         )
         setFilteredProjects(filter)
     }
-
-
 
     return(
         <div className="mt-0 font-change">

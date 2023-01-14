@@ -4,7 +4,7 @@ import firebase from 'firebase/compat/app';
 import { getAuth, signOut } from "firebase/auth";
 import axios from 'axios';
 
-function Header({user, setUser, userID, setUserID, getUserByID, authorized, setAuthorized, handleGoogleLogin}){
+function Header({user, setUser, getUserByID, authorized, setAuthorized, handleGoogleLogin}){
     const [show, setShow] = useState(null);
     const [profile, setProfile] = useState(false);
     const [profilePic, setProfilePic] = useState({
@@ -17,9 +17,13 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
       
       const authListener = async () => {
         firebase.auth().onAuthStateChanged(async (user) => {
-          if (user) {
-            await getUserByID(user.multiFactor.user.providerData[0].uid);
-          }
+            (async () => {
+                const userid = user.multiFactor.user.providerData[0].uid;
+                const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
+                console.log(person, "perosn")
+                console.log(user, "user")
+                setUser(person.data[0]);
+            })();
         })
       }
 
@@ -68,7 +72,7 @@ function Header({user, setUser, userID, setUserID, getUserByID, authorized, setA
         document.body.style.overflow = "auto";
     }
     let hi;
-    if(authorized){
+    if(authorized, user){
         hi = "Hi " + user.firstName + "!"
     }
 
