@@ -1,5 +1,5 @@
 # Proshare
-- This app is a social media platform for developers to share their projects on an explore page. It has a user model and project model that allows users to signin with a google account and add their projects. It contains a personal page for users to see all of their projects. It allows programmers to explore and see their friends or acquaintances projects, and the links associated with them.
+- This app is a social media platform for developers to share their projects. It has a user model and project model that allows users to signin with a google account and add their projects. It contains a personal page for users to see all of their projects. It allows programmers to explore and see their friends or acquaintances projects, and the links associated with them.
 
 # Site Map
 <img width="1440" alt="Screen Shot 2023-01-14 at 5 28 41 AM" src="https://user-images.githubusercontent.com/115019127/212469090-4242c646-6c6b-40bb-a55d-a1023233d5d9.png">
