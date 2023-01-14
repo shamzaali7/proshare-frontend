@@ -7,11 +7,16 @@
 <img width="1440" alt="Screen Shot 2023-01-14 at 6 19 05 AM" src="https://user-images.githubusercontent.com/115019127/212469441-728f8d78-c4de-4edc-b37b-45c04eaad56d.png">
 <img width="1440" alt="Screen Shot 2023-01-14 at 5 30 17 AM" src="https://user-images.githubusercontent.com/115019127/212469104-da8d542f-f2ab-494e-9cb1-418b599ea6de.png">
 <img width="1440" alt="Screen Shot 2023-01-14 at 5 31 21 AM" src="https://user-images.githubusercontent.com/115019127/212469106-63a2905a-d243-4d3b-a2d1-69e96fe849ed.png">
-[IMG_1252](https://user-images.githubusercontent.com/115019127/212469224-c350464d-db6b-41d1-9f98-b7b35596a497.PNG)
-[IMG_1253](https://user-images.githubusercontent.com/115019127/212469297-ed60d0a8-b158-4fad-b2f8-e67e26d8336e.PNG)
-[IMG_1247](https://user-images.githubusercontent.com/115019127/212469113-bb156155-3c27-43d6-a442-31203ac63d61.PNG)
-[IMG_1248](https://user-images.githubusercontent.com/115019127/212469117-630f77f6-fa20-4b46-a50a-cb206b27f2f7.PNG)
-[IMG_1249](https://user-images.githubusercontent.com/115019127/212469123-9fc74820-c78f-4bb5-a63a-90ffd64b61af.PNG)
+
+[Mobile Nav](https://user-images.githubusercontent.com/115019127/212469224-c350464d-db6b-41d1-9f98-b7b35596a497.PNG)
+
+[Mobile Home Page](https://user-images.githubusercontent.com/115019127/212469297-ed60d0a8-b158-4fad-b2f8-e67e26d8336e.PNG)
+
+[Mobile Dashboard](https://user-images.githubusercontent.com/115019127/212469113-bb156155-3c27-43d6-a442-31203ac63d61.PNG)
+
+[Mobile IDE](https://user-images.githubusercontent.com/115019127/212469117-630f77f6-fa20-4b46-a50a-cb206b27f2f7.PNG)
+
+[Mobile Search](https://user-images.githubusercontent.com/115019127/212469123-9fc74820-c78f-4bb5-a63a-90ffd64b61af.PNG)
 
 
 
