@@ -228,7 +228,6 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
                 <div onClick={handleModalState} className="overlay"></div>
                 <div className="modal-content">
                     <form onSubmit={handleSubmit} onClose={handleClose}>
-                        <div className="title-form">Create</div>
                         <div className="input-box">
                             <h3 className="input-lbl">Title</h3>
                             <input type="text" className="input-form" onChange={(e) => editForm({ title: e.target.value})}/>
@@ -253,7 +252,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
                             <h3 className="input-lbl">Picture Link</h3>
                             <input type="text" className="input-form" onChange={(e) => editForm({ picture: e.target.value})}/>
                         </div>
-                        <button onClick={handleSubmit} className="modal-submit">Submit</button>
+                        <button onClick={handleSubmit} className="modal-submit">Post</button>
                     </form>
                     <button onClick={handleModalState} className="close-modal">Exit</button>
                 </div>             
