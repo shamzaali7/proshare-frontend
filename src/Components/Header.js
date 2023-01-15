@@ -104,7 +104,7 @@ function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
                                                         <path stroke="none" d="M0 0h24v24H0z" />
                                                         <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
                                                     </svg>
-                                                    <span className="ml-2 font-bold">Products</span>
+                                                    <span className="ml-2 font-bold">Test</span>
                                                 </div>
                                             </li>
                                             <li className="flex xl:hidden cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 flex items-center focus:text-indigo-700 focus:outline-none">
@@ -113,23 +113,20 @@ function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
                                                     <polyline points="8 16 10 10 16 8 14 14 8 16" />
                                                     <circle cx={12} cy={12} r={9} />
                                                 </svg>
-                                                <span className="ml-2 font-bold">Performance</span>
-                                            </li>
-                                            <li className="border-b border-gray-300 flex xl:hidden cursor-pointer text-gray-600 text-sm leading-3 tracking-normal pt-2 pb-4 hover:text-indigo-700 flex items-center focus:text-indigo-700 focus:outline-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-code" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path stroke="none" d="M0 0h24v24H0z" />
-                                                    <polyline points="7 8 3 12 7 16" />
-                                                    <polyline points="17 8 21 12 17 16" />
-                                                    <line x1={14} y1={4} x2={10} y2={20} />
-                                                </svg>
-                                                <span className="ml-2 font-bold">Deliverables</span>
+                                                <span className="ml-2 font-bold">Search</span>
                                             </li>
                                             <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 hover:text-indigo-700 flex items-center focus:text-indigo-700 focus:outline-none">
                                                 <div className="flex items-center">
                                                     <div className="w-12 cursor-pointer flex text-sm border-2 border-transparent rounded focus:outline-none focus:border-white transition duration-150 ease-in-out">
                                                         <img className="rounded h-10 w-10 object-cover" src="https://tuk-cdn.s3.amazonaws.com/assets/components/horizontal_navigation/hn_1.png" alt="logo" />
                                                     </div>
-                                                    <p className="text-sm ml-2 cursor-pointer">Jane Doe</p>
+                                                    <p className="text-sm ml-2 cursor-pointer">
+                                                        {user.profilePicture ? (
+                                                            <img src={user.profilePicture} alt="" className="w-8 h-8 rounded-md" />
+                                                        ) : (
+                                                            <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" alt="ProfilePic" className="h-8 w-8"/>
+                                                        )}
+                                                    </p>
                                                     <div className="sm:ml-2 text-white relative">
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-chevron-down cursor-pointer" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                             <path stroke="none" d="M0 0h24v24H0z" />
@@ -190,7 +187,7 @@ function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
                                         <span className="mr-2">
                                             <img className="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
                                         </span>
-                                        IDE
+                                        Test
                                     </Link>
                                     <Link to="/search" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                                         <span className="mr-2">
@@ -314,7 +311,7 @@ function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
                                                                     <img className="icon icon-tabler icon-tabler-puzzle w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
                                                                 </span>
                                                             </div>
-                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Code Test</p>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Test</p>
                                                         </div>
                                                     </div>
                                                 </li>
