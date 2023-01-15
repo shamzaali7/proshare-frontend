@@ -10,7 +10,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
         github: "",
         deployedLink: "",
         picture: "",
-        gid: userID,
+        gid: userID.userID,
         backendRepo: "",
         backendDeploy: "",
         creator: userCred.additionalUserInfo.profile.name
@@ -21,7 +21,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
         github: "",
         deployedLink: "",
         picture: "",
-        gid: userID,
+        gid: userID.userID,
         backendRepo: "",
         backendDeploy: "",
         creator: userCred.additionalUserInfo.profile.name
@@ -35,7 +35,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
     function getProjects(){
         const axiosProjects = {
             method: "GET",
-            url: `https://proshare-backend.herokuapp.com/api/projects/${userID}`
+            url: `https://proshare-backend.herokuapp.com/api/projects/${userID.userID}`
         };
         axios.request(axiosProjects)
             .then(function(res){
@@ -125,7 +125,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
     if (authorized){
     return(
         <div className="container-home font-change">
-            <div class="container-new-project">
+            <div className="container-new-project">
                 <div></div>
                 <div className="explore">My Projects</div>
                 <div className="explore">
