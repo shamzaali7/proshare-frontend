@@ -11,7 +11,7 @@ import axios from 'axios';
 import Search from './Components/Search';
 
 function App() {
-  const [userID, setUserID] = useState("")
+  const [userID, setUserID] = useState({})
   const [allUsers, setAllUsers] = useState([])
   const [authorized, setAuthorized] = useState(false)
   const [userCred, setUserCred] = useState({})
@@ -53,7 +53,7 @@ function App() {
           email: user.multiFactor.user.email,
           name: user.multiFactor.user.displayName,
         })
-        setUserID(user.multiFactor.user.providerData[0].uid)
+        setUserID({userID: user.multiFactor.user.providerData[0].uid})
       }
     })
   }
@@ -66,7 +66,7 @@ function App() {
           setUserCred(userCredentials);
           let count = allUsers.length;
           allUsers.map(async (currentUser) => {
-            if(googleUser.googleid === currentUser.googleid){
+            if(userCredentials.additionalUserInfo.profile.id === currentUser.googleid){
               setUser({
                 _id: currentUser._id,
                 googleid: currentUser.googleid,
@@ -113,9 +113,9 @@ function App() {
     }
   }
 
-  async function getUserByID(userid){
+  async function getUserByID(userID){
     try{
-      const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
+      const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userID.userID}`);
       setUser(person.data[0]);
     }catch(err){
       console.log(err);
@@ -168,7 +168,7 @@ function App() {
 
   return (
     <div className="App">
-          <Header user={user} setUser={setUser} userID={userID} setUserID={setUserID} getUserByID={getUserByID} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
+          <Header user={user} setUser={setUser} setUserID={setUserID} getUserByID={getUserByID} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
           <Footer/>
           <main>
             <Routes>

@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import axios from 'axios';
 
-function Header({user, setUser, getUserByID, authorized, setAuthorized, handleGoogleLogin}){
+function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
     const [show, setShow] = useState(null);
     const [profile, setProfile] = useState(false);
     const [profilePic, setProfilePic] = useState({
