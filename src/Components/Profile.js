@@ -248,11 +248,11 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
                             <h3 className="input-lbl">Back-End Site</h3>
                             <input type="text" className="input-form" onChange={(e) => editForm({ backendDeploy: e.target.value})}/>
                         </div>
-                        <div className="input-box">
+                        <div className="input-box  mb-1">
                             <h3 className="input-lbl">Picture Link</h3>
                             <input type="text" className="input-form" onChange={(e) => editForm({ picture: e.target.value})}/>
                         </div>
-                        <button onClick={handleSubmit} className="modal-submit">Post</button>
+                        <button onClick={handleSubmit} className="btn-update-project">Post</button>
                     </form>
                     <button onClick={handleModalState} className="close-modal">Exit</button>
                 </div>             
@@ -284,11 +284,11 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
                             <h3 className="input-lbl">Back-End Site</h3>
                             <input type="text" value={formPut.backendDeploy} className="input-form" onChange={(e) => editFormTwo({ backendDeploy: e.target.value})}/>
                         </div>
-                        <div className="input-box">
+                        <div className="input-box  mb-1">
                             <h3 className="input-lbl">Picture Link</h3>
                             <input type="text" value={formPut.picture} className="input-form" onChange={(e) => editFormTwo({ picture: e.target.value})}/>
                         </div>
-                        <button onClick={handlePutSubmit} className="modal-submit">Submit</button>
+                        <button onClick={handlePutSubmit} className="btn-update-project">Submit</button>
                     </form>
                     <button onClick={handlePutModalState} className="close-modal">Exit</button>
                 </div>             
@@ -300,7 +300,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
                     <div className="modal-content">
                         <form onSubmit={handleDeleteSubmit}>
                             <div className="delete-modal-question">Confirm Delete</div>
-                            <button onClick={handleDeleteSubmit} className="dark-border">Delete</button>
+                            <button onClick={handleDeleteSubmit} className="btn-delete-project">Delete</button>
                         </form>
                         <button onClick={handleDeleteModalState} className="close-modal">Cancel</button>
                     </div>             

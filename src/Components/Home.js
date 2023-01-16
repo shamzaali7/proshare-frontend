@@ -107,10 +107,10 @@ function Home({projects, setProjects, allUsers, dropDown, setDropDown, addModal,
                         <div className="modal-content">
                             <form onSubmit={handleAddModalSubmit}>
                                 <div className="title-form">Enter comment below</div>
-                                <div className="input-box">
+                                <div className="input-box mb-1">
                                     <input type="text" className="input-form" onChange={(e) => setComment(e.target.value)}/>
                                 </div>
-                                <button onClick={handleAddModalSubmit} className="modal-submit">Submit</button>
+                                <button onClick={handleAddModalSubmit} className="btn-update-project">Submit</button>
                             </form>
                             <button onClick={handleAddModal} className="close-modal">Exit</button>
                         </div>             
