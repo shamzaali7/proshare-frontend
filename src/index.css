@@ -393,6 +393,12 @@ body.active-modal {
   margin-top: 50px;
 }
 
+.search-display{
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .search-projects, .search-display, .container-add-btn{
   display: flex;
 }

@@ -17,14 +17,14 @@ function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
       
       const authListener = async () => {
         firebase.auth().onAuthStateChanged(async (user) => {
-            (async () => {
+            if(user){
                 const userid = user.multiFactor.user.providerData[0].uid;
                 const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
                 console.log(person, "perosn")
                 console.log(user, "user")
                 setUser(person.data[0]);
-            })();
-        })
+            }
+        })();
       }
 
     const [proPicModal, setProPicModal] = useState(false);
@@ -372,10 +372,10 @@ function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
                 <div className="modal">
                     <div onClick={handleProfilePictureModal} className="overlay"></div>
                     <div className="modal-content">
-                        <div className="text-center ml-12 mr-12 hover:decoration-slate-100">
+                        <div className="text-center ml-12 mr-12 items-center justify-center text-center hover:decoration-slate-100">
                             <div className="mb-3">Enter the link address of the picture</div>
-                            <input onChange={fileViewer} className="h-8 w-30 text-center"/>
-                            <button onClick={fileUploader} className="modal-submit h-8 w-30 text-center">Submit Picture</button>
+                            <input onChange={fileViewer} className="h-8 w-30 text-center bg-slate-600 text-white"/>
+                            <button onClick={fileUploader} className="modal-submit h-8 w-30 text-center btn-update-project">Submit Picture</button>
                         </div>
                         <div className="mb-1">
                         <button onClick={handleProfilePictureModal} className="mt-2">Cancel</button>
