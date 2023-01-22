@@ -144,7 +144,7 @@ function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModa
                         <div className="input-box">
                             <input type="text" className="input-form" onChange={(e) => setComment(e.target.value)}/>
                         </div>
-                        <button onClick={handleAddModalSubmit} className="modal-submit">Submit</button>
+                        <button onClick={handleAddModalSubmit} className="btn-update-project mt-1">Submit</button>
                     </form>
                     <button onClick={handleAddModal} className="close-modal">Exit</button>
                 </div>             
