@@ -20,8 +20,6 @@ function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
             if(user){
                 const userid = user.multiFactor.user.providerData[0].uid;
                 const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
-                console.log(person, "perosn")
-                console.log(user, "user")
                 setUser(person.data[0]);
             }
         })();
