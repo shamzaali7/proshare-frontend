@@ -95,11 +95,11 @@ Passing parameters and updating component | H | 3hrs | 4hrs
 Implementing navbar | H | 2hrs | 3hrs 
 Total | N/A | 29hrs | 38hrs 
 
-# Additional Libraries
+# External Technologies
 - Axios was used to assist the import and implemention of API's from the backend
 - Css Tailwind was used to implement the navbar
   - Citation: https://app.tailwinduikit.com/listing/webapp/navigation/horizontal_navigation
-- iframe
+- Iframe
   - Citation: https://codesandbox.io/s/new
 
 # Issues and Resolutions
