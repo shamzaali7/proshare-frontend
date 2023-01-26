@@ -14,9 +14,9 @@
 
 [Mobile Dashboard](https://user-images.githubusercontent.com/115019127/212469113-bb156155-3c27-43d6-a442-31203ac63d61.PNG)
 
-[Mobile New-Project](https://user-images.githubusercontent.com/115019127/212536421-fe217999-6b5c-4d65-98e8-e0a422568fc6.PNG)
+[Mobile New-Project](https://user-images.githubusercontent.com/115019127/214771711-2592f12c-e2d9-4762-a4ff-9f214c58e697.PNG)
 
-[Mobile Update](https://user-images.githubusercontent.com/115019127/212536431-8faf381b-8a02-4f4f-ab21-671828c469a7.PNG)
+[Mobile Update](https://user-images.githubusercontent.com/115019127/214771602-15e39702-1b79-46b9-8569-8967bebbf099.PNG)
 
 # Project Links
 - [Github FrontEnd Repo](https://github.com/shamzaali7/proshare-frontend)
