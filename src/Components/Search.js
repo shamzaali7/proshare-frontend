@@ -31,7 +31,7 @@ function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModa
             <div className="search-projects">
                 <div></div>
                 <div>
-                    <form>   
+                    <form onSubmit={(e) => {e.preventDefault()}}>   
                         <label htmlFor="default-search" className="pb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                         <div className="search-field">
                             <div className="relative">
