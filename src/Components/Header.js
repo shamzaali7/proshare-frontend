@@ -389,8 +389,6 @@ function Header({ user, setUser, handleGoogleLogin }) {
 
 export default Header;
 
-export default Header;
-
 
 
 
