@@ -1,80 +1,78 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import { getAuth } from "firebase/auth";
 import axios from 'axios';
 
-class UserService {
-  static async getUser(user) {
-    const userid = user.multiFactor.user.providerData[0].uid;
-    const person = await axios.get(`https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users/${userid}`);
-    return person.data[0];
-  }
+function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
+    const [show, setShow] = useState(null);
+    const [profile, setProfile] = useState(false);
+    const [profilePic, setProfilePic] = useState({
+        profilePicture: ""
+    })
 
-  static async updateProfilePicture(user, profilePicture) {
-    const newProPic = await axios.put("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users/", {
-      _id: user._id,
-      profilePicture: profilePicture
-    });
-    return newProPic.data.profilePicture;
-  }
-
-  static async logout() {
-    const auth = getAuth();
-    await firebase.auth().signOut();
-  }
-}
-
-function Header({ user, setUser, handleGoogleLogin }) {
-  const [show, setShow] = useState(null);
-  const [profile, setProfile] = useState(false);
-  const [profilePic, setProfilePic] = useState({ profilePicture: "" });
-  const [proPicModal, setProPicModal] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        const fetchedUser = await UserService.getUser(user);
-        setUser(fetchedUser);
+    useEffect(() => {
+        authListener();
+      }, [])
+      
+      const authListener = async () => {
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if(user){
+                const userid = user.multiFactor.user.providerData[0].uid;
+                const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
+                setUser(person.data[0]);
+            }
+        })();
       }
-    });
-  }, []);
 
-  const handleProfilePictureModal = () => {
-    setProPicModal(!proPicModal);
-  };
+    const [proPicModal, setProPicModal] = useState(false);
+    const navigate = useNavigate();
 
-  const fileViewer = (e) => {
-    setProfilePic({ profilePicture: e.target.value });
-  };
-
-  const fileUploader = async (e) => {
-    e.preventDefault();
-    try {
-      const newProfilePicture = await UserService.updateProfilePicture(user, profilePic.profilePicture);
-      setUser({ ...user, profilePicture: newProfilePicture });
-    } catch (err) {
-      console.log(err);
+    const handleProfilePictureModal = () => {
+        setProPicModal(!proPicModal);
     }
-    setProPicModal(!proPicModal);
-  };
 
-  const handleLogout = async (e) => {
-    e.preventDefault();
-    navigate("/");
-    await UserService.logout();
-  };
+    const fileViewer = (e) => {
+        setProfilePic({
+            profilePicture: e.target.value
+        })
+    }
 
-  const handleMarginTop = (e) => {
-    e.preventDefault();
-    setShow(!show);
-    document.body.style.overflow = "hidden";
-  };
+    const fileUploader = async (e) => {
+        e.preventDefault();
+        try{
+            const newProPic = await axios.put("https://proshare-backend.herokuapp.com/api/users/", {
+                _id: user._id,
+                profilePicture: profilePic.profilePicture
+            })
+            setUser({...user, profilePicture: newProPic.data.profilePicture})
+        }catch(err){
+            console.log(err)
+        }
+        setProPicModal(!proPicModal);
+    }
 
-  if (show) {
-    document.body.style.overflow = "auto";
-  }
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        navigate("/");
+        await setAuthorized(!authorized)
+        const auth = getAuth();
+        firebase.auth().signOut();
+    }
+
+    const handleMarginTop = (e) => {
+        e.preventDefault();
+        setShow(!show)
+        document.body.style.overflow = "hidden";
+    }
+
+    if(show){
+        document.body.style.overflow = "auto";
+    }
+    let hi;
+    if(authorized, user){
+        hi = "Hi " + user.firstName + "!"
+    }
 
     return (
         <div className="container-header">   
@@ -394,107 +392,83 @@ export default Header;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, {useEffect, useState} from 'react';
+// import React, { useEffect, useState } from 'react';
 // import { Link, useNavigate } from 'react-router-dom';
 // import firebase from 'firebase/compat/app';
 // import { getAuth } from "firebase/auth";
 // import axios from 'axios';
 
-// function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
-//     const [show, setShow] = useState(null);
-//     const [profile, setProfile] = useState(false);
-//     const [profilePic, setProfilePic] = useState({
-//         profilePicture: ""
-//     })
+// class UserService {
+//   static async getUser(user) {
+//     const userid = user.multiFactor.user.providerData[0].uid;
+//     const person = await axios.get(`https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users/${userid}`);
+//     return person.data[0];
+//   }
 
-//     useEffect(() => {
-//         authListener();
-//       }, [])
-      
-//       const authListener = async () => {
-//         firebase.auth().onAuthStateChanged(async (user) => {
-//             if(user){
-//                 const userid = user.multiFactor.user.providerData[0].uid;
-//                 const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
-//                 setUser(person.data[0]);
-//             }
-//         })();
+//   static async updateProfilePicture(user, profilePicture) {
+//     const newProPic = await axios.put("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users/", {
+//       _id: user._id,
+//       profilePicture: profilePicture
+//     });
+//     return newProPic.data.profilePicture;
+//   }
+
+//   static async logout() {
+//     const auth = getAuth();
+//     await firebase.auth().signOut();
+//   }
+// }
+
+// function Header({ user, setUser, handleGoogleLogin }) {
+//   const [show, setShow] = useState(null);
+//   const [profile, setProfile] = useState(false);
+//   const [profilePic, setProfilePic] = useState({ profilePicture: "" });
+//   const [proPicModal, setProPicModal] = useState(false);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     firebase.auth().onAuthStateChanged(async (user) => {
+//       if (user) {
+//         const fetchedUser = await UserService.getUser(user);
+//         setUser(fetchedUser);
 //       }
+//     });
+//   }, []);
 
-//     const [proPicModal, setProPicModal] = useState(false);
-//     const navigate = useNavigate();
+//   const handleProfilePictureModal = () => {
+//     setProPicModal(!proPicModal);
+//   };
 
-//     const handleProfilePictureModal = () => {
-//         setProPicModal(!proPicModal);
-//     }
+//   const fileViewer = (e) => {
+//     setProfilePic({ profilePicture: e.target.value });
+//   };
 
-//     const fileViewer = (e) => {
-//         setProfilePic({
-//             profilePicture: e.target.value
-//         })
+//   const fileUploader = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const newProfilePicture = await UserService.updateProfilePicture(user, profilePic.profilePicture);
+//       setUser({ ...user, profilePicture: newProfilePicture });
+//     } catch (err) {
+//       console.log(err);
 //     }
+//     setProPicModal(!proPicModal);
+//   };
 
-//     const fileUploader = async (e) => {
-//         e.preventDefault();
-//         try{
-//             const newProPic = await axios.put("https://proshare-backend.herokuapp.com/api/users/", {
-//                 _id: user._id,
-//                 profilePicture: profilePic.profilePicture
-//             })
-//             setUser({...user, profilePicture: newProPic.data.profilePicture})
-//         }catch(err){
-//             console.log(err)
-//         }
-//         setProPicModal(!proPicModal);
-//     }
+//   const handleLogout = async (e) => {
+//     e.preventDefault();
+//     navigate("/");
+//     await UserService.logout();
+//   };
 
-//     const handleLogout = async (e) => {
-//         e.preventDefault();
-//         navigate("/");
-//         await setAuthorized(!authorized)
-//         const auth = getAuth();
-//         firebase.auth().signOut();
-//     }
+//   const handleMarginTop = (e) => {
+//     e.preventDefault();
+//     setShow(!show);
+//     document.body.style.overflow = "hidden";
+//   };
 
-//     const handleMarginTop = (e) => {
-//         e.preventDefault();
-//         setShow(!show)
-//         document.body.style.overflow = "hidden";
-//     }
-
-//     if(show){
-//         document.body.style.overflow = "auto";
-//     }
-//     let hi;
-//     if(authorized, user){
-//         hi = "Hi " + user.firstName + "!"
-//     }
+//   if (show) {
+//     document.body.style.overflow = "auto";
+//   }
 
 //     return (
 //         <div className="container-header">   
@@ -808,6 +782,7 @@ export default Header;
 // }
 
 // export default Header;
+
 
 
 /* <div className="relative w-full">
