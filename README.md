@@ -21,7 +21,7 @@
 # Project Links
 - [Github FrontEnd Repo](https://github.com/shamzaali7/proshare-frontend)
 - [Github BackEnd Repo](https://github.com/shamzaali7/proshare-backend)
-- [Netlify Deploy](https://main--proshares.netlify.app/search)
+- [Netlify Deploy](https://main--proshares.netlify.app)
 - [Heroku Deploy](https://proshare-backend.herokuapp.com/api/projects)
 
 # Wireframes & React Component Hierarchy
