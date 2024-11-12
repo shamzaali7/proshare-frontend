@@ -1,0 +1,1316 @@
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD-MdXG7MGe3a3CtlItZ2xFa4vuiL8OLFY",
+    authDomain: "proshare-f25cd.firebaseapp.com",
+    projectId: "proshare-f25cd",
+    storageBucket: "proshare-f25cd.appspot.com",
+    messagingSenderId: "641029913690",
+    appId: "1:641029913690:web:10ba2a71928a1dbd146c63",
+    measurementId: "G-0NGS2C229G"
+  };
+  
+  // Initialize Firebase
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const db = firebaseApp.firestore();
+const auth = firebase.auth();
+
+export { auth };
+export default db;var fs = require('fs');
+var os = require('os');
+var path = require('path');
+var env = process.env;
+
+var ADBLOCK = is(env.ADBLOCK);
+var COLOR = is(env.npm_config_color);
+var DISABLE_OPENCOLLECTIVE = is(env.DISABLE_OPENCOLLECTIVE);
+var SILENT = ['silent', 'error', 'warn'].indexOf(env.npm_config_loglevel) !== -1;
+var OPEN_SOURCE_CONTRIBUTOR = is(env.OPEN_SOURCE_CONTRIBUTOR);
+var MINUTE = 60 * 1000;
+
+// you could add a PR with an env variable for your CI detection
+var CI = [
+  'BUILD_NUMBER',
+  'CI',
+  'CONTINUOUS_INTEGRATION',
+  'DRONE',
+  'RUN_ID'
+].some(function (it) { return is(env[it]); });
+
+var BANNER = '\u001B[96mThank you for using core-js (\u001B[94m https://github.com/zloirock/core-js \u001B[96m) for polyfilling JavaScript standard library!\u001B[0m\n\n' +
+             '\u001B[96mThe project needs your help! Please consider supporting of core-js:\u001B[0m\n' +
+             '\u001B[96m>\u001B[94m https://opencollective.com/core-js \u001B[0m\n' +
+             '\u001B[96m>\u001B[94m https://patreon.com/zloirock \u001B[0m\n' +
+             '\u001B[96m>\u001B[94m bitcoin: bc1qlea7544qtsmj2rayg0lthvza9fau63ux0fstcz \u001B[0m\n\n' +
+             '\u001B[96mAlso, the author of core-js (\u001B[94m https://github.com/zloirock \u001B[96m) is looking for a good job -)\u001B[0m\n';
+
+function is(it) {
+  return !!it && it !== '0' && it !== 'false';
+}
+
+function isBannerRequired() {
+  if (ADBLOCK || CI || DISABLE_OPENCOLLECTIVE || SILENT || OPEN_SOURCE_CONTRIBUTOR) return false;
+  var file = path.join(os.tmpdir(), 'core-js-banners');
+  var banners = [];
+  try {
+    var DELTA = Date.now() - fs.statSync(file).mtime;
+    if (DELTA >= 0 && DELTA < MINUTE * 3) {
+      banners = JSON.parse(fs.readFileSync(file));
+      if (banners.indexOf(BANNER) !== -1) return false;
+    }
+  } catch (error) {
+    banners = [];
+  }
+  try {
+    banners.push(BANNER);
+    fs.writeFileSync(file, JSON.stringify(banners), 'utf8');
+  } catch (error) { /* empty */ }
+  return true;
+}
+
+function showBanner() {
+  // eslint-disable-next-line no-console, regexp/no-control-character -- output
+  console.log(COLOR ? BANNER : BANNER.replace(/\u001B\[\d+m/g, ''));
+}
+
+if (isBannerRequired()) showBanner();
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import './Config/firebase-config';
+import {BrowserRouter as Router} from 'react-router-dom'
+import App from './App';
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+    <Router>
+        <App />
+    </Router>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+import axios from 'axios';
+import React, {useState, useEffect} from 'react'
+
+function Profile({userID, userCred, authorized, projects, setProjects, dropDown, handleDropDownModal}){
+    const [modal, setModal] = useState(false);
+    const [modalTwo, setModalTwo] = useState(false);
+    const [modalDelete, setModalDelete] = useState(false);
+    const [form, setForm] = useState({
+        title: "",
+        github: "",
+        deployedLink: "",
+        picture: "",
+        gid: userID.userID,
+        backendRepo: "",
+        backendDeploy: "",
+        creator: userCred.additionalUserInfo.profile.name
+    });
+    const [formPut, setFormPut] = useState({
+        _id: "",
+        title: "",
+        github: "",
+        deployedLink: "",
+        picture: "",
+        gid: userID.userID,
+        backendRepo: "",
+        backendDeploy: "",
+        creator: userCred.additionalUserInfo.profile.name
+    })
+    const [formDelete, setFormDelete] = useState({_id: ""})
+
+    useEffect(() => {
+        getProjects()
+      }, []);
+
+    function getProjects(){
+        const axiosProjects = {
+            method: "GET",
+            url: `https://proshare-backend.herokuapp.com/api/projects/${userID.userID}`
+        };
+        axios.request(axiosProjects)
+            .then(function(res){
+                setProjects(res.data)
+            }).catch(err => console.log(err))
+    }
+
+    if(modal || modalTwo || modalDelete){
+        document.body.style.overflow = "hidden";
+    }else{
+        document.body.style.overflow = "auto"
+    }
+
+    const handleModalState = () => {
+        setModal(!modal)
+    }
+    
+    const handlePutModalState = () => {
+        setModalTwo(!modalTwo)
+    }
+    const handleDeleteModalState = () => {
+        setModalDelete(!modalDelete)
+    }
+
+    const editForm = (value) => {
+        return setForm((last) => {
+            return {...last, ...value}
+        })
+    }
+    const editFormTwo = (value) => {
+        return setFormPut((last) => {
+            return {...last, ...value}
+        })
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const Project = await axios.post("https://proshare-backend.herokuapp.com/api/projects", form)
+        }
+        catch(err){
+            console.log(err)
+        }
+        handleModalState();
+        getProjects();
+        setForm({
+            title: "",
+            github: "",
+            deployedLink: "",
+            picture: "",
+            gid: userID,
+            backendRepo: "",
+            backendDeploy: "",
+            creator:  userCred.additionalUserInfo.profile.name
+        })
+    }
+    
+    const handlePutSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const Project = await axios.put("https://proshare-backend.herokuapp.com/api/projects", formPut)
+        }
+        catch(err){
+            console.log(err)
+        }
+        handlePutModalState();
+        getProjects();
+    }
+
+    const handleDeleteSubmit = async (e) => {
+        e.preventDefault();
+        await fetch(`https://proshare-backend.herokuapp.com/api/projects`, {
+            method: "DELETE",
+            headers: {
+           'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({_id : formDelete._id})
+        });
+        handleDeleteModalState();
+        getProjects();
+    }
+
+    const handleClose = async (e) => {
+        document.body.style.overflow = "auto";
+    }
+
+    if (authorized){
+    return(
+        <div className="container-home font-change">
+            <div className="container-new-project">
+                <div></div>
+                <div className="explore">My Projects</div>
+                <div className="explore">
+                    <p><button onClick={handleModalState} className="new-project">
+                        New Project
+                    </button>
+                    </p>
+                </div>
+            </div>
+            {projects && (projects.map((project) => {
+                return(
+                    <div className="container-spacer">
+                        <div></div>
+                        <div className="home-projects shadow-xl">
+                            <div className="container-title">
+                                <div></div>
+                                <div className="project-titles-box"><p className="project-titles bg-white">{project.title}</p></div>
+                                <div></div>
+                            </div>
+                            <div className="home-showcase">
+                                <div className="container-showcase">
+                                    <div>
+                                        <div className="container-deployed">
+                                            <div></div>
+                                            <div className="home-deployed"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Site</p></a></p></div>
+                                            <div></div>
+                                        </div>
+                                        <div className="container-repo">
+                                            <div></div>
+                                            <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slink">Frontend Repo</p></a></p></div>
+                                            <div></div>
+                                        </div>
+                                        {project.backendRepo && (
+                                            <span>
+                                                <div className="container-back-link">
+                                                    <div></div>
+                                                    <div className="home-deployedLink"><p><a href={project.backendDeploy} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Back</p></a></p></div>
+                                                    <div></div>
+                                                </div>
+                                                <div className="container-back-repo">
+                                                    <div></div>
+                                                    <div className="home-repo"><p><a href={project.backendRepo} target="_blank" rel="noreferrer"><p className="side-elements slink">Backend Repo</p></a></p></div>
+                                                    <div></div>
+                                                </div>
+                                            </span>
+                                        )} 
+                                    </div>
+                                    <div className="box-showcase"><img className="project-pic" src={project.picture} alt=""/></div>
+                                    <div className="home-comments">
+                                        <div className="container-comment-btn">
+                                            <div></div>
+                                            <div className="box-comment-btn">
+                                                <button onClick={handleDropDownModal} className="side-elements slink focus:ring-2 focus:outline-none focus:ring-grey-700 font-medium rounded-lg text-sm px-1 py-.5 text-center inline-flex items-center dark:hover:bg-grey-700 dark:focus:ring-grey-800">
+                                                    Comments 
+                                                    <svg className="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7">
+                                                        </path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div></div>
+                                        </div>
+                                        <div className="container-dropdown">
+                                            <div></div>
+                                            {dropDown && (
+                                                <div className="comments-display items-center divide-y divide-gray-100 shadow rounded dark:bg-gray-600 cursor-default">          
+                                                    {project.comments.map((comment) => {
+                                                        if(comment){
+                                                            return(
+                                                                <span className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-slate-300 text-slate-50 text-xs">{comment}</span> 
+                                                            )
+                                                        }
+                                                    })}
+                                                </div>
+                                            )}
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="change-buttons">
+                                    <button className="btn-update-project" onClick={() => {
+                                            setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, backendRepo: project.backendRepo, backendDeploy: project.backendDeploy, picture: project.picture})
+                                            handlePutModalState()}}>
+                                        Update
+                                    </button>
+                                    <button className="btn-delete-project" onClick={() => {
+                                            setFormDelete({_id : project._id})
+                                            handleDeleteModalState()}}>
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                )
+            }))}
+            {modal && (
+                <div className="modal">
+                <div onClick={handleModalState} className="overlay"></div>
+                <div className="modal-content">
+                    <form onSubmit={handleSubmit} onClose={handleClose}>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Title</h3>
+                            <input type="text" className="input-form" onChange={(e) => editForm({ title: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Front-End Repo</h3>
+                            <input type="text" className="input-form" onChange={(e) => editForm({ github: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Front-End Site</h3>
+                            <input type="text" className="input-form" onChange={(e) => editForm({ deployedLink: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Back-End Repo</h3>
+                            <input type="text" className="input-form" onChange={(e) => editForm({ backendRepo: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Back-End Site</h3>
+                            <input type="text" className="input-form" onChange={(e) => editForm({ backendDeploy: e.target.value})}/>
+                        </div>
+                        <div className="input-box  mb-1">
+                            <h3 className="input-lbl">Picture Link</h3>
+                            <input type="text" className="input-form" onChange={(e) => editForm({ picture: e.target.value})}/>
+                        </div>
+                        <button onClick={handleSubmit} className="btn-update-project">Post</button>
+                    </form>
+                    <button onClick={handleModalState} className="close-modal">Exit</button>
+                </div>             
+                </div>
+            )}
+            {modalTwo && (
+                <div className="modal">
+                <div onClick={handlePutModalState} className="overlay"></div>
+                <div className="modal-content">
+                    <form onSubmit={handlePutSubmit}>
+                        <div className="title-form">Update</div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Title</h3>
+                            <input type="text" value={formPut.title} className="input-form" onChange={(e) => editFormTwo({ title: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Front-End Repo</h3>
+                            <input type="text" value={formPut.github} className="input-form" onChange={(e) => editFormTwo({ github: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Front-End Site</h3>
+                            <input type="text" value={formPut.deployedLink} className="input-form" onChange={(e) => editFormTwo({ deployedLink: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Back-End Repo</h3>
+                            <input type="text" value={formPut.backendRepo} className="input-form" onChange={(e) => editFormTwo({ backendRepo: e.target.value})}/>
+                        </div>
+                        <div className="input-box">
+                            <h3 className="input-lbl">Back-End Site</h3>
+                            <input type="text" value={formPut.backendDeploy} className="input-form" onChange={(e) => editFormTwo({ backendDeploy: e.target.value})}/>
+                        </div>
+                        <div className="input-box  mb-1">
+                            <h3 className="input-lbl">Picture Link</h3>
+                            <input type="text" value={formPut.picture} className="input-form" onChange={(e) => editFormTwo({ picture: e.target.value})}/>
+                        </div>
+                        <button onClick={handlePutSubmit} className="btn-update-project">Submit</button>
+                    </form>
+                    <button onClick={handlePutModalState} className="close-modal">Exit</button>
+                </div>             
+            </div>
+            )}
+            {modalDelete && (
+                <div className="modal">
+                    <div onClick={handleDeleteModalState} className="overlay"></div>
+                    <div className="modal-content">
+                        <form onSubmit={handleDeleteSubmit}>
+                            <div className="delete-modal-question">Confirm Delete</div>
+                            <button onClick={handleDeleteSubmit} className="btn-delete-project">Delete</button>
+                        </form>
+                        <button onClick={handleDeleteModalState} className="close-modal">Cancel</button>
+                    </div>             
+                </div>
+            )}
+        </div>
+    )}
+    else {
+        return(
+            <div className="breach">
+                Please Sign In
+            </div>
+        )
+    }}
+
+export default Profile;import React, {useEffect, useState} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import firebase from 'firebase/compat/app';
+import { getAuth } from "firebase/auth";
+import axios from 'axios';
+
+function Header({user, setUser, authorized, setAuthorized, handleGoogleLogin}){
+    const [show, setShow] = useState(null);
+    const [profile, setProfile] = useState(false);
+    const [profilePic, setProfilePic] = useState({
+        profilePicture: ""
+    })
+
+    useEffect(() => {
+        authListener();
+      }, [])
+      
+      const authListener = async () => {
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if(user){
+                const userid = user.multiFactor.user.providerData[0].uid;
+                const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userid}`);
+                setUser(person.data[0]);
+            }
+        })();
+      }
+
+    const [proPicModal, setProPicModal] = useState(false);
+    const navigate = useNavigate();
+
+    const handleProfilePictureModal = () => {
+        setProPicModal(!proPicModal);
+    }
+
+    const fileViewer = (e) => {
+        setProfilePic({
+            profilePicture: e.target.value
+        })
+    }
+
+    const fileUploader = async (e) => {
+        e.preventDefault();
+        try{
+            const newProPic = await axios.put("https://proshare-backend.herokuapp.com/api/users/", {
+                _id: user._id,
+                profilePicture: profilePic.profilePicture
+            })
+            setUser({...user, profilePicture: newProPic.data.profilePicture})
+        }catch(err){
+            console.log(err)
+        }
+        setProPicModal(!proPicModal);
+    }
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        navigate("/");
+        await setAuthorized(!authorized)
+        const auth = getAuth();
+        firebase.auth().signOut();
+    }
+
+    const handleMarginTop = (e) => {
+        e.preventDefault();
+        setShow(!show)
+        document.body.style.overflow = "hidden";
+    }
+
+    if(show){
+        document.body.style.overflow = "auto";
+    }
+    let hi;
+    if(authorized, user){
+        hi = "Hi " + user.firstName + "!"
+    }
+
+    return (
+        <div className="container-header">   
+            <div className="bg-gray-200 h-full w-full">
+                <nav className="bg-white shadow xl:block hidden">
+                    <div className="mx-auto container px-6 py-2 xl:py-0">
+                        <div className="flex items-center justify-between">
+                            <div className="inset-y-0 left-0 flex items-center xl:hidden">
+                                <div className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                    <div className="visible xl:hidden">
+                                        <ul className="p-2 border-r bg-white absolute rounded left-0 right-0 shadow mt-8 md:mt-8 hidden">
+                                            <li className="flex xl:hidden cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                                                <div className="flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-grid" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" />
+                                                        <rect x={4} y={4} width={6} height={6} rx={1} />
+                                                        <rect x={14} y={4} width={6} height={6} rx={1} />
+                                                        <rect x={4} y={14} width={6} height={6} rx={1} />
+                                                        <rect x={14} y={14} width={6} height={6} rx={1} />
+                                                    </svg>
+                                                    <span className="ml-2 font-bold">Dashboard</span>
+                                                </div>
+                                            </li>
+                                            <li className="flex xl:hidden flex-col cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none flex justify-center">
+                                                <div className="flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-puzzle" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" />
+                                                        <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
+                                                    </svg>
+                                                    <span className="ml-2 font-bold">Test</span>
+                                                </div>
+                                            </li>
+                                            <li className="flex xl:hidden cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 flex items-center focus:text-indigo-700 focus:outline-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-compass" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" />
+                                                    <polyline points="8 16 10 10 16 8 14 14 8 16" />
+                                                    <circle cx={12} cy={12} r={9} />
+                                                </svg>
+                                                <span className="ml-2 font-bold">Search</span>
+                                            </li>
+                                            <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 hover:text-indigo-700 flex items-center focus:text-indigo-700 focus:outline-none">
+                                                <div className="flex items-center">
+                                                    <div className="w-12 cursor-pointer flex text-sm border-2 border-transparent rounded focus:outline-none focus:border-white transition duration-150 ease-in-out">
+                                                        <img className="rounded h-10 w-10 object-cover" src="https://tuk-cdn.s3.amazonaws.com/assets/components/horizontal_navigation/hn_1.png" alt="logo" />
+                                                    </div>
+                                                    <p className="text-sm ml-2 cursor-pointer">
+                                                        {user.profilePicture ? (
+                                                            <img src={user.profilePicture} alt="" className="w-8 h-8 rounded-md" />
+                                                        ) : (
+                                                            <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" alt="ProfilePic" className="h-8 w-8"/>
+                                                        )}
+                                                    </p>
+                                                    <div className="sm:ml-2 text-white relative">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-chevron-down cursor-pointer" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" />
+                                                            <polyline points="6 9 12 15 18 9" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                                                <div className="flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-user" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" />
+                                                        <circle cx={12} cy={7} r={4} />
+                                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                                    </svg>
+                                                    <span className="ml-2">Profile</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <svg aria-haspopup="true" aria-label="Main Menu" xmlns="http://www.w3.org/2000/svg" className="show-m-menu icon icon-tabler icon-tabler-menu" width={28} height={28} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" />
+                                            <line x1={4} y1={8} x2={20} y2={8} />
+                                            <line x1={4} y1={16} x2={20} y2={16} />
+                                        </svg>
+                                    </div>
+                                    <div className="hidden close-m-menu text-gray-700">
+                                        <svg aria-label="Close" xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" />
+                                            <line x1={18} y1={6} x2={6} y2={18} />
+                                            <line x1={6} y1={6} x2={18} y2={18} />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex w-full sm:w-auto items-center sm:items-stretch justify-end sm:justify-start">
+                                <div className="flex items-center">
+                                <Link to="/">
+                                    <div  className="flex items-center">
+                                        <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
+                                        <h2 className="hidden change-text-title sm:block text-base text-gray-600 font-bold leading-normal px-3 font-change">
+                                            PROSHARE
+                                        </h2>
+                                    </div>
+                                </Link>
+                                </div>
+                            </div>
+                            <div className="flex">
+                                <div className="hidden xl:flex md:mr-6 xl:mr-16">
+                                {authorized && (        
+                                    <Link to="/accounts" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <span className="mr-2">
+                                            <img className="icon icon-tabler icon-tabler-grid" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
+                                        </span>
+                                        Dashboard
+                                    </Link>
+                                )}
+                                    <Link to="/ide" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <span className="mr-2">
+                                            <img className="icon icon-tabler icon-tabler-puzzle" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                                        </span>
+                                        Test
+                                    </Link>
+                                    <Link to="/search" className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <span className="mr-2">
+                                            <img className="icon icon-tabler icon-tabler-puzzle h-5 w-5" src="https://img.icons8.com/external-tanah-basah-detailed-outline-tanah-basah/96/null/external-search-user-interface-tanah-basah-detailed-outline-tanah-basah.png" alt="products" />
+                                        </span>
+                                        Search
+                                    </Link>
+                                </div>
+                                {authorized && (
+                                <div className="hidden xl:flex items-center">
+                                    <div className="ml-6 relative">
+                                        <div className="flex items-center relative" onClick={() => setProfile(!profile)}>
+                                        <div className="hi mx-2 text-gray-700 font-change">{hi}</div>
+                                            {profile && (
+                                                <ul className="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 ">
+                                                    <li className="cursor-pointer text-gray-800 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                                                        <div onClick={handleLogout} className="flex items-center">
+                                                            <img className="w-6 h-6" src="https://img.icons8.com/windows/96/null/exit.png" alt="Logout Icon"/>
+                                                            <span className="ml-2">Logout</span>
+                                                        </div>
+                                                    </li>
+                                                    <li className="cursor-pointer text-gray-800 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                                                        <div onClick={handleProfilePictureModal} className="flex items-center">
+                                                            <img className="w-6 h-6" src="https://img.icons8.com/windows/96/null/edit-user.png" alt="Edit Icon"/>
+                                                            <span className="ml-2">Change Picture</span>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            )}
+                                            <div className="cursor-pointer flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out">
+                                                {user.profilePicture ? (
+                                                    <img className="rounded-full h-10 w-10 object-cover" src={user.profilePicture} alt="logo" />
+                                                ) : (
+                                                    <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" className="w-8 h-8" alt="Profile Pic"/>
+                                                )}
+                                            </div>
+                                            <div className="ml-2 text-gray-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-chevron-down cursor-pointer" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" />
+                                                    <polyline points="6 9 12 15 18 9" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                )}
+                                {!authorized && (
+                                    <div onClick={handleGoogleLogin} className="focus:text-indigo-700 border-b-2 border-transparent focus:border-indigo-700 flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                                        <div className="box-signin">
+                                        <button>
+                                            Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
+                                        </button> 
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <nav>
+                    <div className={show ? ("py-4 px-6 w-full flex xl:hidden justify-between items-center bg-white fixed top-0 z-40") : ("py-4 px-6 w-full flex xl:hidden justify-between items-center bg-white fixed top-0 z-40")}>
+                        <div className="flex items-center">
+                            <div id="menu" className="text-gray-800" onClick={handleMarginTop}>
+                                {show ? (
+                                    <div className="filler"></div>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu-2 " width={24} height={24} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <line x1={4} y1={6} x2={20} y2={6} />
+                                        <line x1={4} y1={12} x2={20} y2={12} />
+                                        <line x1={4} y1={18} x2={20} y2={18} />
+                                    </svg>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={show ? "w-full xl:hidden h-full absolute z-40  transform  translate-x-0 absolute" : "w-full xl:hidden h-full absolute z-40 transform -translate-x-full"}>
+                        <div className="bg-gray-800 opacity-50 w-full h-full" onClick={() => setShow(!show)} />
+                        <div className="w-64 z-40 fixed overflow-y-auto z-40 top-0 bg-white shadow h-full flex-col justify-between xl:hidden pb-4 transition duration-150 ease-in-out">
+                            <div className="px-6 h-full">
+                                <div className="flex flex-col justify-between h-full w-full">
+                                    <div>
+                                        <div className="mt-6 flex w-full items-center justify-between">
+                                            <div className="flex items-center justify-between w-full">
+                                                <div className="flex items-center">
+                                                    <Link to="/">
+                                                        <img src="https://img.icons8.com/clouds/70/000000/code.png" alt="logo" />
+                                                        <p className="font-change text-base md:text-2xl text-gray-800 ml-3">PROSHARE</p>
+                                                    </Link>
+                                                </div>
+                                                <div id="cross" className="text-gray-800" onClick={() => setShow(!show)}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-x" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" />
+                                                        <line x1={18} y1={6} x2={6} y2={18} />
+                                                        <line x1={6} y1={6} x2={18} y2={18} />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ul className="f-m-m">
+                                            {authorized && (
+                                                <Link to="/accounts" className="cursor-pointer">
+                                                    <li className="text-gray-800 pt-10">
+                                                        <div className="flex items-center">
+                                                            <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                                                                <span className="mr-2">
+                                                                    <img className="icon icon-tabler icon-tabler-grid w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Dashboard</p>
+                                                        </div>
+                                                    </li>
+                                                </Link>
+                                            )}
+                                            <Link to="/ide" className="cursor-pointer">
+                                                <li className="text-gray-800 pt-8">
+                                                    <div className="flex items-center">
+                                                        <div className="flex items-center">
+                                                            <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                                                                <span className="mr-2">
+                                                                    <img className="icon icon-tabler icon-tabler-puzzle w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Test</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </Link>
+                                            <Link to="/search">
+                                                <li className="text-gray-800 pt-8 cursor-pointer">
+                                                    <div className="flex items-center">
+                                                        <div className="flex items-center">
+                                                            <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800 ml-1">
+                                                                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd">
+                                                                    <path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/>
+                                                                </svg>
+                                                            </div>
+                                                            <p className="text-gray-800 xl:text-base text-base ml-3">Search</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </Link>
+                                        </ul>
+                                    </div>
+                                    {authorized ? (
+                                        <div className="w-full pt-4">
+                                            <div className="flex mb-4 w-full justify-center cursor-pointer" onClick={handleLogout}>
+                                                <div className="flex items-center text-right">
+                                                    <div className="flex items-center">
+                                                        <img  className="h-8 w-8" src="https://img.icons8.com/external-tal-revivo-shadow-tal-revivo/96/null/external-smartphone-with-logout-option-with-sign-off-arrow-development-shadow-tal-revivo.png" alt="Logout Icon"/>
+                                                        <span className="ml-2">Logout</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="border-t border-gray-300 items-center text-right">
+                                                <div className="w-full flex items-center justify-center pt-1">
+                                                    <div className="flex items-center text-right">
+                                                        {user.profilePicture ? (
+                                                            <img src={user.profilePicture} alt="" className="w-8 h-8 rounded-md" />
+                                                        ) : (
+                                                            <img src="https://img.icons8.com/ios/50/null/user-male-circle--v1.png" alt="ProfilePic" className="h-8 w-8"/>
+                                                        )}
+                                                        <p className=" text-gray-800 text-base leading-4 ml-2">{user.name}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="box-signin hover:bg-slate-200 ... rounded-2xl">
+                                            <button className="text-base ... py-1 ... px-2" onClick={handleGoogleLogin}>
+                                                Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
+                                            </button> 
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>  
+            </div>
+            {proPicModal && (
+                <div className="modal">
+                    <div onClick={handleProfilePictureModal} className="overlay"></div>
+                    <div className="modal-content">
+                        <div className="text-center ml-12 mr-12 items-center justify-center text-center hover:decoration-slate-100">
+                            <div className="mb-3">Enter the link address of the picture</div>
+                            <input onChange={fileViewer} className="h-8 w-30 text-center bg-slate-600 text-white"/>
+                            <button onClick={fileUploader} className="modal-submit h-8 w-30 text-center btn-update-project">Submit Picture</button>
+                        </div>
+                        <div className="mb-1">
+                        <button onClick={handleProfilePictureModal} className="mt-2">Cancel</button>
+                        </div>
+                    </div>             
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default Header;
+
+
+/* <div className="relative w-full">
+<div className="text-gray-500 absolute ml-4 inset-0 m-auto w-4 h-4">
+<svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-search" width={16} height={16} viewBox="0 0 24 24" strokeWidth={1} stroke="#A0AEC0" fill="none" strokeLinecap="round" strokeLinejoin="round">
+<path stroke="none" d="M0 0h24v24H0z" />
+<circle cx={10} cy={10} r={7} />
+<line x1={21} y1={21} x2={15} y2={15} />
+</svg>
+</div>
+<input className="bg-gray-100 focus:outline-none rounded w-full text-sm text-gray-500  pl-10 py-2" type="text" placeholder="Search" />
+</div> */import axios from 'axios';
+import {useState, React, useEffect} from 'react'
+
+function Home({projects, setProjects, allUsers, dropDown, setDropDown, addModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject}){
+    const axiosProjects = {
+        method: "GET",
+        url: 'https://proshare-backend.herokuapp.com/api/projects'
+    }
+
+    useEffect(() => {
+        getProjects()
+      }, []);
+
+    function getProjects(){
+        axios.request(axiosProjects)
+            .then(function(res){
+                setProjects(res.data)
+            }).catch(err => console.log(err))
+    }
+
+    return(
+        <div className="container-home font-change">
+            <div className="explore">Explore</div>
+                {projects.map((project) => {
+                return(
+                    <div className="container-spacer">
+                        <div></div>
+                        <div className="home-projects shadow-xl">
+                            <div className="container-title">
+                                <div></div>
+                                <div className="project-titles-box"><p className="project-titles bg-white text-grey-600">{project.title}</p></div>
+                                <div className="project-creator">
+                                    <div></div>
+                                    <div className="box-project-creator">
+                                        <span className="mr-1">by: {project.creator}</span>
+                                        {allUsers.map((person) => {return(
+                                            <span>
+                                            {(person.googleid === project.gid) && (
+                                                <img className="rounded-full h-10 w-10 object-cover" src={person.profilePicture} alt="logo" />
+                                            )}
+                                            </span>
+                                        )})}
+                                    </div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div className="home-showcase">
+                                <div className="container-showcase">
+                                    <div>
+                                        <div className="container-deployed">
+                                            <div></div>
+                                            <div className="home-deployed"><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements links">Deployed Site</p></a></div>
+                                            <div></div>
+                                        </div>
+                                        <div className="container-repo">
+                                            <div></div>
+                                            <div className="home-repo"><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements links">Repo</p></a></div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                    <div className="box-showcase"><img className="project-pic" src={project.picture} alt="N/A"/></div>
+                                    <div className="home-comments">
+                                        <div className="container-comment-btn">
+                                            <div></div>
+                                            <div className="box-comment-btn">
+                                                <button onClick={() => {setDropDown(!dropDown)}} className="side-elements slink focus:ring-2 focus:outline-none focus:ring-grey-700 font-medium rounded-lg text-sm px-1 py-.5 text-center inline-flex items-center dark:hover:bg-grey-700 dark:focus:ring-grey-800">
+                                                    Comments 
+                                                    <svg className="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7">
+                                                        </path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div></div>
+                                        </div>
+                                        <div className="container-dropdown">
+                                            <div></div>
+                                            {dropDown && (
+                                                <div className="comments-display items-center divide-y divide-gray-100 shadow rounded dark:bg-gray-600 cursor-default">          
+                                                    {project.comments.map((comment)=> {
+                                                        if(comment){
+                                                            return(
+                                                                <span className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-slate-300 text-slate-50 text-xs">{comment}</span> 
+                                                            )
+                                                        }
+                                                    })}
+                                                </div>
+                                            )}
+                                            <div></div>
+                                        </div>
+                                        <div className="add-btn">
+                                            <button onClick={(e) => {
+                                                handleAddModal()
+                                                setCurrentProject({_id: project._id, comments: project.comments})
+                                            }} className="text-sm">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>              
+                        </div>
+                        <div></div>
+                    </div>
+                )})}
+                {addModal && (
+                    <div className="modal">
+                        <div onClick={handleAddModal} className="overlay"></div>
+                        <div className="modal-content">
+                            <form onSubmit={handleAddModalSubmit}>
+                                <div className="title-form">Enter comment below</div>
+                                <div className="input-box mb-1">
+                                    <input type="text" className="input-form" onChange={(e) => setComment(e.target.value)}/>
+                                </div>
+                                <button onClick={handleAddModalSubmit} className="btn-update-project">Submit</button>
+                            </form>
+                            <button onClick={handleAddModal} className="close-modal">Exit</button>
+                        </div>             
+                    </div>
+                )}
+        </div>
+    )
+}
+
+export default Home;import React from 'react'
+
+function IDE(){
+    return(
+        <div className="font-change ">
+            <h1 className="ide-title">Test Your Code</h1>
+            <div className="container-ide">
+                <div className="box"></div>
+                <div className="frame-box">
+                    <iframe src="https://codesandbox.io/embed/react-new?fontsize=14&hidenavigation=1&theme=dark"
+                        className="iframe-style"
+                        title="React"
+                        allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+                        sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts">
+                    </iframe>
+                </div>
+                <div className="box"></div>
+            </div>
+        </div>
+    )
+}
+
+export default IDE;import axios from 'axios';
+import React, { useEffect } from 'react'
+
+function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject, filteredProjects, setFilteredProjects, input, setInput}){
+
+    useEffect(() => {
+        getData();
+    }, [])
+
+    async function getData(){
+        try{
+            const getProjects = await axios.get("https://proshare-backend.herokuapp.com/api/projects")
+            if(getProjects){
+                setProjects(getProjects.data)
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    const handleChange = (e) => {
+        setInput(e.target.value)
+        let filter = projects.filter((project) => 
+            project.title.toLowerCase().includes(input.toLowerCase())
+        )
+        setFilteredProjects(filter)
+    }
+
+    return(
+        <div className="mt-0 font-change">
+            <div className="search-projects">
+                <div></div>
+                <div>
+                    <form onSubmit={(e) => {e.preventDefault()}}>   
+                        <label htmlFor="default-search" className="pb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                        <div className="search-field">
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <input onChange={handleChange} type="search" id="default-search" className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Projects" required/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div></div>
+            </div>
+            <div className="search-display my-10">
+                <div></div>
+                {filteredProjects.map((project) => {
+                    return(
+                        <div className="home-projects shadow-xl">
+                            <div className="container-title">
+                                <div></div>
+                                <div className="project-titles-box"><p className="project-titles bg-white">{project.title}</p></div>
+                                <div className="project-creator">
+                                    <div></div>
+                                    <div className="box-project-creator">
+                                        <span className="mr-1">by: {project.creator}</span>
+                                        {allUsers.map((person) => {return(
+                                            <span>
+                                            {(person.googleid === project.gid) && (
+                                                <img className="rounded-full h-10 w-10 object-cover" src={person.profilePicture} alt="logo" />
+                                            )}
+                                            </span>
+                                        )})}
+                                    </div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div className="home-showcase">
+                                <div className="container-showcase">
+                                    <div>
+                                        <div className="container-deployed">
+                                            <div></div>
+                                            <div className="home-deployed"><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements links">Deployed Site</p></a></div>
+                                            <div></div>
+                                        </div>
+                                        <div className="container-repo">
+                                            <div></div>
+                                            <div className="home-repo"><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements links">Repo</p></a></div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                    <div className="box-showcase"><img className="project-pic" src={project.picture} alt="N/A"/></div>
+                                    <div className="home-comments">
+                                        <div className="container-comment-btn">
+                                            <div></div>
+                                            <div className="box-comment-btn">
+                                                <button onClick={() => {setDropDown(!dropDown)}} className="side-elements slink focus:ring-2 focus:outline-none focus:ring-grey-700 font-medium rounded-lg text-sm px-1 py-.5 text-center inline-flex items-center dark:hover:bg-grey-700 dark:focus:ring-grey-800">
+                                                    Comments 
+                                                    <svg className="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7">
+                                                        </path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div></div>
+                                        </div>
+                                        <div className="container-dropdown">
+                                            <div></div>
+                                            {dropDown && (
+                                                <div className="comments-display items-center divide-y divide-gray-100 shadow rounded dark:bg-gray-600 cursor-default">          
+                                                    {project.comments.map((comment) => {
+                                                        if(comment){
+                                                            return(
+                                                                <span className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-slate-300 text-slate-50 text-xs">{comment}</span> 
+                                                            )
+                                                        }else{
+                                                            return(
+                                                                <span></span>
+                                                            )
+                                                        }
+                                                    })}
+                                                </div>
+                                            )}
+                                            <div></div>
+                                        </div>
+                                        <div className="container-add-btn">
+                                            <div></div>
+                                            <div className="add-btn">
+                                            <button onClick={(e) => {
+                                                handleAddModal()
+                                                setCurrentProject({_id: project._id, comments: project.comments})
+                                            }} className="text-sm">+</button>
+                                            </div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    )})}
+                    <div></div>
+            </div>
+            {addModal && (
+                <div className="modal">
+                <div onClick={handleAddModal} className="overlay"></div>
+                <div className="modal-content">
+                    <form onSubmit={handleAddModalSubmit}>
+                        <div className="title-form">Enter comment below</div>
+                        <div className="input-box">
+                            <input type="text" className="input-form" onChange={(e) => setComment(e.target.value)}/>
+                        </div>
+                        <button onClick={handleAddModalSubmit} className="btn-update-project mt-1">Submit</button>
+                    </form>
+                    <button onClick={handleAddModal} className="close-modal">Exit</button>
+                </div>             
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default Search;import React from 'react'
+import { BsGithub } from 'react-icons/bs';
+import { AiOutlineLinkedin } from 'react-icons/ai';
+
+function Footer(){
+
+    return (
+        <div className="container-footer">
+            <div className="box-links">
+                <div className="creator"><span className="sp-creator">Developed by:</span> Hamza Ali</div>
+                <div className="links"><a href="https://github.com/shamzaali7" target="_blank" rel="noreferrer"><BsGithub/></a></div>
+                <div className="links"><a href="https://www.linkedin.com/in/hamza-ali7/" target="_blank" rel="noreferrer">< AiOutlineLinkedin/></a></div>
+            </div>
+        </div>
+    );
+}
+
+export default Footer;import {useState, React, useEffect} from 'react'
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import { Routes, Route} from 'react-router-dom'
+import Home from './Components/Home';
+import Header from './Components/Header';
+import Footer from './Components/Footer';
+import Profile from './Components/Profile';
+import IDE from './Components/IDE';
+import axios from 'axios';
+import Search from './Components/Search';
+
+function App() {
+  const [userID, setUserID] = useState({})
+  const [allUsers, setAllUsers] = useState([])
+  const [authorized, setAuthorized] = useState(false)
+  const [userCred, setUserCred] = useState({})
+  const [dropDown, setDropDown] = useState(true)
+  const [projects, setProjects] = useState([])
+  const [currentProject, setCurrentProject] = useState({})
+  const [filteredProjects, setFilteredProjects] = useState([])
+  const [addModal, setAddModal] = useState(false)
+  const [comment, setComment] = useState([])
+  const [input, setInput] = useState("")
+  const [user, setUser] = useState({
+    _id: "",
+    googleid: "",
+    email: "",
+    name: "",
+    profilePicture: "",
+    firstName: "",
+    lastName: ""
+  })
+  const [googleUser, setGoogleUser] = useState({
+    googleid: "",
+    email: "",
+    name: ""
+  })
+  
+  useEffect(() => {
+    authListener();
+    (async () => {
+        const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users");
+        setAllUsers(allUser.data)
+    })();
+  }, [])
+  
+  const authListener = async () => {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        setGoogleUser({
+          googleid: user.multiFactor.user.providerData[0].uid,
+          email: user.multiFactor.user.email,
+          name: user.multiFactor.user.displayName,
+        })
+        setUserID({userID: user.multiFactor.user.providerData[0].uid})
+      }
+    })
+  }
+
+  const handleGoogleLogin = async () => {
+    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
+      async (userCredentials) => {
+        if(userCredentials, allUsers){
+          setAuthorized(true);
+          setUserCred(userCredentials);
+          let count = allUsers.length;
+          allUsers.map(async (currentUser) => {
+            if(userCredentials.additionalUserInfo.profile.id === currentUser.googleid){
+              setUser({
+                _id: currentUser._id,
+                googleid: currentUser.googleid,
+                email: currentUser.email,
+                name: currentUser.name,
+                profilePicture: currentUser.profilePicture,
+                firstName: currentUser.firstName,
+                lastName: currentUser.lastName
+              })
+            }else{
+              count--
+            }
+            if(count === 0){
+              await makeUser({
+                googleid: userCredentials.additionalUserInfo.profile.id,
+                email: userCredentials.additionalUserInfo.profile.email,
+                name: userCredentials.additionalUserInfo.profile.name,
+                firstName: userCredentials.additionalUserInfo.profile.given_name,
+                lastName: userCredentials.additionalUserInfo.profile.family_name
+              });
+              await getAllUsers()
+            }
+          })
+        }
+      }
+    )
+  };
+
+  async function makeUser(person){
+    try{
+      const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", person);
+      setUser(newUser.data);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  async function getAllUsers(){
+    try{
+      const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users");
+      setAllUsers(allUser.data)
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  async function getUserByID(userID){
+    try{
+      const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userID.userID}`);
+      setUser(person.data[0]);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  async function getAllProjects(){
+    try{
+      const pjts = await axios.get("https://proshare-backend.herokuapp.com/api/projects");
+      setProjects(pjts.data);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const handleAddModal = () => {
+    setAddModal(!addModal);
+  }
+
+  const handleDropDownModal = () => {
+    setDropDown(!dropDown);
+  }
+
+  const handleAddModalSubmit = async (e) => {
+    e.preventDefault();
+    const allComments = currentProject.comments.map((comment) => {return(comment)})
+    allComments.push(comment)
+    const combinedComments = {
+      _id: currentProject._id,
+      comments: allComments
+    }
+    try{
+      await axios.put(`https://proshare-backend.herokuapp.com/api/projects`, combinedComments)
+    }catch(err){
+      console.log(err)
+    }
+    await getAllProjects();
+    setAddModal(!addModal);
+    setCurrentProject([])
+    let filter = projects.filter((project) => 
+            project.title.toLowerCase().includes(input.toLowerCase())
+      )
+    setFilteredProjects(filter)
+    setInput("")
+  }
+
+  const handleAddModalChange = async (e) => {
+    setComment(e.target.value);
+  }
+
+  return (
+    <div className="App">
+          <Header user={user} setUser={setUser} setUserID={setUserID} getUserByID={getUserByID} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
+          <Footer/>
+          <main>
+            <Routes>
+              <Route path="/" element={<Home user={user} allUsers={allUsers} projects={projects} setProjects={setProjects} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} setComment={setComment} handleAddModalChange={handleAddModalChange} handleAddModalSubmit={handleAddModalSubmit} setCurrentProject={setCurrentProject}/>}/>
+              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} projects={projects} setProjects={setProjects} authorized={authorized} dropDown={dropDown} handleDropDownModal={handleDropDownModal}/>}/>
+              <Route path="/ide" element={<IDE/>}/>
+              <Route path="/search" element={<Search allUsers={allUsers} projects={projects} setProjects={setProjects} filteredProjects={filteredProjects} setFilteredProjects={setFilteredProjects} input={input} setInput={setInput} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} setComment={setComment} handleAddModalChange={handleAddModalChange} handleAddModalSubmit={handleAddModalSubmit} setCurrentProject={setCurrentProject}/>}/>
+            </Routes>
+          </main>
+    </div>
+  );
+}
+export default App;
+
+

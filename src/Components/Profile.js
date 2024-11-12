@@ -35,7 +35,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
     function getProjects(){
         const axiosProjects = {
             method: "GET",
-            url: `https://proshare-backend.herokuapp.com/api/projects/${userID.userID}`
+            url: `https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects/${userID.userID}`
         };
         axios.request(axiosProjects)
             .then(function(res){
@@ -74,7 +74,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const Project = await axios.post("https://proshare-backend.herokuapp.com/api/projects", form)
+            const Project = await axios.post("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects", form)
         }
         catch(err){
             console.log(err)
@@ -96,7 +96,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
     const handlePutSubmit = async (e) => {
         e.preventDefault();
         try {
-            const Project = await axios.put("https://proshare-backend.herokuapp.com/api/projects", formPut)
+            const Project = await axios.put("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects", formPut)
         }
         catch(err){
             console.log(err)
@@ -107,7 +107,7 @@ function Profile({userID, userCred, authorized, projects, setProjects, dropDown,
 
     const handleDeleteSubmit = async (e) => {
         e.preventDefault();
-        await fetch(`https://proshare-backend.herokuapp.com/api/projects`, {
+        await fetch(`https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects`, {
             method: "DELETE",
             headers: {
            'Content-Type': 'application/json'

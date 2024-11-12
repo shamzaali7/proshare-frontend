@@ -9,7 +9,7 @@ function Search({dropDown, setDropDown, allUsers, projects, setProjects, addModa
 
     async function getData(){
         try{
-            const getProjects = await axios.get("https://proshare-backend.herokuapp.com/api/projects")
+            const getProjects = await axios.get("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects")
             if(getProjects){
                 setProjects(getProjects.data)
             }

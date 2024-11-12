@@ -40,7 +40,7 @@ function App() {
   useEffect(() => {
     authListener();
     (async () => {
-        const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users");
+        const allUser = await axios.get("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users");
         setAllUsers(allUser.data)
     })();
   }, [])
@@ -97,7 +97,7 @@ function App() {
 
   async function makeUser(person){
     try{
-      const newUser = await axios.post("https://proshare-backend.herokuapp.com/api/users", person);
+      const newUser = await axios.post("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users", person);
       setUser(newUser.data);
     }catch(err){
       console.log(err);
@@ -106,7 +106,7 @@ function App() {
 
   async function getAllUsers(){
     try{
-      const allUser = await axios.get("https://proshare-backend.herokuapp.com/api/users");
+      const allUser = await axios.get("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users");
       setAllUsers(allUser.data)
     }catch(err){
       console.log(err);
@@ -115,7 +115,7 @@ function App() {
 
   async function getUserByID(userID){
     try{
-      const person = await axios.get(`https://proshare-backend.herokuapp.com/api/users/${userID.userID}`);
+      const person = await axios.get(`https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users/${userID.userID}`);
       setUser(person.data[0]);
     }catch(err){
       console.log(err);
@@ -124,7 +124,7 @@ function App() {
 
   async function getAllProjects(){
     try{
-      const pjts = await axios.get("https://proshare-backend.herokuapp.com/api/projects");
+      const pjts = await axios.get("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects");
       setProjects(pjts.data);
     }catch(err){
       console.log(err);
@@ -148,7 +148,7 @@ function App() {
       comments: allComments
     }
     try{
-      await axios.put(`https://proshare-backend.herokuapp.com/api/projects`, combinedComments)
+      await axios.put(`https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects`, combinedComments)
     }catch(err){
       console.log(err)
     }

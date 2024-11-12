@@ -4,7 +4,7 @@ import {useState, React, useEffect} from 'react'
 function Home({projects, setProjects, allUsers, dropDown, setDropDown, addModal, handleAddModal, handleAddModalSubmit, setComment, setCurrentProject}){
     const axiosProjects = {
         method: "GET",
-        url: 'https://proshare-backend.herokuapp.com/api/projects'
+        url: 'https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects'
     }
 
     useEffect(() => {
