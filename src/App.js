@@ -1,186 +1,169 @@
-import {useState, React, useEffect} from 'react'
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import { Routes, Route} from 'react-router-dom'
+import React, { useState, useEffect, useContext } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { AppContext } from './index';
 import Home from './Components/Home';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Profile from './Components/Profile';
 import IDE from './Components/IDE';
-import axios from 'axios';
 import Search from './Components/Search';
 
 function App() {
-  const [userID, setUserID] = useState({})
-  const [allUsers, setAllUsers] = useState([])
-  const [authorized, setAuthorized] = useState(false)
-  const [userCred, setUserCred] = useState({})
-  const [dropDown, setDropDown] = useState(true)
-  const [projects, setProjects] = useState([])
-  const [currentProject, setCurrentProject] = useState({})
-  const [filteredProjects, setFilteredProjects] = useState([])
-  const [addModal, setAddModal] = useState(false)
-  const [comment, setComment] = useState([])
-  const [input, setInput] = useState("")
-  const [user, setUser] = useState({
-    _id: "",
-    googleid: "",
-    email: "",
-    name: "",
-    profilePicture: "",
-    firstName: "",
-    lastName: ""
-  })
-  const [googleUser, setGoogleUser] = useState({
-    googleid: "",
-    email: "",
-    name: ""
-  })
+  const { user, userID, allUsers, authorized, userCred, error, clearError } = useContext(AppContext);
   
-  useEffect(() => {
-    authListener();
-    (async () => {
-        const allUser = await axios.get("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users");
-        setAllUsers(allUser.data)
-    })();
-  }, [])
+  // UI State
+  const [dropDown, setDropDown] = useState(true);
+  const [currentProject, setCurrentProject] = useState({});
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   
-  const authListener = async () => {
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        setGoogleUser({
-          googleid: user.multiFactor.user.providerData[0].uid,
-          email: user.multiFactor.user.email,
-          name: user.multiFactor.user.displayName,
-        })
-        setUserID({userID: user.multiFactor.user.providerData[0].uid})
-      }
-    })
-  }
+  // Modal states
+  const [addCommentModal, setAddCommentModal] = useState(false);
+  const [comment, setComment] = useState("");
+  
+  // Header-specific state
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
 
-  const handleGoogleLogin = async () => {
-    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
-      async (userCredentials) => {
-        if(userCredentials, allUsers){
-          setAuthorized(true);
-          setUserCred(userCredentials);
-          let count = allUsers.length;
-          allUsers.map(async (currentUser) => {
-            if(userCredentials.additionalUserInfo.profile.id === currentUser.googleid){
-              setUser({
-                _id: currentUser._id,
-                googleid: currentUser.googleid,
-                email: currentUser.email,
-                name: currentUser.name,
-                profilePicture: currentUser.profilePicture,
-                firstName: currentUser.firstName,
-                lastName: currentUser.lastName
-              })
-            }else{
-              count--
-            }
-            if(count === 0){
-              await makeUser({
-                googleid: userCredentials.additionalUserInfo.profile.id,
-                email: userCredentials.additionalUserInfo.profile.email,
-                name: userCredentials.additionalUserInfo.profile.name,
-                firstName: userCredentials.additionalUserInfo.profile.given_name,
-                lastName: userCredentials.additionalUserInfo.profile.family_name
-              });
-              await getAllUsers()
-            }
-          })
-        }
-      }
-    )
+  // Modal handlers
+  const handleAddCommentModal = () => {
+    setAddCommentModal(!addCommentModal);
+    if (addCommentModal) {
+      setComment("");
+      setCurrentProject({});
+    }
   };
-
-  async function makeUser(person){
-    try{
-      const newUser = await axios.post("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users", person);
-      setUser(newUser.data);
-    }catch(err){
-      console.log(err);
-    }
-  }
-
-  async function getAllUsers(){
-    try{
-      const allUser = await axios.get("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users");
-      setAllUsers(allUser.data)
-    }catch(err){
-      console.log(err);
-    }
-  }
-
-  async function getUserByID(userID){
-    try{
-      const person = await axios.get(`https://proshare-backend-27b5d2fdd236.herokuapp.com/api/users/${userID.userID}`);
-      setUser(person.data[0]);
-    }catch(err){
-      console.log(err);
-    }
-  }
-
-  async function getAllProjects(){
-    try{
-      const pjts = await axios.get("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects");
-      setProjects(pjts.data);
-    }catch(err){
-      console.log(err);
-    }
-  }
-
-  const handleAddModal = () => {
-    setAddModal(!addModal);
-  }
 
   const handleDropDownModal = () => {
     setDropDown(!dropDown);
-  }
+  };
 
-  const handleAddModalSubmit = async (e) => {
-    e.preventDefault();
-    const allComments = currentProject.comments.map((comment) => {return(comment)})
-    allComments.push(comment)
-    const combinedComments = {
-      _id: currentProject._id,
-      comments: allComments
-    }
-    try{
-      await axios.put(`https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects`, combinedComments)
-    }catch(err){
-      console.log(err)
-    }
-    await getAllProjects();
-    setAddModal(!addModal);
-    setCurrentProject([])
-    let filter = projects.filter((project) => 
-            project.title.toLowerCase().includes(input.toLowerCase())
-      )
-    setFilteredProjects(filter)
-    setInput("")
-  }
-
-  const handleAddModalChange = async (e) => {
+  const handleCommentChange = (e) => {
     setComment(e.target.value);
-  }
+  };
+
+  // Header handlers
+  const handleMobileMenuToggle = () => {
+    setShowMobileMenu(!showMobileMenu);
+    if (!showMobileMenu) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  };
+
+  const handleProfileDropdownToggle = () => {
+    setShowProfileDropdown(!showProfileDropdown);
+  };
+
+  const handleProfilePictureModalToggle = () => {
+    setShowProfilePictureModal(!showProfilePictureModal);
+    setShowProfileDropdown(false);
+  };
+
+  // Search handlers
+  const handleSearchInputChange = (value) => {
+    setSearchInput(value);
+  };
+
+  const handleFilteredProjectsChange = (filteredProjects) => {
+    setFilteredProjects(filteredProjects);
+  };
+
+  // Project handlers
+  const handleSetCurrentProject = (project) => {
+    setCurrentProject(project);
+  };
+
+  useEffect(() => {
+    if (showMobileMenu) {
+      document.body.style.overflow = "auto";
+    }
+  }, [showMobileMenu]);
+
+  // Clear error after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        clearError();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, clearError]);
 
   return (
     <div className="App">
-          <Header user={user} setUser={setUser} setUserID={setUserID} getUserByID={getUserByID} authorized={authorized} setAuthorized={setAuthorized} userCred={userCred} handleGoogleLogin={handleGoogleLogin}/>
-          <Footer/>
-          <main>
-            <Routes>
-              <Route path="/" element={<Home user={user} allUsers={allUsers} projects={projects} setProjects={setProjects} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} setComment={setComment} handleAddModalChange={handleAddModalChange} handleAddModalSubmit={handleAddModalSubmit} setCurrentProject={setCurrentProject}/>}/>
-              <Route path="/accounts" element={<Profile userID={userID} userCred={userCred} projects={projects} setProjects={setProjects} authorized={authorized} dropDown={dropDown} handleDropDownModal={handleDropDownModal}/>}/>
-              <Route path="/ide" element={<IDE/>}/>
-              <Route path="/search" element={<Search allUsers={allUsers} projects={projects} setProjects={setProjects} filteredProjects={filteredProjects} setFilteredProjects={setFilteredProjects} input={input} setInput={setInput} dropDown={dropDown} setDropDown={setDropDown} addModal={addModal} setAddModal={setAddModal} handleAddModal={handleAddModal} setComment={setComment} handleAddModalChange={handleAddModalChange} handleAddModalSubmit={handleAddModalSubmit} setCurrentProject={setCurrentProject}/>}/>
-            </Routes>
-          </main>
+      {error && (
+        <div className="error-banner bg-red-500 text-white p-4 text-center">
+          {error}
+          <button onClick={clearError} className="ml-4 underline">
+            Dismiss
+          </button>
+        </div>
+      )}
+      
+      <Header 
+        showMobileMenu={showMobileMenu}
+        showProfileDropdown={showProfileDropdown}
+        showProfilePictureModal={showProfilePictureModal}
+        onMobileMenuToggle={handleMobileMenuToggle}
+        onProfileDropdownToggle={handleProfileDropdownToggle}
+        onProfilePictureModalToggle={handleProfilePictureModalToggle}
+      />
+      
+      <Footer />
+      
+      <main>
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <Home 
+                dropDown={dropDown}
+                setDropDown={setDropDown}
+                addCommentModal={addCommentModal}
+                handleAddCommentModal={handleAddCommentModal}
+                comment={comment}
+                handleCommentChange={handleCommentChange}
+                currentProject={currentProject}
+                setCurrentProject={handleSetCurrentProject}
+              />
+            } 
+          />
+          <Route 
+            path="/accounts" 
+            element={
+              <Profile 
+                dropDown={dropDown} 
+                handleDropDownModal={handleDropDownModal}
+              />
+            } 
+          />
+          <Route path="/ide" element={<IDE />} />
+          <Route 
+            path="/search" 
+            element={
+              <Search 
+                dropDown={dropDown}
+                setDropDown={setDropDown}
+                addCommentModal={addCommentModal}
+                handleAddCommentModal={handleAddCommentModal}
+                comment={comment}
+                handleCommentChange={handleCommentChange}
+                currentProject={currentProject}
+                setCurrentProject={handleSetCurrentProject}
+                filteredProjects={filteredProjects}
+                setFilteredProjects={handleFilteredProjectsChange}
+                searchInput={searchInput}
+                setSearchInput={handleSearchInputChange}
+              />
+            } 
+          />
+        </Routes>
+      </main>
     </div>
   );
 }
+
 export default App;
-
-

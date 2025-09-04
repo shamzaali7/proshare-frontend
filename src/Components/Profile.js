@@ -1,319 +1,281 @@
-import axios from 'axios';
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect, useContext } from 'react';
+import { AppContext } from '../index';
+import ProjectCard from './ProjectCard';
+import ProjectFormModal from './ProjectFormModal';
 
-function Profile({userID, userCred, authorized, projects, setProjects, dropDown, handleDropDownModal}){
-    const [modal, setModal] = useState(false);
-    const [modalTwo, setModalTwo] = useState(false);
-    const [modalDelete, setModalDelete] = useState(false);
-    const [form, setForm] = useState({
-        title: "",
-        github: "",
-        deployedLink: "",
-        picture: "",
-        gid: userID.userID,
-        backendRepo: "",
-        backendDeploy: "",
-        creator: userCred.additionalUserInfo.profile.name
+function Profile({ dropDown, handleDropDownModal }) {
+  const { 
+    user,
+    userID, 
+    userCred, 
+    authorized, 
+    getUserProjects,
+    createProject,
+    updateProject,
+    deleteProject,
+    loading,
+    error 
+  } = useContext(AppContext);
+
+  const [userProjects, setUserProjects] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [modalTwo, setModalTwo] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
+  
+  const [form, setForm] = useState({
+    title: "",
+    github: "",
+    deployedLink: "",
+    picture: "",
+    gid: userID.userID,
+    backendRepo: "",
+    backendDeploy: "",
+    creator: userCred?.additionalUserInfo?.profile?.name || user.name
+  });
+  
+  const [formPut, setFormPut] = useState({
+    _id: "",
+    title: "",
+    github: "",
+    deployedLink: "",
+    picture: "",
+    gid: userID.userID,
+    backendRepo: "",
+    backendDeploy: "",
+    creator: userCred?.additionalUserInfo?.profile?.name || user.name
+  });
+  
+  const [formDelete, setFormDelete] = useState({ _id: "" });
+
+  useEffect(() => {
+    if (authorized && userID.userID) {
+      loadUserProjects();
+    }
+  }, [authorized, userID.userID]);
+
+  const loadUserProjects = async () => {
+    try {
+      const projects = await getUserProjects(userID.userID);
+      setUserProjects(projects);
+    } catch (err) {
+      console.log("Error loading user projects:", err);
+    }
+  };
+
+  // Modal handlers
+  const handleModalState = () => {
+    setModal(!modal);
+    if (modal) {
+      resetForm();
+    }
+  };
+  
+  const handlePutModalState = () => {
+    setModalTwo(!modalTwo);
+  };
+  
+  const handleDeleteModalState = () => {
+    setModalDelete(!modalDelete);
+  };
+
+  // Form handlers
+  const editForm = (value) => {
+    setForm(prev => ({ ...prev, ...value }));
+  };
+  
+  const editFormTwo = (value) => {
+    setFormPut(prev => ({ ...prev, ...value }));
+  };
+
+  const resetForm = () => {
+    setForm({
+      title: "",
+      github: "",
+      deployedLink: "",
+      picture: "",
+      gid: userID.userID,
+      backendRepo: "",
+      backendDeploy: "",
+      creator: userCred?.additionalUserInfo?.profile?.name || user.name
     });
-    const [formPut, setFormPut] = useState({
-        _id: "",
-        title: "",
-        github: "",
-        deployedLink: "",
-        picture: "",
-        gid: userID.userID,
-        backendRepo: "",
-        backendDeploy: "",
-        creator: userCred.additionalUserInfo.profile.name
-    })
-    const [formDelete, setFormDelete] = useState({_id: ""})
+  };
 
-    useEffect(() => {
-        getProjects()
-      }, []);
-
-    function getProjects(){
-        const axiosProjects = {
-            method: "GET",
-            url: `https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects/${userID.userID}`
-        };
-        axios.request(axiosProjects)
-            .then(function(res){
-                setProjects(res.data)
-            }).catch(err => console.log(err))
+  // CRUD operations
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createProject(form);
+      handleModalState();
+      await loadUserProjects();
+    } catch (err) {
+      console.log("Error creating project:", err);
     }
-
-    if(modal || modalTwo || modalDelete){
-        document.body.style.overflow = "hidden";
-    }else{
-        document.body.style.overflow = "auto"
+  };
+  
+  const handlePutSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateProject(formPut);
+      handlePutModalState();
+      await loadUserProjects();
+    } catch (err) {
+      console.log("Error updating project:", err);
     }
+  };
 
-    const handleModalState = () => {
-        setModal(!modal)
+  const handleDeleteSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await deleteProject(formDelete._id);
+      handleDeleteModalState();
+      await loadUserProjects();
+    } catch (err) {
+      console.log("Error deleting project:", err);
+    }
+  };
+
+  const handleEditProject = (project) => {
+    setFormPut({
+      _id: project._id,
+      title: project.title,
+      github: project.github,
+      deployedLink: project.deployedLink,
+      backendRepo: project.backendRepo || "",
+      backendDeploy: project.backendDeploy || "",
+      picture: project.picture,
+      gid: project.gid,
+      creator: project.creator
+    });
+    handlePutModalState();
+  };
+
+  const handleDeleteProject = (project) => {
+    setFormDelete({ _id: project._id });
+    handleDeleteModalState();
+  };
+
+  // Body overflow management
+  useEffect(() => {
+    if (modal || modalTwo || modalDelete) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
     }
     
-    const handlePutModalState = () => {
-        setModalTwo(!modalTwo)
-    }
-    const handleDeleteModalState = () => {
-        setModalDelete(!modalDelete)
-    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [modal, modalTwo, modalDelete]);
 
-    const editForm = (value) => {
-        return setForm((last) => {
-            return {...last, ...value}
-        })
-    }
-    const editFormTwo = (value) => {
-        return setFormPut((last) => {
-            return {...last, ...value}
-        })
-    }
+  if (!authorized) {
+    return (
+      <div className="breach">
+        Please Sign In
+      </div>
+    );
+  }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const Project = await axios.post("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects", form)
-        }
-        catch(err){
-            console.log(err)
-        }
-        handleModalState();
-        getProjects();
-        setForm({
-            title: "",
-            github: "",
-            deployedLink: "",
-            picture: "",
-            gid: userID,
-            backendRepo: "",
-            backendDeploy: "",
-            creator:  userCred.additionalUserInfo.profile.name
-        })
-    }
-    
-    const handlePutSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const Project = await axios.put("https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects", formPut)
-        }
-        catch(err){
-            console.log(err)
-        }
-        handlePutModalState();
-        getProjects();
-    }
-
-    const handleDeleteSubmit = async (e) => {
-        e.preventDefault();
-        await fetch(`https://proshare-backend-27b5d2fdd236.herokuapp.com/api/projects`, {
-            method: "DELETE",
-            headers: {
-           'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({_id : formDelete._id})
-        });
-        handleDeleteModalState();
-        getProjects();
-    }
-
-    const handleClose = async (e) => {
-        document.body.style.overflow = "auto";
-    }
-
-    if (authorized){
-    return(
-        <div className="container-home font-change">
-            <div className="container-new-project">
-                <div></div>
-                <div className="explore">My Projects</div>
-                <div className="explore">
-                    <p><button onClick={handleModalState} className="new-project">
-                        New Project
-                    </button>
-                    </p>
-                </div>
-            </div>
-            {projects && (projects.map((project) => {
-                return(
-                    <div className="container-spacer">
-                        <div></div>
-                        <div className="home-projects shadow-xl">
-                            <div className="container-title">
-                                <div></div>
-                                <div className="project-titles-box"><p className="project-titles bg-white">{project.title}</p></div>
-                                <div></div>
-                            </div>
-                            <div className="home-showcase">
-                                <div className="container-showcase">
-                                    <div>
-                                        <div className="container-deployed">
-                                            <div></div>
-                                            <div className="home-deployed"><p><a href={project.deployedLink} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Site</p></a></p></div>
-                                            <div></div>
-                                        </div>
-                                        <div className="container-repo">
-                                            <div></div>
-                                            <div className="home-repo"><p><a href={project.github} target="_blank" rel="noreferrer"><p className="side-elements slink">Frontend Repo</p></a></p></div>
-                                            <div></div>
-                                        </div>
-                                        {project.backendRepo && (
-                                            <span>
-                                                <div className="container-back-link">
-                                                    <div></div>
-                                                    <div className="home-deployedLink"><p><a href={project.backendDeploy} target="_blank" rel="noreferrer"><p className="side-elements slink">Deployed Back</p></a></p></div>
-                                                    <div></div>
-                                                </div>
-                                                <div className="container-back-repo">
-                                                    <div></div>
-                                                    <div className="home-repo"><p><a href={project.backendRepo} target="_blank" rel="noreferrer"><p className="side-elements slink">Backend Repo</p></a></p></div>
-                                                    <div></div>
-                                                </div>
-                                            </span>
-                                        )} 
-                                    </div>
-                                    <div className="box-showcase"><img className="project-pic" src={project.picture} alt=""/></div>
-                                    <div className="home-comments">
-                                        <div className="container-comment-btn">
-                                            <div></div>
-                                            <div className="box-comment-btn">
-                                                <button onClick={handleDropDownModal} className="side-elements slink focus:ring-2 focus:outline-none focus:ring-grey-700 font-medium rounded-lg text-sm px-1 py-.5 text-center inline-flex items-center dark:hover:bg-grey-700 dark:focus:ring-grey-800">
-                                                    Comments 
-                                                    <svg className="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7">
-                                                        </path>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <div></div>
-                                        </div>
-                                        <div className="container-dropdown">
-                                            <div></div>
-                                            {dropDown && (
-                                                <div className="comments-display items-center divide-y divide-gray-100 shadow rounded dark:bg-gray-600 cursor-default">          
-                                                    {project.comments.map((comment) => {
-                                                        if(comment){
-                                                            return(
-                                                                <span className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-slate-300 text-slate-50 text-xs">{comment}</span> 
-                                                            )
-                                                        }
-                                                    })}
-                                                </div>
-                                            )}
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="change-buttons">
-                                    <button className="btn-update-project" onClick={() => {
-                                            setFormPut({_id : project._id, title: project.title, github: project.github, deployedLink: project.deployedLink, backendRepo: project.backendRepo, backendDeploy: project.backendDeploy, picture: project.picture})
-                                            handlePutModalState()}}>
-                                        Update
-                                    </button>
-                                    <button className="btn-delete-project" onClick={() => {
-                                            setFormDelete({_id : project._id})
-                                            handleDeleteModalState()}}>
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div></div>
-                    </div>
-                )
-            }))}
-            {modal && (
-                <div className="modal">
-                <div onClick={handleModalState} className="overlay"></div>
-                <div className="modal-content">
-                    <form onSubmit={handleSubmit} onClose={handleClose}>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Title</h3>
-                            <input type="text" className="input-form" onChange={(e) => editForm({ title: e.target.value})}/>
-                        </div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Front-End Repo</h3>
-                            <input type="text" className="input-form" onChange={(e) => editForm({ github: e.target.value})}/>
-                        </div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Front-End Site</h3>
-                            <input type="text" className="input-form" onChange={(e) => editForm({ deployedLink: e.target.value})}/>
-                        </div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Back-End Repo</h3>
-                            <input type="text" className="input-form" onChange={(e) => editForm({ backendRepo: e.target.value})}/>
-                        </div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Back-End Site</h3>
-                            <input type="text" className="input-form" onChange={(e) => editForm({ backendDeploy: e.target.value})}/>
-                        </div>
-                        <div className="input-box  mb-1">
-                            <h3 className="input-lbl">Picture Link</h3>
-                            <input type="text" className="input-form" onChange={(e) => editForm({ picture: e.target.value})}/>
-                        </div>
-                        <button onClick={handleSubmit} className="btn-update-project">Post</button>
-                    </form>
-                    <button onClick={handleModalState} className="close-modal">Exit</button>
-                </div>             
-                </div>
-            )}
-            {modalTwo && (
-                <div className="modal">
-                <div onClick={handlePutModalState} className="overlay"></div>
-                <div className="modal-content">
-                    <form onSubmit={handlePutSubmit}>
-                        <div className="title-form">Update</div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Title</h3>
-                            <input type="text" value={formPut.title} className="input-form" onChange={(e) => editFormTwo({ title: e.target.value})}/>
-                        </div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Front-End Repo</h3>
-                            <input type="text" value={formPut.github} className="input-form" onChange={(e) => editFormTwo({ github: e.target.value})}/>
-                        </div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Front-End Site</h3>
-                            <input type="text" value={formPut.deployedLink} className="input-form" onChange={(e) => editFormTwo({ deployedLink: e.target.value})}/>
-                        </div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Back-End Repo</h3>
-                            <input type="text" value={formPut.backendRepo} className="input-form" onChange={(e) => editFormTwo({ backendRepo: e.target.value})}/>
-                        </div>
-                        <div className="input-box">
-                            <h3 className="input-lbl">Back-End Site</h3>
-                            <input type="text" value={formPut.backendDeploy} className="input-form" onChange={(e) => editFormTwo({ backendDeploy: e.target.value})}/>
-                        </div>
-                        <div className="input-box  mb-1">
-                            <h3 className="input-lbl">Picture Link</h3>
-                            <input type="text" value={formPut.picture} className="input-form" onChange={(e) => editFormTwo({ picture: e.target.value})}/>
-                        </div>
-                        <button onClick={handlePutSubmit} className="btn-update-project">Submit</button>
-                    </form>
-                    <button onClick={handlePutModalState} className="close-modal">Exit</button>
-                </div>             
-            </div>
-            )}
-            {modalDelete && (
-                <div className="modal">
-                    <div onClick={handleDeleteModalState} className="overlay"></div>
-                    <div className="modal-content">
-                        <form onSubmit={handleDeleteSubmit}>
-                            <div className="delete-modal-question">Confirm Delete</div>
-                            <button onClick={handleDeleteSubmit} className="btn-delete-project">Delete</button>
-                        </form>
-                        <button onClick={handleDeleteModalState} className="close-modal">Cancel</button>
-                    </div>             
-                </div>
-            )}
+  return (
+    <div className="container-home font-change">
+      <div className="container-new-project">
+        <div></div>
+        <div className="explore">My Projects</div>
+        <div className="explore">
+          <button onClick={handleModalState} className="new-project">
+            New Project
+          </button>
         </div>
-    )}
-    else {
-        return(
-            <div className="breach">
-                Please Sign In
-            </div>
-        )
-    }}
+      </div>
+      
+      {loading && userProjects.length === 0 && (
+        <div className="text-center text-gray-500 mt-10">
+          Loading your projects...
+        </div>
+      )}
+      
+      {error && (
+        <div className="text-center text-red-600 mt-10">
+          {error}
+        </div>
+      )}
+      
+      {!loading && userProjects.length === 0 && (
+        <div className="text-center text-gray-500 mt-10">
+          You haven't created any projects yet. Click "New Project" to get started!
+        </div>
+      )}
+
+      {userProjects.map((project, index) => (
+        <div key={project._id || index} className="container-spacer">
+          <div></div>
+          <ProjectCard
+            project={project}
+            allUsers={[]} // Not needed for user's own projects
+            dropDown={dropDown}
+            setDropDown={handleDropDownModal}
+            showActions={true}
+            onEdit={() => handleEditProject(project)}
+            onDelete={() => handleDeleteProject(project)}
+            isOwner={true}
+          />
+          <div></div>
+        </div>
+      ))}
+
+      {/* Create Project Modal */}
+      <ProjectFormModal
+        isOpen={modal}
+        onClose={handleModalState}
+        onSubmit={handleSubmit}
+        form={form}
+        onFormChange={editForm}
+        title="Create New Project"
+        submitText="Post"
+      />
+
+      {/* Edit Project Modal */}
+      <ProjectFormModal
+        isOpen={modalTwo}
+        onClose={handlePutModalState}
+        onSubmit={handlePutSubmit}
+        form={formPut}
+        onFormChange={editFormTwo}
+        title="Update Project"
+        submitText="Submit"
+        isEdit={true}
+      />
+
+      {/* Delete Confirmation Modal */}
+      {modalDelete && (
+        <div className="modal">
+          <div onClick={handleDeleteModalState} className="overlay"></div>
+          <div className="modal-content">
+            <form onSubmit={handleDeleteSubmit}>
+              <div className="delete-modal-question">
+                Are you sure you want to delete this project? This action cannot be undone.
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button 
+                  type="submit"
+                  className="btn-delete-project"
+                  disabled={loading}
+                >
+                  {loading ? "Deleting..." : "Delete"}
+                </button>
+                <button 
+                  type="button"
+                  onClick={handleDeleteModalState} 
+                  className="close-modal"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>             
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default Profile;
