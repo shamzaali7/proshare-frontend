@@ -108,14 +108,12 @@ function Profile({ dropDown, handleDropDownModal }) {
     
     try {
       await createProject(form);
-      handleModalState(); // Close modal
-      await loadUserProjects(); // Reload user projects
     } catch (err) {
       console.log("Error creating project:", err);
-      // Even if there's an error, reload projects in case it was actually created
-      await loadUserProjects();
-      handleModalState(); // Close modal regardless
     } finally {
+      // Always close modal and reload projects
+      handleModalState();
+      await loadUserProjects();
       setLocalLoading(false);
     }
   };
@@ -126,11 +124,12 @@ function Profile({ dropDown, handleDropDownModal }) {
     
     try {
       await updateProject(formPut);
-      handlePutModalState();
-      await loadUserProjects();
     } catch (err) {
       console.log("Error updating project:", err);
     } finally {
+      // Always close modal and reload projects
+      handlePutModalState();
+      await loadUserProjects();
       setLocalLoading(false);
     }
   };
@@ -221,21 +220,19 @@ function Profile({ dropDown, handleDropDownModal }) {
         </div>
       )}
 
+      {/* Fixed Layout - Match Home Page */}
       {userProjects.map((project, index) => (
-        <div key={project._id || index} className="container-spacer">
-          <div></div>
-          <ProjectCard
-            project={project}
-            allUsers={[]} // Not needed for user's own projects
-            dropDown={dropDown}
-            setDropDown={handleDropDownModal}
-            showActions={true}
-            onEdit={() => handleEditProject(project)}
-            onDelete={() => handleDeleteProject(project)}
-            isOwner={true}
-          />
-          <div></div>
-        </div>
+        <ProjectCard
+          key={project._id || index}
+          project={project}
+          allUsers={[]} // Not needed for user's own projects
+          dropDown={dropDown}
+          setDropDown={handleDropDownModal}
+          showActions={true}
+          onEdit={() => handleEditProject(project)}
+          onDelete={() => handleDeleteProject(project)}
+          isOwner={true}
+        />
       ))}
 
       {/* Create Project Modal */}

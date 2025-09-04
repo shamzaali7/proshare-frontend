@@ -8,6 +8,7 @@ import 'firebase/compat/auth';
 import axios from 'axios';
 import App from './App';
 
+// Create context for global state
 export const AppContext = createContext();
 
 function AppProvider() {
@@ -48,6 +49,7 @@ function AppProvider() {
       return trimmedUrl;
     }
     
+    // Add https:// if it contains .com
     if (trimmedUrl.includes('.com')) {
       return `https://${trimmedUrl}`;
     }
@@ -151,9 +153,6 @@ function AppProvider() {
 
   // Project Management Functions
   async function getAllProjects() {
-    setLoading(true);
-    setError(null);
-    
     try {
       const response = await axios.get(`${API_BASE_URL}/projects`);
       setProjects(response.data);
@@ -162,15 +161,10 @@ function AppProvider() {
       console.log("Error fetching projects:", err);
       setError("Failed to fetch projects");
       throw err;
-    } finally {
-      setLoading(false);
     }
   }
 
   async function getUserProjects(userId) {
-    setLoading(true);
-    setError(null);
-    
     try {
       const response = await axios.get(`${API_BASE_URL}/projects/${userId}`);
       return response.data;
@@ -178,15 +172,10 @@ function AppProvider() {
       console.log("Error fetching user projects:", err);
       setError("Failed to fetch user projects");
       throw err;
-    } finally {
-      setLoading(false);
     }
   }
 
   async function createProject(projectData) {
-    setLoading(true);
-    setError(null);
-    
     try {
       // Normalize URLs before sending
       const normalizedProject = {
@@ -206,19 +195,13 @@ function AppProvider() {
       return response.data;
     } catch (err) {
       console.log("Error creating project:", err);
-      // Don't set error here since project might have been created
-      // Instead, refresh projects to see if it was created
+      // Always refresh projects to see if it was created despite error
       await getAllProjects();
-      throw err;
-    } finally {
-      setLoading(false);
+      return null; // Don't throw error, let component handle the success
     }
   }
 
   async function updateProject(projectData) {
-    setLoading(true);
-    setError(null);
-    
     try {
       // Normalize URLs before sending
       const normalizedProject = {
@@ -238,17 +221,13 @@ function AppProvider() {
       return response.data;
     } catch (err) {
       console.log("Error updating project:", err);
-      setError("Failed to update project");
-      throw err;
-    } finally {
-      setLoading(false);
+      // Always refresh projects to see if it was updated despite error
+      await getAllProjects();
+      return null; // Don't throw error, let component handle the success
     }
   }
 
   async function deleteProject(projectId) {
-    setLoading(true);
-    setError(null);
-    
     try {
       await fetch(`${API_BASE_URL}/projects`, {
         method: "DELETE",
@@ -263,10 +242,9 @@ function AppProvider() {
       
     } catch (err) {
       console.log("Error deleting project:", err);
-      setError("Failed to delete project");
+      // Always refresh projects
+      await getAllProjects();
       throw err;
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -328,15 +306,18 @@ function AppProvider() {
         _id: projectId,
         comments: allComments
       };
-      await axios.put(`${API_BASE_URL}/projects`, combinedComments);
+      
+      const response = await axios.put(`${API_BASE_URL}/projects`, combinedComments);
       
       // Refresh all projects to get updated comments
       await getAllProjects();
       
+      return response.data;
     } catch (err) {
       console.log("Error adding comment:", err);
-      setError("Failed to add comment");
-      throw err;
+      // Always refresh projects to see if comment was added despite error
+      await getAllProjects();
+      return null; // Don't throw error, let component handle the success
     }
   }
 

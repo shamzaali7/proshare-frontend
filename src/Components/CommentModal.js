@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function CommentModal({ isOpen, onClose, onSubmit, comment, onCommentChange }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(e);
+    if (!comment.trim() || isSubmitting) return;
+    
+    setIsSubmitting(true);
+    try {
+      await onSubmit(e);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -23,13 +32,22 @@ function CommentModal({ isOpen, onClose, onSubmit, comment, onCommentChange }) {
               placeholder="Write your comment..."
               required
               autoFocus
+              disabled={isSubmitting}
             />
           </div>
-          <button type="submit" className="btn-update-project">
-            Submit
+          <button 
+            type="submit" 
+            className="btn-update-project"
+            disabled={isSubmitting || !comment.trim()}
+          >
+            {isSubmitting ? "Submitting..." : "Submit"}
           </button>
         </form>
-        <button onClick={onClose} className="close-modal">
+        <button 
+          onClick={onClose} 
+          className="close-modal"
+          disabled={isSubmitting}
+        >
           Exit
         </button>
       </div>             

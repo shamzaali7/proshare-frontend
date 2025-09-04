@@ -64,6 +64,8 @@ function Search({
       }
     } catch (err) {
       console.log("Error adding comment:", err);
+      // Close modal even if there's an error, since comment might have been added
+      handleAddCommentModal();
     }
   };
 
@@ -138,16 +140,19 @@ function Search({
         )}
         
         {filteredProjects.map((project, index) => (
-          <ProjectCard
-            key={project._id || index}
-            project={project}
-            allUsers={allUsers}
-            dropDown={dropDown}
-            setDropDown={setDropDown}
-            onCommentClick={() => handleProjectCommentClick(project)}
-            showActions={false}
-            isOwner={isProjectOwner(project)}
-          />
+          <div key={project._id || index} className="container-spacer">
+            <div></div>
+            <ProjectCard
+              project={project}
+              allUsers={allUsers}
+              dropDown={dropDown}
+              setDropDown={setDropDown}
+              onCommentClick={() => handleProjectCommentClick(project)}
+              showActions={false}
+              isOwner={isProjectOwner(project)}
+            />
+            <div></div>
+          </div>
         ))}
         
         <div></div>
