@@ -8,7 +8,6 @@ import 'firebase/compat/auth';
 import axios from 'axios';
 import App from './App';
 
-// Create context for global state
 export const AppContext = createContext();
 
 function AppProvider() {
@@ -37,6 +36,24 @@ function AppProvider() {
   });
 
   const API_BASE_URL = "https://proshare-backend-27b5d2fdd236.herokuapp.com/api";
+
+  // Helper function to normalize URLs
+  const normalizeUrl = (url) => {
+    if (!url) return url;
+    const trimmedUrl = url.trim();
+    if (!trimmedUrl) return trimmedUrl;
+    
+    // If it already has protocol, return as is
+    if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
+      return trimmedUrl;
+    }
+    
+    if (trimmedUrl.includes('.com')) {
+      return `https://${trimmedUrl}`;
+    }
+    
+    return trimmedUrl;
+  };
 
   useEffect(() => {
     authListener();
@@ -171,11 +188,27 @@ function AppProvider() {
     setError(null);
     
     try {
-      const response = await axios.post(`${API_BASE_URL}/projects`, projectData);
+      // Normalize URLs before sending
+      const normalizedProject = {
+        ...projectData,
+        github: normalizeUrl(projectData.github),
+        deployedLink: normalizeUrl(projectData.deployedLink),
+        picture: normalizeUrl(projectData.picture),
+        backendRepo: normalizeUrl(projectData.backendRepo),
+        backendDeploy: normalizeUrl(projectData.backendDeploy)
+      };
+
+      const response = await axios.post(`${API_BASE_URL}/projects`, normalizedProject);
+      
+      // Refresh all projects after creating
+      await getAllProjects();
+      
       return response.data;
     } catch (err) {
       console.log("Error creating project:", err);
-      setError("Failed to create project");
+      // Don't set error here since project might have been created
+      // Instead, refresh projects to see if it was created
+      await getAllProjects();
       throw err;
     } finally {
       setLoading(false);
@@ -187,7 +220,21 @@ function AppProvider() {
     setError(null);
     
     try {
-      const response = await axios.put(`${API_BASE_URL}/projects`, projectData);
+      // Normalize URLs before sending
+      const normalizedProject = {
+        ...projectData,
+        github: normalizeUrl(projectData.github),
+        deployedLink: normalizeUrl(projectData.deployedLink),
+        picture: normalizeUrl(projectData.picture),
+        backendRepo: normalizeUrl(projectData.backendRepo),
+        backendDeploy: normalizeUrl(projectData.backendDeploy)
+      };
+
+      const response = await axios.put(`${API_BASE_URL}/projects`, normalizedProject);
+      
+      // Refresh all projects after updating
+      await getAllProjects();
+      
       return response.data;
     } catch (err) {
       console.log("Error updating project:", err);
@@ -210,6 +257,10 @@ function AppProvider() {
         },
         body: JSON.stringify({ _id: projectId })
       });
+      
+      // Refresh all projects after deleting
+      await getAllProjects();
+      
     } catch (err) {
       console.log("Error deleting project:", err);
       setError("Failed to delete project");
@@ -255,9 +306,10 @@ function AppProvider() {
 
   async function updateUserProfilePicture(profilePicture) {
     try {
+      const normalizedPicture = normalizeUrl(profilePicture);
       const updatedUser = await axios.put(`${API_BASE_URL}/users/`, {
         _id: user._id,
-        profilePicture: profilePicture
+        profilePicture: normalizedPicture
       });
       setUser({ ...user, profilePicture: updatedUser.data.profilePicture });
       return updatedUser.data;
@@ -277,7 +329,10 @@ function AppProvider() {
         comments: allComments
       };
       await axios.put(`${API_BASE_URL}/projects`, combinedComments);
-      await getAllProjects(); // Refresh projects
+      
+      // Refresh all projects to get updated comments
+      await getAllProjects();
+      
     } catch (err) {
       console.log("Error adding comment:", err);
       setError("Failed to add comment");
@@ -325,6 +380,7 @@ function AppProvider() {
     
     // Utility
     clearError,
+    normalizeUrl,
     API_BASE_URL
   };
 

@@ -12,7 +12,7 @@ function ProjectCard({
   isOwner = false 
 }) {
   const getProjectCreatorImage = () => {
-    if (isOwner || !allUsers) return null;
+    if (showActions || !allUsers) return null; // Don't show for profile page
     
     const creator = allUsers.find(person => person.googleid === project.gid);
     return creator?.profilePicture;
@@ -27,7 +27,7 @@ function ProjectCard({
           <div className="project-titles-box">
             <p className="project-titles bg-white">{project.title}</p>
           </div>
-          {!isOwner && (
+          {!showActions && (
             <div className="project-creator">
               <div></div>
               <div className="box-project-creator">
@@ -43,7 +43,7 @@ function ProjectCard({
               <div></div>
             </div>
           )}
-          {isOwner && <div></div>}
+          {showActions && <div></div>}
         </div>
         
         <div className="home-showcase">
@@ -64,14 +64,14 @@ function ProjectCard({
                 <div className="home-repo">
                   <a href={project.github} target="_blank" rel="noreferrer">
                     <p className="side-elements slink">
-                      {isOwner ? "Frontend Repo" : "Repo"}
+                      {showActions ? "Frontend Repo" : "Repo"}
                     </p>
                   </a>
                 </div>
                 <div></div>
               </div>
               
-              {isOwner && project.backendRepo && (
+              {showActions && project.backendRepo && (
                 <>
                   <div className="container-back-link">
                     <div></div>
@@ -141,7 +141,8 @@ function ProjectCard({
                 <div></div>
               </div>
               
-              {!isOwner && (
+              {/* Only show add comment button if not the owner and not showing actions (profile page) */}
+              {!isOwner && !showActions && (
                 <div className="container-add-btn">
                   <div></div>
                   <div className="add-btn">

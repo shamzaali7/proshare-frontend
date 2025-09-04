@@ -23,7 +23,8 @@ function Search({
     getAllProjects, 
     addCommentToProject,
     loading,
-    error 
+    error,
+    user
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -69,6 +70,11 @@ function Search({
   const handleProjectCommentClick = (project) => {
     setCurrentProject({ _id: project._id, comments: project.comments });
     handleAddCommentModal();
+  };
+
+  // Check if user owns the project
+  const isProjectOwner = (project) => {
+    return user.googleid === project.gid;
   };
 
   return (
@@ -140,6 +146,7 @@ function Search({
             setDropDown={setDropDown}
             onCommentClick={() => handleProjectCommentClick(project)}
             showActions={false}
+            isOwner={isProjectOwner(project)}
           />
         ))}
         

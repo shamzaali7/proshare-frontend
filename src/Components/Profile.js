@@ -21,6 +21,7 @@ function Profile({ dropDown, handleDropDownModal }) {
   const [modal, setModal] = useState(false);
   const [modalTwo, setModalTwo] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
   
   const [form, setForm] = useState({
     title: "",
@@ -103,34 +104,49 @@ function Profile({ dropDown, handleDropDownModal }) {
   // CRUD operations
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLocalLoading(true);
+    
     try {
       await createProject(form);
-      handleModalState();
-      await loadUserProjects();
+      handleModalState(); // Close modal
+      await loadUserProjects(); // Reload user projects
     } catch (err) {
       console.log("Error creating project:", err);
+      // Even if there's an error, reload projects in case it was actually created
+      await loadUserProjects();
+      handleModalState(); // Close modal regardless
+    } finally {
+      setLocalLoading(false);
     }
   };
   
   const handlePutSubmit = async (e) => {
     e.preventDefault();
+    setLocalLoading(true);
+    
     try {
       await updateProject(formPut);
       handlePutModalState();
       await loadUserProjects();
     } catch (err) {
       console.log("Error updating project:", err);
+    } finally {
+      setLocalLoading(false);
     }
   };
 
   const handleDeleteSubmit = async (e) => {
     e.preventDefault();
+    setLocalLoading(true);
+    
     try {
       await deleteProject(formDelete._id);
       handleDeleteModalState();
       await loadUserProjects();
     } catch (err) {
       console.log("Error deleting project:", err);
+    } finally {
+      setLocalLoading(false);
     }
   };
 
@@ -187,7 +203,7 @@ function Profile({ dropDown, handleDropDownModal }) {
         </div>
       </div>
       
-      {loading && userProjects.length === 0 && (
+      {(loading || localLoading) && userProjects.length === 0 && (
         <div className="text-center text-gray-500 mt-10">
           Loading your projects...
         </div>
@@ -199,7 +215,7 @@ function Profile({ dropDown, handleDropDownModal }) {
         </div>
       )}
       
-      {!loading && userProjects.length === 0 && (
+      {!loading && !localLoading && userProjects.length === 0 && (
         <div className="text-center text-gray-500 mt-10">
           You haven't created any projects yet. Click "New Project" to get started!
         </div>
@@ -230,7 +246,8 @@ function Profile({ dropDown, handleDropDownModal }) {
         form={form}
         onFormChange={editForm}
         title="Create New Project"
-        submitText="Post"
+        submitText={localLoading ? "Creating..." : "Post"}
+        loading={localLoading}
       />
 
       {/* Edit Project Modal */}
@@ -241,8 +258,9 @@ function Profile({ dropDown, handleDropDownModal }) {
         form={formPut}
         onFormChange={editFormTwo}
         title="Update Project"
-        submitText="Submit"
+        submitText={localLoading ? "Updating..." : "Submit"}
         isEdit={true}
+        loading={localLoading}
       />
 
       {/* Delete Confirmation Modal */}
@@ -258,9 +276,9 @@ function Profile({ dropDown, handleDropDownModal }) {
                 <button 
                   type="submit"
                   className="btn-delete-project"
-                  disabled={loading}
+                  disabled={localLoading}
                 >
-                  {loading ? "Deleting..." : "Delete"}
+                  {localLoading ? "Deleting..." : "Delete"}
                 </button>
                 <button 
                   type="button"
