@@ -11,22 +11,18 @@ import Search from './Components/Search';
 function App() {
   const { user, userID, allUsers, authorized, userCred, error, clearError } = useContext(AppContext);
   
-  // UI State
   const [dropDown, setDropDown] = useState(true);
   const [currentProject, setCurrentProject] = useState({});
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   
-  // Modal states
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [comment, setComment] = useState("");
   
-  // Header-specific state
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
 
-  // Modal handlers
   const handleAddCommentModal = () => {
     setAddCommentModal(!addCommentModal);
     if (addCommentModal) {
@@ -43,7 +39,6 @@ function App() {
     setComment(e.target.value);
   };
 
-  // Header handlers
   const handleMobileMenuToggle = () => {
     setShowMobileMenu(!showMobileMenu);
     if (!showMobileMenu) {
@@ -62,7 +57,6 @@ function App() {
     setShowProfileDropdown(false);
   };
 
-  // Search handlers
   const handleSearchInputChange = (value) => {
     setSearchInput(value);
   };
@@ -71,7 +65,6 @@ function App() {
     setFilteredProjects(filteredProjects);
   };
 
-  // Project handlers
   const handleSetCurrentProject = (project) => {
     setCurrentProject(project);
   };
@@ -82,7 +75,6 @@ function App() {
     }
   }, [showMobileMenu]);
 
-  // Clear error after 5 seconds
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -95,9 +87,9 @@ function App() {
   return (
     <div className="App">
       {error && (
-        <div className="error-banner bg-red-500 text-white p-4 text-center">
+        <div className="error-banner">
           {error}
-          <button onClick={clearError} className="ml-4 underline">
+          <button onClick={clearError}>
             Dismiss
           </button>
         </div>

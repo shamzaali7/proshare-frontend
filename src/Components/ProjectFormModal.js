@@ -19,12 +19,8 @@ function ProjectFormModal({
   };
 
   const validateUrl = (url) => {
-    if (!url) return true; // Allow empty URLs for optional fields
-    
-    // Remove protocol for validation
+    if (!url) return true;
     const urlWithoutProtocol = url.replace(/^https?:\/\//, '');
-    
-    // Check if it contains .com or is a valid URL pattern
     return urlWithoutProtocol.includes('.com') || 
            urlWithoutProtocol.match(/^[\w-]+(\.[\w-]+)+/);
   };
@@ -72,7 +68,7 @@ function ProjectFormModal({
               disabled={loading}
             />
             {form.github && !validateUrl(form.github) && (
-              <p className="text-red-500 text-xs mt-1">Please enter a valid URL (must contain .com)</p>
+              <p className="validation-error">Please enter a valid URL (must contain .com)</p>
             )}
           </div>
           
@@ -88,7 +84,7 @@ function ProjectFormModal({
               disabled={loading}
             />
             {form.deployedLink && !validateUrl(form.deployedLink) && (
-              <p className="text-red-500 text-xs mt-1">Please enter a valid URL (must contain .com)</p>
+              <p className="validation-error">Please enter a valid URL (must contain .com)</p>
             )}
           </div>
           
@@ -103,7 +99,7 @@ function ProjectFormModal({
               disabled={loading}
             />
             {form.backendRepo && !validateUrl(form.backendRepo) && (
-              <p className="text-red-500 text-xs mt-1">Please enter a valid URL (must contain .com)</p>
+              <p className="validation-error">Please enter a valid URL (must contain .com)</p>
             )}
           </div>
           
@@ -118,7 +114,7 @@ function ProjectFormModal({
               disabled={loading}
             />
             {form.backendDeploy && !validateUrl(form.backendDeploy) && (
-              <p className="text-red-500 text-xs mt-1">Please enter a valid URL (must contain .com)</p>
+              <p className="validation-error">Please enter a valid URL (must contain .com)</p>
             )}
           </div>
           
@@ -134,7 +130,7 @@ function ProjectFormModal({
               disabled={loading}
             />
             {form.picture && !validateUrl(form.picture) && (
-              <p className="text-red-500 text-xs mt-1">Please enter a valid URL (must contain .com)</p>
+              <p className="validation-error">Please enter a valid URL (must contain .com)</p>
             )}
           </div>
           

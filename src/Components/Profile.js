@@ -63,7 +63,6 @@ function Profile({ dropDown, handleDropDownModal }) {
     }
   };
 
-  // Modal handlers
   const handleModalState = () => {
     setModal(!modal);
     if (modal) {
@@ -79,7 +78,6 @@ function Profile({ dropDown, handleDropDownModal }) {
     setModalDelete(!modalDelete);
   };
 
-  // Form handlers
   const editForm = (value) => {
     setForm(prev => ({ ...prev, ...value }));
   };
@@ -101,7 +99,6 @@ function Profile({ dropDown, handleDropDownModal }) {
     });
   };
 
-  // CRUD operations
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLocalLoading(true);
@@ -111,7 +108,6 @@ function Profile({ dropDown, handleDropDownModal }) {
     } catch (err) {
       console.log("Error creating project:", err);
     } finally {
-      // Always close modal and reload projects
       handleModalState();
       await loadUserProjects();
       setLocalLoading(false);
@@ -127,7 +123,6 @@ function Profile({ dropDown, handleDropDownModal }) {
     } catch (err) {
       console.log("Error updating project:", err);
     } finally {
-      // Always close modal and reload projects
       handlePutModalState();
       await loadUserProjects();
       setLocalLoading(false);
@@ -169,7 +164,6 @@ function Profile({ dropDown, handleDropDownModal }) {
     handleDeleteModalState();
   };
 
-  // Body overflow management
   useEffect(() => {
     if (modal || modalTwo || modalDelete) {
       document.body.style.overflow = "hidden";
@@ -220,12 +214,12 @@ function Profile({ dropDown, handleDropDownModal }) {
         </div>
       )}
 
-      {/* Fixed Layout - Match Home Page */}
+      {/* Fixed Layout - Now matches Home Page exactly */}
       {userProjects.map((project, index) => (
         <ProjectCard
           key={project._id || index}
           project={project}
-          allUsers={[]} // Not needed for user's own projects
+          allUsers={[]}
           dropDown={dropDown}
           setDropDown={handleDropDownModal}
           showActions={true}
@@ -235,7 +229,6 @@ function Profile({ dropDown, handleDropDownModal }) {
         />
       ))}
 
-      {/* Create Project Modal */}
       <ProjectFormModal
         isOpen={modal}
         onClose={handleModalState}
@@ -247,7 +240,6 @@ function Profile({ dropDown, handleDropDownModal }) {
         loading={localLoading}
       />
 
-      {/* Edit Project Modal */}
       <ProjectFormModal
         isOpen={modalTwo}
         onClose={handlePutModalState}
@@ -260,7 +252,6 @@ function Profile({ dropDown, handleDropDownModal }) {
         loading={localLoading}
       />
 
-      {/* Delete Confirmation Modal */}
       {modalDelete && (
         <div className="modal">
           <div onClick={handleDeleteModalState} className="overlay"></div>
@@ -269,7 +260,7 @@ function Profile({ dropDown, handleDropDownModal }) {
               <div className="delete-modal-question">
                 Are you sure you want to delete this project? This action cannot be undone.
               </div>
-              <div className="flex gap-2 mt-4">
+              <div className="flex gap-2 mt-4" style={{display: 'flex', gap: '0.5rem', marginTop: '1rem', justifyContent: 'center'}}>
                 <button 
                   type="submit"
                   className="btn-delete-project"
@@ -281,6 +272,7 @@ function Profile({ dropDown, handleDropDownModal }) {
                   type="button"
                   onClick={handleDeleteModalState} 
                   className="close-modal"
+                  style={{position: 'static', padding: '0.25rem 0.5rem'}}
                 >
                   Cancel
                 </button>

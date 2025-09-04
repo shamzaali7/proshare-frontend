@@ -33,10 +33,9 @@ function Home({
     
     try {
       await addCommentToProject(currentProject._id, currentProject.comments, comment);
-      handleAddCommentModal(); // This will clear the comment and current project
+      handleAddCommentModal();
     } catch (err) {
       console.log("Error adding comment:", err);
-      // Close modal even if there's an error, since comment might have been added
       handleAddCommentModal();
     }
   };
@@ -46,7 +45,6 @@ function Home({
     handleAddCommentModal();
   };
 
-  // Check if user owns the project
   const isProjectOwner = (project) => {
     return user.googleid === project.gid;
   };
@@ -75,19 +73,16 @@ function Home({
         </div>
       ) : (
         projects.map((project, index) => (
-          <div key={project._id || index}>
-            <div></div>
-            <ProjectCard
-              project={project}
-              allUsers={allUsers}
-              dropDown={dropDown}
-              setDropDown={setDropDown}
-              onCommentClick={() => handleProjectCommentClick(project)}
-              showActions={false}
-              isOwner={isProjectOwner(project)}
-            />
-            <div></div>
-          </div>
+          <ProjectCard
+            key={project._id || index}
+            project={project}
+            allUsers={allUsers}
+            dropDown={dropDown}
+            setDropDown={setDropDown}
+            onCommentClick={() => handleProjectCommentClick(project)}
+            showActions={false}
+            isOwner={isProjectOwner(project)}
+          />
         ))
       )}
 

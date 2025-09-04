@@ -52,9 +52,8 @@ function Search({
     
     try {
       await addCommentToProject(currentProject._id, currentProject.comments, comment);
-      handleAddCommentModal(); // This will clear the comment and current project
+      handleAddCommentModal();
       
-      // Update filtered projects if search is active
       if (searchInput.trim()) {
         const updated = projects.filter((project) => 
           project.title.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -64,7 +63,6 @@ function Search({
       }
     } catch (err) {
       console.log("Error adding comment:", err);
-      // Close modal even if there's an error, since comment might have been added
       handleAddCommentModal();
     }
   };
@@ -74,7 +72,6 @@ function Search({
     handleAddCommentModal();
   };
 
-  // Check if user owns the project
   const isProjectOwner = (project) => {
     return user.googleid === project.gid;
   };
@@ -85,13 +82,13 @@ function Search({
         <div></div>
         <div>
           <form onSubmit={(e) => e.preventDefault()}>   
-            <label htmlFor="default-search" className="pb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
+            <label htmlFor="default-search" className="sr-only">
               Search
             </label>
             <div className="search-field">
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3" style={{pointerEvents: 'none'}}>
+                  <svg aria-hidden="true" className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
                 </div>
@@ -101,8 +98,19 @@ function Search({
                     value={searchInput}
                     type="search" 
                     id="default-search" 
-                    className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                    className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" 
                     placeholder="Search Projects by title or creator" 
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      padding: '1rem',
+                      paddingLeft: '2.5rem',
+                      fontSize: '0.875rem',
+                      color: '#111827',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.5rem',
+                      backgroundColor: '#f9fafb'
+                    }}
                   />
                 </div>
               </div>
@@ -140,19 +148,16 @@ function Search({
         )}
         
         {filteredProjects.map((project, index) => (
-          <div key={project._id || index} className="container-spacer">
-            <div></div>
-            <ProjectCard
-              project={project}
-              allUsers={allUsers}
-              dropDown={dropDown}
-              setDropDown={setDropDown}
-              onCommentClick={() => handleProjectCommentClick(project)}
-              showActions={false}
-              isOwner={isProjectOwner(project)}
-            />
-            <div></div>
-          </div>
+          <ProjectCard
+            key={project._id || index}
+            project={project}
+            allUsers={allUsers}
+            dropDown={dropDown}
+            setDropDown={setDropDown}
+            onCommentClick={() => handleProjectCommentClick(project)}
+            showActions={false}
+            isOwner={isProjectOwner(project)}
+          />
         ))}
         
         <div></div>
