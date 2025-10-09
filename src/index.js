@@ -37,18 +37,15 @@ function AppProvider() {
 
   const API_BASE_URL = "https://proshare-backend-27b5d2fdd236.herokuapp.com/api";
 
-  // Helper function to normalize URLs
   const normalizeUrl = (url) => {
     if (!url) return url;
     const trimmedUrl = url.trim();
     if (!trimmedUrl) return trimmedUrl;
     
-    // If it already has protocol, return as is
     if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
       return trimmedUrl;
     }
     
-    // Add https:// if it contains .com
     if (trimmedUrl.includes('.com')) {
       return `https://${trimmedUrl}`;
     }
@@ -289,6 +286,32 @@ function AppProvider() {
     }
   }
 
+  async function uploadProfilePicture(userId, file) {
+    try {
+      const formData = new FormData();
+      formData.append('profilePicture', file);
+      
+      const response = await axios.post(
+        `${API_BASE_URL}/files/profile-picture/${userId}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+      
+      if (response.data && response.data.user) {
+        setUser(response.data.user);
+        return response.data.user;
+      }
+    } catch (err) {
+      console.log("Error uploading profile picture:", err);
+      setError("Failed to upload profile picture");
+      throw err;
+    }
+  }
+
   // Comment Management
   async function addCommentToProject(projectId, comments, newComment) {
     try {
@@ -339,6 +362,7 @@ function AppProvider() {
     handleLogout,
     getUserByID,
     updateUserProfilePicture,
+    uploadProfilePicture,
     
     // Project functions
     getAllProjects,

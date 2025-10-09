@@ -5,104 +5,138 @@ import ChatWindow from './ChatWindow';
 import './Messaging.css';
 
 function Messaging() {
-  const { user, allUsers, authorized } = useContext(AppContext);
+  const { user, allUsers, authorized, API_BASE_URL } = useContext(AppContext);
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Mock conversations for layout (will be replaced with real data from backend)
+  // Load conversations on mount
   useEffect(() => {
-    if (authorized) {
-      // Mock data for demonstration
-      const mockConversations = [
-        {
-          id: '1',
-          participant: allUsers.find(u => u.googleid !== user.googleid) || {},
-          lastMessage: 'Hey, great project!',
-          lastMessageTime: new Date().toISOString(),
-          unreadCount: 2
-        }
-      ];
-      setConversations(mockConversations);
+    if (authorized && user.googleid) {
+      loadConversations();
+      // Poll for new messages every 3 seconds
+      const interval = setInterval(loadConversations, 3000);
+      return () => clearInterval(interval);
     }
-  }, [authorized, allUsers, user]);
+  }, [authorized, user.googleid]);
+
+  const loadConversations = async () => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/messages/conversations/${user.googleid}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setConversations(data);
+        
+        // If we have a selected conversation, update it with fresh data
+        if (selectedConversation) {
+          const updated = data.find(c => c._id === selectedConversation._id);
+          if (updated) {
+            setSelectedConversation(updated);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error loading conversations:', err);
+      setError('Failed to load conversations');
+    }
+  };
+
+  const loadConversationMessages = async (conversationId) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/messages/conversation/${conversationId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setSelectedConversation({
+          ...data.conversation,
+          messages: data.messages
+        });
+        
+        // Mark messages as read
+        await fetch(`${API_BASE_URL}/messages/read`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            conversationId,
+            userId: user.googleid
+          })
+        });
+      }
+    } catch (err) {
+      console.error('Error loading messages:', err);
+      setError('Failed to load messages');
+    }
+  };
 
   const handleSelectConversation = (conversation) => {
-    setSelectedConversation(conversation);
-    // Mark messages as read (will be implemented with backend)
-    setConversations(prev => 
-      prev.map(conv => 
-        conv.id === conversation.id 
-          ? { ...conv, unreadCount: 0 }
-          : conv
-      )
-    );
+    loadConversationMessages(conversation._id);
   };
 
-  const handleNewMessage = (userId) => {
-    const participant = allUsers.find(u => u.googleid === userId);
-    if (participant) {
-      // Check if conversation already exists
-      const existingConv = conversations.find(
-        conv => conv.participant.googleid === userId
+  const handleNewMessage = async (userId) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${API_BASE_URL}/messages/conversation/start`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId1: user.googleid,
+            userId2: userId
+          })
+        }
       );
-      
-      if (existingConv) {
-        setSelectedConversation(existingConv);
-      } else {
-        // Create new conversation
-        const newConv = {
-          id: `new-${Date.now()}`,
-          participant,
-          lastMessage: '',
-          lastMessageTime: new Date().toISOString(),
-          unreadCount: 0,
+
+      if (response.ok) {
+        const conversation = await response.json();
+        setSelectedConversation({
+          ...conversation,
           messages: []
-        };
-        setConversations(prev => [newConv, ...prev]);
-        setSelectedConversation(newConv);
+        });
+        setShowNewMessageModal(false);
+        setSearchQuery('');
+        
+        // Reload conversations
+        await loadConversations();
       }
-      setShowNewMessageModal(false);
-      setSearchQuery('');
+    } catch (err) {
+      console.error('Error creating conversation:', err);
+      setError('Failed to create conversation');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSendMessage = (messageText) => {
+  const handleSendMessage = async (messageText) => {
     if (!selectedConversation || !messageText.trim()) return;
 
-    const newMessage = {
-      id: `msg-${Date.now()}`,
-      text: messageText,
-      senderId: user.googleid,
-      senderName: user.name,
-      timestamp: new Date().toISOString(),
-      read: false
-    };
+    try {
+      const response = await fetch(`${API_BASE_URL}/messages/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId: selectedConversation._id,
+          senderId: user.googleid,
+          senderName: user.name,
+          text: messageText
+        })
+      });
 
-    // Update conversation with new message
-    setConversations(prev => 
-      prev.map(conv => 
-        conv.id === selectedConversation.id
-          ? {
-              ...conv,
-              lastMessage: messageText,
-              lastMessageTime: newMessage.timestamp,
-              messages: [...(conv.messages || []), newMessage]
-            }
-          : conv
-      )
-    );
-
-    // Update selected conversation
-    setSelectedConversation(prev => ({
-      ...prev,
-      lastMessage: messageText,
-      lastMessageTime: newMessage.timestamp,
-      messages: [...(prev.messages || []), newMessage]
-    }));
-
-    // Backend integration will happen here
+      if (response.ok) {
+        // Reload conversation to get updated messages
+        await loadConversationMessages(selectedConversation._id);
+        await loadConversations();
+      }
+    } catch (err) {
+      console.error('Error sending message:', err);
+      setError('Failed to send message');
+    }
   };
 
   const handleBackToList = () => {
@@ -125,8 +159,14 @@ function Messaging() {
 
   return (
     <div className="messaging-container font-change">
+      {error && (
+        <div className="error-banner">
+          {error}
+          <button onClick={() => setError(null)}>Dismiss</button>
+        </div>
+      )}
+      
       <div className="messaging-wrapper">
-        {/* Conversation List - Hidden on mobile when chat is open */}
         <div className={`conversation-list-section ${selectedConversation ? 'hidden-mobile' : ''}`}>
           <ConversationList
             conversations={conversations}
@@ -137,7 +177,6 @@ function Messaging() {
           />
         </div>
 
-        {/* Chat Window */}
         <div className={`chat-window-section ${!selectedConversation ? 'hidden-mobile' : ''}`}>
           {selectedConversation ? (
             <ChatWindow
@@ -159,7 +198,6 @@ function Messaging() {
         </div>
       </div>
 
-      {/* New Message Modal */}
       {showNewMessageModal && (
         <div className="modal">
           <div onClick={() => {
@@ -181,20 +219,21 @@ function Messaging() {
               </div>
               <div className="user-list">
                 {filteredUsers.length > 0 ? (
-                  filteredUsers.map(user => (
+                  filteredUsers.map(u => (
                     <div
-                      key={user.googleid}
+                      key={u.googleid}
                       className="user-list-item"
-                      onClick={() => handleNewMessage(user.googleid)}
+                      onClick={() => handleNewMessage(u.googleid)}
+                      style={{ cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}
                     >
                       <img
-                        src={user.profilePicture || 'https://img.icons8.com/ios/50/null/user-male-circle--v1.png'}
-                        alt={user.name}
+                        src={u.profilePicture || 'https://img.icons8.com/ios/50/null/user-male-circle--v1.png'}
+                        alt={u.name}
                         className="user-list-avatar"
                       />
                       <div className="user-list-info">
-                        <div className="user-list-name">{user.name}</div>
-                        <div className="user-list-email">{user.email}</div>
+                        <div className="user-list-name">{u.name}</div>
+                        <div className="user-list-email">{u.email}</div>
                       </div>
                     </div>
                   ))

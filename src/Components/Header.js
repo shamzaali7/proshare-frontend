@@ -21,6 +21,8 @@ function Header({
   } = useContext(AppContext);
   
   const [profilePic, setProfilePic] = useState({ profilePicture: "" });
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
   const navigate = useNavigate();
 
   const fileViewer = (e) => {
@@ -29,15 +31,27 @@ function Header({
     });
   };
 
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
   const fileUploader = async (e) => {
     e.preventDefault();
+    if (!selectedFile || !user._id) return;
+
+    setUploadLoading(true);
     try {
-      await updateUserProfilePicture(profilePic.profilePicture);
-      setProfilePic({ profilePicture: "" });
+      await uploadProfilePicture(user._id, selectedFile);
+      setSelectedFile(null);
+      onProfilePictureModalToggle();
     } catch (err) {
-      console.log("Error updating profile picture:", err);
+      console.log("Error uploading profile picture:", err);
+    } finally {
+      setUploadLoading(false);
     }
-    onProfilePictureModalToggle();
   };
 
   const onLogout = async (e) => {
@@ -295,33 +309,38 @@ function Header({
       
       {/* Profile Picture Modal */}
       {showProfilePictureModal && (
-        <div className="modal">
-          <div onClick={onProfilePictureModalToggle} className="overlay"></div>
-          <div className="modal-content">
-            <div className="profile-modal-content">
-              <div className="profile-modal-title">Enter the link address of the picture</div>
-              <input 
-                onChange={fileViewer} 
-                value={profilePic.profilePicture}
-                className="profile-modal-input"
-                placeholder="https://..."
-              />
-              <div className="profile-modal-actions">
-                <button 
-                  onClick={fileUploader} 
-                  className="profile-modal-submit"
-                  disabled={!profilePic.profilePicture.trim()}
-                >
-                  Submit Picture
+          <div className="modal">
+            <div onClick={onProfilePictureModalToggle} className="overlay"></div>
+            <div className="modal-content">
+              <div className="profile-modal-content">
+                <div className="profile-modal-title">Upload a new profile picture</div>
+                <div style={{ marginBottom: '1rem', textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
+                  Max file size: 5MB (JPG, PNG, GIF, WebP)
+                </div>
+                <input 
+                  type="file"
+                  id="profilePictureInput"
+                  className="profile-modal-input"
+                  onChange={handleFileSelect}
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  style={{ padding: '0.5rem', width: '100%', marginBottom: '0.5rem' }}
+                />
+                <div className="profile-modal-actions">
+                  <button 
+                    onClick={fileUploader} 
+                    className="profile-modal-submit"
+                    disabled={!selectedFile || loading}
+                  >
+                    {loading ? "Uploading..." : "Upload Picture"}
+                  </button>
+                </div>
+                <button onClick={onProfilePictureModalToggle} className="profile-modal-cancel">
+                  Cancel
                 </button>
               </div>
-              <button onClick={onProfilePictureModalToggle} className="profile-modal-cancel">
-                Cancel
-              </button>
-            </div>
-          </div>             
-        </div>
-      )}
+            </div>             
+          </div>
+        )}
     </div>
   );
 }
