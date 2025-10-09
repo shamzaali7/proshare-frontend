@@ -8,7 +8,6 @@ import 'firebase/compat/auth';
 import axios from 'axios';
 import App from './App';
 
-// Create context for global state
 export const AppContext = createContext();
 
 function AppProvider() {
@@ -144,7 +143,6 @@ function AppProvider() {
   const handleLogout = async () => {
     try {
       await firebase.auth().signOut();
-      // authListener will handle state cleanup
     } catch (error) {
       console.error("Logout error:", error);
       setError("Failed to logout");
@@ -177,7 +175,6 @@ function AppProvider() {
 
   async function createProject(projectData) {
     try {
-      // Normalize URLs before sending
       const normalizedProject = {
         ...projectData,
         github: normalizeUrl(projectData.github),
@@ -189,15 +186,13 @@ function AppProvider() {
 
       const response = await axios.post(`${API_BASE_URL}/projects`, normalizedProject);
       
-      // Refresh all projects after creating
       await getAllProjects();
       
       return response.data;
     } catch (err) {
       console.log("Error creating project:", err);
-      // Always refresh projects to see if it was created despite error
       await getAllProjects();
-      return null; // Don't throw error, let component handle the success
+      return null;
     }
   }
 
@@ -215,15 +210,13 @@ function AppProvider() {
 
       const response = await axios.put(`${API_BASE_URL}/projects`, normalizedProject);
       
-      // Refresh all projects after updating
       await getAllProjects();
       
       return response.data;
     } catch (err) {
       console.log("Error updating project:", err);
-      // Always refresh projects to see if it was updated despite error
       await getAllProjects();
-      return null; // Don't throw error, let component handle the success
+      return null;
     }
   }
 
@@ -237,12 +230,10 @@ function AppProvider() {
         body: JSON.stringify({ _id: projectId })
       });
       
-      // Refresh all projects after deleting
       await getAllProjects();
       
     } catch (err) {
       console.log("Error deleting project:", err);
-      // Always refresh projects
       await getAllProjects();
       throw err;
     }
@@ -309,15 +300,13 @@ function AppProvider() {
       
       const response = await axios.put(`${API_BASE_URL}/projects`, combinedComments);
       
-      // Refresh all projects to get updated comments
       await getAllProjects();
       
       return response.data;
     } catch (err) {
       console.log("Error adding comment:", err);
-      // Always refresh projects to see if comment was added despite error
       await getAllProjects();
-      return null; // Don't throw error, let component handle the success
+      return null;
     }
   }
 
