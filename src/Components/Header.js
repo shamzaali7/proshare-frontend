@@ -74,6 +74,19 @@ function Header({
                       Dashboard
                     </Link>
                   )}
+
+                  {authorized && (
+                    <Link to="/messages" className="nav-link">
+                      <span className="nav-link-icon">
+                        <img 
+                          className="h-5 w-5" 
+                          src="https://img.icons8.com/ios/50/000000/speech-bubble--v1.png" 
+                          alt="messages" 
+                        />
+                      </span>
+                      Messages
+                    </Link>
+                  )}
                   
                   <Link to="/ide" className="nav-link">
                     <span className="nav-link-icon">
@@ -192,6 +205,23 @@ function Header({
                               <img className="w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
                             </div>
                             <p className="mobile-nav-text">Dashboard</p>
+                          </div>
+                        </Link>
+                      </li>
+                    )}
+
+                    {authorized && (
+                      <li className="mobile-nav-item">
+                        <Link to="/messages" className="mobile-nav-link" onClick={onMobileMenuToggle}>
+                          <div className="mobile-nav-content">
+                            <div className="mobile-nav-icon">
+                              <img 
+                                className="w-7 h-7" 
+                                src="https://img.icons8.com/ios/50/000000/speech-bubble--v1.png" 
+                                alt="messages" 
+                              />
+                            </div>
+                            <p className="mobile-nav-text">Messages</p>
                           </div>
                         </Link>
                       </li>
