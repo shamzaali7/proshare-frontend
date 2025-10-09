@@ -472,6 +472,58 @@
   text-decoration: underline;
 }
 
+.upload-options {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.upload-option {
+  margin: 0.5rem 0;
+}
+
+.file-upload-label {
+  cursor: pointer;
+}
+
+.file-upload-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #3730a3;
+  color: white;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: background-color 150ms ease-in-out;
+}
+
+.file-upload-button:hover {
+  background-color: #4338ca;
+}
+
+.file-name {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.upload-divider {
+  text-align: center;
+  margin: 1rem 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.image-preview {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.preview-image {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 0.5rem;
+  border: 2px solid #e5e7eb;
+}
+
 /* Responsive Design */
 @media screen and (min-width: 1280px) {
   .header-nav.desktop {
@@ -506,3 +558,4 @@
     display: block;
   }
 }
+

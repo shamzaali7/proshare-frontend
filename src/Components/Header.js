@@ -20,37 +20,65 @@ function Header({
     loading 
   } = useContext(AppContext);
   
-  const [profilePic, setProfilePic] = useState({ profilePicture: "" });
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [profilePic, setProfilePic] = useState({ profilePicture: "" });
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+
   const navigate = useNavigate();
 
   const fileViewer = (e) => {
     setProfilePic({
       profilePicture: e.target.value
     });
+    setImageFile(null);
   };
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file);
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
+        return;
+      }
+      
+      // Validate file size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+      
+      setImageFile(file);
+      // Show preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic({ profilePicture: reader.result });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const fileUploader = async (e) => {
     e.preventDefault();
-    if (!selectedFile || !user._id) return;
-
-    setUploadLoading(true);
+    setUploadingImage(true);
+    
     try {
-      await uploadProfilePicture(user._id, selectedFile);
-      setSelectedFile(null);
-      onProfilePictureModalToggle();
+      if (imageFile) {
+        await updateUserProfilePicture(imageFile);
+      } else if (profilePic.profilePicture) {
+        await updateUserProfilePicture(profilePic.profilePicture);
+      }
+      setProfilePic({ profilePicture: "" });
+      setImageFile(null);
     } catch (err) {
-      console.log("Error uploading profile picture:", err);
+      console.log("Error updating profile picture:", err);
+      alert("Failed to upload image. Please try again.");
     } finally {
-      setUploadLoading(false);
+      setUploadingImage(false);
+      onProfilePictureModalToggle();
     }
   };
 
@@ -309,38 +337,76 @@ function Header({
       
       {/* Profile Picture Modal */}
       {showProfilePictureModal && (
-          <div className="modal">
-            <div onClick={onProfilePictureModalToggle} className="overlay"></div>
-            <div className="modal-content">
-              <div className="profile-modal-content">
-                <div className="profile-modal-title">Upload a new profile picture</div>
-                <div style={{ marginBottom: '1rem', textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
-                  Max file size: 5MB (JPG, PNG, GIF, WebP)
+        <div className="modal">
+          <div onClick={onProfilePictureModalToggle} className="overlay"></div>
+          <div className="modal-content">
+            <div className="profile-modal-content">
+              <div className="profile-modal-title">
+                Update Profile Picture
+              </div>
+              
+              <div className="upload-options">
+                <div className="upload-option">
+                  <label className="file-upload-label">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      style={{ display: 'none' }}
+                      disabled={uploadingImage}
+                    />
+                    <span className="file-upload-button">
+                      📁 Choose File
+                    </span>
+                  </label>
+                  {imageFile && (
+                    <span className="file-name">{imageFile.name}</span>
+                  )}
                 </div>
-                <input 
-                  type="file"
-                  id="profilePictureInput"
-                  className="profile-modal-input"
-                  onChange={handleFileSelect}
-                  accept="image/jpeg,image/png,image/gif,image/webp"
-                  style={{ padding: '0.5rem', width: '100%', marginBottom: '0.5rem' }}
-                />
-                <div className="profile-modal-actions">
-                  <button 
-                    onClick={fileUploader} 
-                    className="profile-modal-submit"
-                    disabled={!selectedFile || loading}
-                  >
-                    {loading ? "Uploading..." : "Upload Picture"}
-                  </button>
+                
+                <div className="upload-divider">OR</div>
+                
+                <div className="upload-option">
+                  <input 
+                    onChange={fileViewer} 
+                    value={imageFile ? '' : profilePic.profilePicture}
+                    className="profile-modal-input"
+                    placeholder="https://..."
+                    disabled={uploadingImage || imageFile !== null}
+                  />
                 </div>
-                <button onClick={onProfilePictureModalToggle} className="profile-modal-cancel">
-                  Cancel
+              </div>
+              
+              {(profilePic.profilePicture || imageFile) && (
+                <div className="image-preview">
+                  <img 
+                    src={profilePic.profilePicture} 
+                    alt="Preview" 
+                    className="preview-image"
+                  />
+                </div>
+              )}
+              
+              <div className="profile-modal-actions">
+                <button 
+                  onClick={fileUploader} 
+                  className="profile-modal-submit"
+                  disabled={uploadingImage || (!profilePic.profilePicture && !imageFile)}
+                >
+                  {uploadingImage ? "Uploading..." : "Submit Picture"}
                 </button>
               </div>
-            </div>             
-          </div>
-        )}
+              <button 
+                onClick={onProfilePictureModalToggle} 
+                className="profile-modal-cancel"
+                disabled={uploadingImage}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>             
+        </div>
+      )}
     </div>
   );
 }

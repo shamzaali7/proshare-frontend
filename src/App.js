@@ -7,7 +7,7 @@ import Footer from './Components/Footer';
 import Profile from './Components/Profile';
 import IDE from './Components/IDE';
 import Search from './Components/Search';
-import Messaging from './Components/Messaging'; // Add this import
+import Messaging from './Components/Messaging'; 
 
 function App() {
   const { user, userID, allUsers, authorized, userCred, error, clearError } = useContext(AppContext);
