@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext } from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './Styling/index.css';
 import './Config/firebase-config';
 import { BrowserRouter as Router } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
@@ -200,23 +200,24 @@ function AppProvider() {
     try {
       let imageUrl = profilePicture;
       
-      // Check if it's a file object
       if (profilePicture instanceof File) {
         imageUrl = await uploadImage(profilePicture, 'profile');
       } else {
         imageUrl = normalizeUrl(profilePicture);
       }
 
-      const updatedUser =await axios.put(`${API_BASE_URL}/users/`, {
+      const updatedUser = await axios.put(`${API_BASE_URL}/users/`, {
         _id: user._id,
         profilePicture: imageUrl
       });
       
-      setUser({ ...user, profilePicture: updatedUser.data.profilePicture });
-      return updatedUser.data;
+      if (updatedUser.data) {
+        setUser({ ...user, profilePicture: updatedUser.data.profilePicture });
+        return updatedUser.data;
+      }
     } catch (err) {
       console.log("Error updating profile picture:", err);
-      setError("Failed to update profile picture");
+      setError("Failed to update profile picture. Please try again.");
       throw err;
     }
   }
@@ -359,16 +360,24 @@ function AppProvider() {
         text
       });
 
-      // Emit socket event for real-time delivery
+      const messageData = {
+        ...response.data.message,
+        timestamp: response.data.message.createdAt || new Date().toISOString(),
+        id: response.data.message._id || response.data.message.id
+      };
+
       if (socket) {
         socket.emit("sendMessage", {
           receiverId,
-          message: response.data.message,
+          message: messageData,
           conversationId: response.data.conversationId
         });
       }
 
-      return response.data;
+      return {
+        ...response.data,
+        message: messageData
+      };
     } catch (err) {
       console.log("Error sending message:", err);
       setError("Failed to send message");

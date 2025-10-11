@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './Messaging.css';
+import '../Styling/Messaging.css';
 
 function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
   const [messageText, setMessageText] = useState('');
@@ -38,7 +38,13 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
   };
 
   const formatMessageTime = (timestamp) => {
+    if (!timestamp) return '';
     const date = new Date(timestamp);
+    
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+    
     return date.toLocaleTimeString('en-US', { 
       hour: 'numeric', 
       minute: '2-digit',
@@ -50,16 +56,24 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
     if (!messages || messages.length === 0) return {};
     
     return messages.reduce((groups, message) => {
-      const date = new Date(message.timestamp).toLocaleDateString('en-US', {
+      const timestamp = message.createdAt || message.timestamp;
+      if (!timestamp) return groups;
+      
+      const date = new Date(timestamp);
+      if (isNaN(date.getTime())) {
+        return groups;
+      }
+      
+      const dateStr = date.toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
         year: 'numeric'
       });
       
-      if (!groups[date]) {
-        groups[date] = [];
+      if (!groups[dateStr]) {
+        groups[dateStr] = [];
       }
-      groups[date].push(message);
+      groups[dateStr].push(message);
       return groups;
     }, {});
   };

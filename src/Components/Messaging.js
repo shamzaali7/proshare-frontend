@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../index';
 import ConversationList from './ConversationList';
 import ChatWindow from './ChatWindow';
-import './Messaging.css';
+import '../Styling/Messaging.css';
 
 function Messaging() {
   const { 
@@ -60,7 +60,16 @@ function Messaging() {
     try {
       setLoading(true);
       const convs = await getConversations();
-      setConversations(convs);
+      
+      const enrichedConvs = convs.map(conv => ({
+        ...conv,
+        id: conv.conversationId || conv.id,
+        lastMessage: conv.lastMessage || '',
+        lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
+        unreadCount: conv.unreadCount || 0
+      }));
+      
+      setConversations(enrichedConvs);
     } catch (err) {
       console.log("Error loading conversations:", err);
     } finally {
@@ -135,8 +144,13 @@ function Messaging() {
         messageText
       );
 
-      // Update local state
-      const newMessage = result.message;
+      const newMessage = {
+        id: result.message._id || `${Date.now()}`,
+        text: result.message.text,
+        senderId: result.message.senderId,
+        timestamp: result.message.createdAt || new Date().toISOString(),
+        createdAt: result.message.createdAt || new Date().toISOString()
+      };
       
       setSelectedConversation(prev => ({
         ...prev,
@@ -146,8 +160,34 @@ function Messaging() {
         messages: [...(prev.messages || []), newMessage]
       }));
 
-      // Reload conversations to update the list
-      await loadConversations();
+      setConversations(prevConvs => {
+        const updated = prevConvs.map(conv => {
+          if (conv.id === result.conversationId || 
+              conv.participant.googleid === selectedConversation.participant.googleid) {
+            return {
+              ...conv,
+              id: result.conversationId,
+              lastMessage: messageText,
+              lastMessageTime: newMessage.createdAt,
+              unreadCount: 0
+            };
+          }
+          return conv;
+        });
+
+        if (!updated.find(c => c.id === result.conversationId)) {
+          updated.unshift({
+            id: result.conversationId,
+            participant: selectedConversation.participant,
+            lastMessage: messageText,
+            lastMessageTime: newMessage.createdAt,
+            unreadCount: 0,
+            messages: [newMessage]
+          });
+        }
+        
+        return updated;
+      });
       
     } catch (err) {
       console.log("Error sending message:", err);

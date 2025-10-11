@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../index';
-import './Header.css';
+import '../Styling/Header.css';
 
 function Header({
   showMobileMenu,
@@ -38,21 +38,18 @@ function Header({
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type
       const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
       if (!validTypes.includes(file.type)) {
         alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
         return;
       }
       
-      // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB');
         return;
       }
       
       setImageFile(file);
-      // Show preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfilePic({ profilePicture: reader.result });
@@ -67,18 +64,24 @@ function Header({
     
     try {
       if (imageFile) {
-        await updateUserProfilePicture(imageFile);
+        const result = await updateUserProfilePicture(imageFile);
+        if (result) {
+          setProfilePic({ profilePicture: "" });
+          setImageFile(null);
+          onProfilePictureModalToggle();
+        }
       } else if (profilePic.profilePicture) {
-        await updateUserProfilePicture(profilePic.profilePicture);
+        const result = await updateUserProfilePicture(profilePic.profilePicture);
+        if (result) {
+          setProfilePic({ profilePicture: "" });
+          setImageFile(null);
+          onProfilePictureModalToggle();
+        }
       }
-      setProfilePic({ profilePicture: "" });
-      setImageFile(null);
     } catch (err) {
       console.log("Error updating profile picture:", err);
-      alert("Failed to upload image. Please try again.");
     } finally {
       setUploadingImage(false);
-      onProfilePictureModalToggle();
     }
   };
 

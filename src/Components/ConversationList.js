@@ -1,5 +1,5 @@
 import React from 'react';
-import './Messaging.css';
+import '../Styling/Messaging.css';
 
 function ConversationList({ 
   conversations, 
@@ -8,18 +8,26 @@ function ConversationList({
   onNewMessage,
   currentUserId 
 }) {
+
   const formatTimestamp = (timestamp) => {
+    if (!timestamp) return '';
     const date = new Date(timestamp);
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+    
     const now = new Date();
     const diffInHours = (now - date) / (1000 * 60 * 60);
     
-    if (diffInHours < 24) {
+    if (diffInHours < 1) {
+      return 'Just now';
+    } else if (diffInHours < 24) {
       return date.toLocaleTimeString('en-US', { 
         hour: 'numeric', 
         minute: '2-digit',
         hour12: true 
       });
-    } else if (diffInHours < 168) { // Less than a week
+    } else if (diffInHours < 168) {
       return date.toLocaleDateString('en-US', { weekday: 'short' });
     } else {
       return date.toLocaleDateString('en-US', { 
