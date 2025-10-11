@@ -4,15 +4,29 @@ import '../Styling/Messaging.css';
 function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
   const [messageText, setMessageText] = useState('');
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const textareaRef = useRef(null);
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current && shouldAutoScroll) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
+    // Scroll to bottom when conversation changes or new messages arrive
     scrollToBottom();
-  }, [conversation.messages]);
+  }, [conversation.messages, shouldAutoScroll]);
+
+  useEffect(() => {
+    // Reset auto-scroll when conversation changes
+    setShouldAutoScroll(true);
+    // Small delay to ensure DOM is updated
+    setTimeout(() => {
+      scrollToBottom();
+    }, 100);
+  }, [conversation.id, conversation.participant.googleid]);
 
   useEffect(() => {
     // Auto-resize textarea
@@ -22,11 +36,21 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
     }
   }, [messageText]);
 
+  // Detect when user scrolls up
+  const handleScroll = () => {
+    if (messagesContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+      const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+      setShouldAutoScroll(isAtBottom);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (messageText.trim()) {
       onSendMessage(messageText);
       setMessageText('');
+      setShouldAutoScroll(true); // Re-enable auto-scroll when sending
     }
   };
 
@@ -41,6 +65,7 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
     if (!timestamp) return '';
     const date = new Date(timestamp);
     
+    // Check if date is valid
     if (isNaN(date.getTime())) {
       return '';
     }
@@ -56,6 +81,7 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
     if (!messages || messages.length === 0) return {};
     
     return messages.reduce((groups, message) => {
+      // Use createdAt or timestamp
       const timestamp = message.createdAt || message.timestamp;
       if (!timestamp) return groups;
       
@@ -120,7 +146,11 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
       </div>
 
       {/* Messages */}
-      <div className="chat-messages">
+      <div 
+        className="chat-messages" 
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+      >
         {Object.keys(messageGroups).length === 0 ? (
           <div className="no-messages">
             <img 
@@ -130,43 +160,45 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
             <p>No messages yet. Start the conversation!</p>
           </div>
         ) : (
-          Object.entries(messageGroups).map(([date, messages]) => (
-            <div key={date} className="message-date-group">
-              <div className="message-date-divider">
-                <span>{date}</span>
-              </div>
-              {messages.map((message) => {
-                const isOwnMessage = message.senderId === currentUser.googleid;
-                return (
-                  <div
-                    key={message.id}
-                    className={`message ${isOwnMessage ? 'own-message' : 'other-message'}`}
-                  >
-                    {!isOwnMessage && (
-                      <img
-                        src={
-                          conversation.participant.profilePicture || 
-                          'https://img.icons8.com/ios/50/null/user-male-circle--v1.png'
-                        }
-                        alt={conversation.participant.name}
-                        className="message-avatar"
-                      />
-                    )}
-                    <div className="message-content">
-                      <div className="message-bubble">
-                        <p className="message-text">{message.text}</p>
+          <>
+            {Object.entries(messageGroups).map(([date, messages]) => (
+              <div key={date} className="message-date-group">
+                <div className="message-date-divider">
+                  <span>{date}</span>
+                </div>
+                {messages.map((message, index) => {
+                  const isOwnMessage = message.senderId === currentUser.googleid;
+                  return (
+                    <div
+                      key={message.id || `${message.senderId}-${index}`}
+                      className={`message ${isOwnMessage ? 'own-message' : 'other-message'}`}
+                    >
+                      {!isOwnMessage && (
+                        <img
+                          src={
+                            conversation.participant.profilePicture || 
+                            'https://img.icons8.com/ios/50/null/user-male-circle--v1.png'
+                          }
+                          alt={conversation.participant.name}
+                          className="message-avatar"
+                        />
+                      )}
+                      <div className="message-content">
+                        <div className="message-bubble">
+                          <p className="message-text">{message.text}</p>
+                        </div>
+                        <span className="message-time">
+                          {formatMessageTime(message.timestamp || message.createdAt)}
+                        </span>
                       </div>
-                      <span className="message-time">
-                        {formatMessageTime(message.timestamp)}
-                      </span>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          ))
+                  );
+                })}
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}

@@ -29,6 +29,13 @@ function Messaging() {
     }
   }, [authorized]);
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   // Socket.io listeners for real-time updates
   useEffect(() => {
     if (socket && authorized) {

@@ -2,6 +2,7 @@
   min-height: calc(100vh - 120px);
   padding: 1rem;
   background-color: #f3f4f6;
+  position: relative;
 }
 
 .messaging-wrapper {
@@ -15,20 +16,22 @@
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   overflow: hidden;
+  max-height: calc(100vh - 140px);
 }
 
-/* Conversation List */
 .conversation-list-section {
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 .conversation-list {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 .conversation-list-header {
@@ -37,6 +40,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
+}
+
+.conversation-list-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .conversation-list-header h2 {
@@ -200,17 +211,18 @@
   margin-left: 0.5rem;
 }
 
-/* Chat Window */
 .chat-window-section {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 .chat-window {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 .chat-window-header {
@@ -219,6 +231,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
 }
 
 .back-button {
@@ -269,8 +282,11 @@
 .chat-messages {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1.5rem;
   background-color: #f9fafb;
+  position: relative;
+  scroll-behavior: smooth;
 }
 
 .no-messages {
@@ -290,6 +306,7 @@
 
 .message-date-group {
   margin-bottom: 1.5rem;
+  max-width: 100%;
 }
 
 .message-date-divider {
@@ -310,7 +327,10 @@
   display: flex;
   margin-bottom: 1rem;
   animation: fadeIn 0.3s ease-in;
+  max-width: 100%;
 }
+
+
 
 @keyframes fadeIn {
   from {
@@ -358,6 +378,9 @@
   padding: 0.75rem 1rem;
   border-radius: 1rem;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .own-message .message-bubble {
@@ -391,6 +414,7 @@
   padding: 1rem 1.5rem;
   border-top: 1px solid #e5e7eb;
   background-color: white;
+  flex-shrink: 0;
 }
 
 .chat-input-wrapper {
@@ -421,6 +445,7 @@
   max-height: 120px;
   padding: 0.5rem 0;
   color: #1f2937;
+  overflow-y: auto;
 }
 
 .chat-input::placeholder {
@@ -548,6 +573,8 @@
 @media screen and (max-width: 1024px) {
   .messaging-wrapper {
     grid-template-columns: 1fr;
+    height: calc(100vh - 60px);
+    max-height: calc(100vh - 60px);
   }
 
   .conversation-list-section.hidden-mobile {
@@ -576,19 +603,17 @@
 @media screen and (max-width: 640px) {
   .messaging-container {
     padding: 0;
+    min-height: 100vh;
   }
 
   .messaging-wrapper {
-    height: calc(100vh - 60px);
+    height: 100vh;
+    max-height: 100vh;
     border-radius: 0;
   }
 
   .conversation-list-header {
     padding: 1rem;
-  }
-
-  .conversation-list-header h2 {
-    font-size: 1.25rem;
   }
 
   .chat-window-header {
