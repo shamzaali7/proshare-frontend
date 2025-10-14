@@ -22,7 +22,6 @@ function Messaging() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Load conversations on mount
   useEffect(() => {
     if (authorized) {
       loadConversations();
@@ -36,7 +35,6 @@ function Messaging() {
     };
   }, []);
 
-  // Socket.io listeners for real-time updates
   useEffect(() => {
     if (socket && authorized) {
       socket.on("receiveMessage", async (data) => {
@@ -144,6 +142,22 @@ function Messaging() {
   const handleSendMessage = async (messageText) => {
     if (!selectedConversation || !messageText.trim()) return;
 
+    // Create optimistic message
+    const optimisticMessage = {
+      id: `temp-${Date.now()}`,
+      text: messageText,
+      senderId: user.googleid,
+      timestamp: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      status: 'sending'
+    };
+
+    // Add optimistic message to UI
+    setSelectedConversation(prev => ({
+      ...prev,
+      messages: [...(prev.messages || []), optimisticMessage]
+    }));
+
     try {
       const result = await sendMessage(
         selectedConversation.participant.googleid,
@@ -152,21 +166,26 @@ function Messaging() {
       );
 
       const newMessage = {
-        id: result.message._id || `${Date.now()}`,
+        id: result.message._id || result.message.id,
         text: result.message.text,
         senderId: result.message.senderId,
         timestamp: result.message.createdAt || new Date().toISOString(),
-        createdAt: result.message.createdAt || new Date().toISOString()
+        createdAt: result.message.createdAt || new Date().toISOString(),
+        status: 'sent'
       };
       
+      // Replace optimistic message with real one
       setSelectedConversation(prev => ({
         ...prev,
         id: result.conversationId,
         lastMessage: messageText,
         lastMessageTime: newMessage.createdAt,
-        messages: [...(prev.messages || []), newMessage]
+        messages: prev.messages.map(msg => 
+          msg.id === optimisticMessage.id ? newMessage : msg
+        )
       }));
 
+      // Update conversations list
       setConversations(prevConvs => {
         const updated = prevConvs.map(conv => {
           if (conv.id === result.conversationId || 
@@ -198,6 +217,17 @@ function Messaging() {
       
     } catch (err) {
       console.log("Error sending message:", err);
+
+      setSelectedConversation(prev => ({
+        ...prev,
+        messages: prev.messages.map(msg => 
+          msg.id === optimisticMessage.id 
+            ? { ...msg, status: 'failed' } 
+            : msg
+        )
+      }));
+      
+      throw err; // Re-throw to handle in ChatWindow
     }
   };
 

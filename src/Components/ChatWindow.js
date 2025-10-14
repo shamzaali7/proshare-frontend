@@ -3,6 +3,7 @@ import '../Styling/Messaging.css';
 
 function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
   const [messageText, setMessageText] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const textareaRef = useRef(null);
@@ -15,28 +16,23 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
   };
 
   useEffect(() => {
-    // Scroll to bottom when conversation changes or new messages arrive
     scrollToBottom();
   }, [conversation.messages, shouldAutoScroll]);
 
   useEffect(() => {
-    // Reset auto-scroll when conversation changes
     setShouldAutoScroll(true);
-    // Small delay to ensure DOM is updated
     setTimeout(() => {
       scrollToBottom();
     }, 100);
   }, [conversation.id, conversation.participant.googleid]);
 
   useEffect(() => {
-    // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
     }
   }, [messageText]);
 
-  // Detect when user scrolls up
   const handleScroll = () => {
     if (messagesContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
@@ -45,17 +41,28 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (messageText.trim()) {
-      onSendMessage(messageText);
-      setMessageText('');
-      setShouldAutoScroll(true); // Re-enable auto-scroll when sending
+    if (messageText.trim() && !sendingMessage) {
+      setSendingMessage(true);
+      const messageCopy = messageText;
+      setMessageText(''); // Clear input optimistically
+      
+      try {
+        await onSendMessage(messageCopy);
+        setShouldAutoScroll(true);
+      } catch (err) {
+        // Restore message text if sending failed
+        setMessageText(messageCopy);
+        console.error('Failed to send message:', err);
+      } finally {
+        setSendingMessage(false);
+      }
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !sendingMessage) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -65,7 +72,6 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
     if (!timestamp) return '';
     const date = new Date(timestamp);
     
-    // Check if date is valid
     if (isNaN(date.getTime())) {
       return '';
     }
@@ -81,7 +87,6 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
     if (!messages || messages.length === 0) return {};
     
     return messages.reduce((groups, message) => {
-      // Use createdAt or timestamp
       const timestamp = message.createdAt || message.timestamp;
       if (!timestamp) return groups;
       
@@ -168,10 +173,12 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
                 </div>
                 {messages.map((message, index) => {
                   const isOwnMessage = message.senderId === currentUser.googleid;
+                  const isSending = message.status === 'sending';
+                  
                   return (
                     <div
                       key={message.id || `${message.senderId}-${index}`}
-                      className={`message ${isOwnMessage ? 'own-message' : 'other-message'}`}
+                      className={`message ${isOwnMessage ? 'own-message' : 'other-message'} ${isSending ? 'sending' : ''}`}
                     >
                       {!isOwnMessage && (
                         <img
@@ -188,7 +195,7 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
                           <p className="message-text">{message.text}</p>
                         </div>
                         <span className="message-time">
-                          {formatMessageTime(message.timestamp || message.createdAt)}
+                          {isSending ? 'Sending...' : formatMessageTime(message.timestamp || message.createdAt)}
                         </span>
                       </div>
                     </div>
@@ -212,25 +219,34 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
             onChange={(e) => setMessageText(e.target.value)}
             onKeyPress={handleKeyPress}
             rows="1"
+            disabled={sendingMessage}
           />
           <button
             type="submit"
             className="send-button"
-            disabled={!messageText.trim()}
+            disabled={!messageText.trim() || sendingMessage}
           >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-            </svg>
+            {sendingMessage ? (
+              <div className="sending-indicator">
+                <div className="sending-dot"></div>
+                <div className="sending-dot"></div>
+                <div className="sending-dot"></div>
+              </div>
+            ) : (
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+              </svg>
+            )}
           </button>
         </div>
       </form>

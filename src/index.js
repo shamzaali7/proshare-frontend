@@ -380,7 +380,8 @@ function AppProvider() {
       };
     } catch (err) {
       console.log("Error sending message:", err);
-      setError("Failed to send message");
+      // Don't set global error for message sending failures
+      // Let the Messaging component handle it locally
       throw err;
     }
   }
