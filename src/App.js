@@ -71,12 +71,6 @@ function App() {
   };
 
   useEffect(() => {
-    if (showMobileMenu) {
-      document.body.style.overflow = "auto";
-    }
-  }, [showMobileMenu]);
-
-  useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
         clearError();
@@ -153,7 +147,6 @@ function App() {
               />
             } 
           />
-          {/* Add the messaging route */}
           <Route path="/messages" element={<Messaging />} />
         </Routes>
       </main>

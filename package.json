@@ -1,6 +1,7 @@
 {
   "name": "proshare-frontend",
   "version": "0.1.0",
+  "description": "ProShare — a platform for developers to share and discover projects",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",

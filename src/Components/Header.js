@@ -20,8 +20,6 @@ function Header({
     loading 
   } = useContext(AppContext);
   
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadLoading, setUploadLoading] = useState(false);
   const [profilePic, setProfilePic] = useState({ profilePicture: "" });
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageFile, setImageFile] = useState(null);

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { AppContext } from '../index';
 import ConversationList from './ConversationList';
 import ChatWindow from './ChatWindow';
@@ -21,6 +21,12 @@ function Messaging() {
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  const selectedConversationRef = useRef(null);
+
+  useEffect(() => {
+    selectedConversationRef.current = selectedConversation;
+  }, [selectedConversation]);
 
   useEffect(() => {
     if (authorized) {
@@ -37,20 +43,48 @@ function Messaging() {
 
   useEffect(() => {
     if (socket && authorized) {
+      socket.off("receiveMessage");
+      
       socket.on("receiveMessage", async (data) => {
         const { message, conversationId } = data;
         
-        // Update conversations list
-        await loadConversations();
-        
-        // If the message is for the currently open conversation, add it
-        if (selectedConversation && selectedConversation.id === conversationId) {
-          setSelectedConversation(prev => ({
-            ...prev,
-            messages: [...(prev.messages || []), message]
-          }));
+        setConversations(prevConvs => {
+          const updated = prevConvs.map(conv => {
+            if (conv.id === conversationId) {
+              return {
+                ...conv,
+                lastMessage: message.text,
+                lastMessageTime: message.createdAt || message.timestamp,
+                unreadCount: selectedConversationRef.current?.id === conversationId ? 0 : (conv.unreadCount || 0) + 1
+              };
+            }
+            return conv;
+          });
           
-          // Mark as read
+          return updated.sort((a, b) => 
+            new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
+          );
+        });
+        
+        if (selectedConversationRef.current && selectedConversationRef.current.id === conversationId) {
+          setSelectedConversation(prev => {
+            const messageExists = prev.messages?.some(m => m.id === message.id || m._id === message._id);
+            if (messageExists) {
+              return prev;
+            }
+            
+            return {
+              ...prev,
+              lastMessage: message.text,
+              lastMessageTime: message.createdAt || message.timestamp,
+              messages: [...(prev.messages || []), {
+                ...message,
+                id: message._id || message.id,
+                timestamp: message.createdAt || message.timestamp
+              }]
+            };
+          });
+          
           await markMessagesAsRead(conversationId);
         }
       });
@@ -59,7 +93,7 @@ function Messaging() {
         socket.off("receiveMessage");
       };
     }
-  }, [socket, authorized, selectedConversation]);
+  }, [socket, authorized, markMessagesAsRead]);
 
   const loadConversations = async () => {
     try {
@@ -73,6 +107,10 @@ function Messaging() {
         lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
         unreadCount: conv.unreadCount || 0
       }));
+      
+      enrichedConvs.sort((a, b) => 
+        new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
+      );
       
       setConversations(enrichedConvs);
     } catch (err) {
@@ -89,15 +127,17 @@ function Messaging() {
       
       const conversationWithMessages = {
         ...conversation,
-        messages
+        messages: messages.map(msg => ({
+          ...msg,
+          id: msg._id || msg.id,
+          timestamp: msg.createdAt || msg.timestamp
+        }))
       };
       
       setSelectedConversation(conversationWithMessages);
       
-      // Mark messages as read
       await markMessagesAsRead(conversation.id);
-      
-      // Update conversation list to reflect read status
+
       setConversations(prev => 
         prev.map(conv => 
           conv.id === conversation.id 
@@ -115,7 +155,6 @@ function Messaging() {
   const handleNewMessage = async (userId) => {
     const participant = allUsers.find(u => u.googleid === userId);
     if (participant) {
-      // Check if conversation already exists
       const existingConv = conversations.find(
         conv => conv.participant.googleid === userId
       );
@@ -123,7 +162,6 @@ function Messaging() {
       if (existingConv) {
         await handleSelectConversation(existingConv);
       } else {
-        // Create new conversation locally
         const newConv = {
           id: `new-${Date.now()}`,
           participant,
@@ -142,7 +180,6 @@ function Messaging() {
   const handleSendMessage = async (messageText) => {
     if (!selectedConversation || !messageText.trim()) return;
 
-    // Create optimistic message
     const optimisticMessage = {
       id: `temp-${Date.now()}`,
       text: messageText,
@@ -152,7 +189,6 @@ function Messaging() {
       status: 'sending'
     };
 
-    // Add optimistic message to UI
     setSelectedConversation(prev => ({
       ...prev,
       messages: [...(prev.messages || []), optimisticMessage]
@@ -174,7 +210,6 @@ function Messaging() {
         status: 'sent'
       };
       
-      // Replace optimistic message with real one
       setSelectedConversation(prev => ({
         ...prev,
         id: result.conversationId,
@@ -185,7 +220,6 @@ function Messaging() {
         )
       }));
 
-      // Update conversations list
       setConversations(prevConvs => {
         const updated = prevConvs.map(conv => {
           if (conv.id === result.conversationId || 
@@ -212,12 +246,16 @@ function Messaging() {
           });
         }
         
-        return updated;
+        return updated.sort((a, b) => 
+          new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
+        );
       });
+      
+      return true;
       
     } catch (err) {
       console.log("Error sending message:", err);
-
+      
       setSelectedConversation(prev => ({
         ...prev,
         messages: prev.messages.map(msg => 
@@ -227,7 +265,7 @@ function Messaging() {
         )
       }));
       
-      throw err; // Re-throw to handle in ChatWindow
+      return false;
     }
   };
 

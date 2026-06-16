@@ -49,7 +49,6 @@ function AppProvider() {
       // For local: const newSocket = io("http://localhost:4000");
 
       newSocket.on("connect", () => {
-        console.log("Socket connected");
         newSocket.emit("join", user.googleid);
       });
 

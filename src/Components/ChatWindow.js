@@ -10,20 +10,20 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
 
   const scrollToBottom = () => {
-    if (messagesContainerRef.current && shouldAutoScroll) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    if (shouldAutoScroll) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [conversation.messages, shouldAutoScroll]);
+  }, [conversation.messages]);
 
   useEffect(() => {
     setShouldAutoScroll(true);
-    setTimeout(() => {
-      scrollToBottom();
-    }, 100);
+    scrollToBottom();
   }, [conversation.id, conversation.participant.googleid]);
 
   useEffect(() => {
@@ -46,17 +46,31 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
     if (messageText.trim() && !sendingMessage) {
       setSendingMessage(true);
       const messageCopy = messageText;
-      setMessageText(''); // Clear input optimistically
+      
+      // Clear input immediately for better UX
+      setMessageText('');
+      
+      // Reset textarea height
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
+      
+      setShouldAutoScroll(true);
       
       try {
-        await onSendMessage(messageCopy);
-        setShouldAutoScroll(true);
+        const success = await onSendMessage(messageCopy);
+        if (!success) {
+          // If sending failed, restore the message text
+          setMessageText(messageCopy);
+        }
       } catch (err) {
         // Restore message text if sending failed
         setMessageText(messageCopy);
         console.error('Failed to send message:', err);
       } finally {
         setSendingMessage(false);
+        // Focus back on input
+        textareaRef.current?.focus();
       }
     }
   };
@@ -174,11 +188,12 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
                 {messages.map((message, index) => {
                   const isOwnMessage = message.senderId === currentUser.googleid;
                   const isSending = message.status === 'sending';
+                  const isFailed = message.status === 'failed';
                   
                   return (
                     <div
                       key={message.id || `${message.senderId}-${index}`}
-                      className={`message ${isOwnMessage ? 'own-message' : 'other-message'} ${isSending ? 'sending' : ''}`}
+                      className={`message ${isOwnMessage ? 'own-message' : 'other-message'} ${isSending ? 'sending' : ''} ${isFailed ? 'failed' : ''}`}
                     >
                       {!isOwnMessage && (
                         <img
@@ -193,9 +208,16 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
                       <div className="message-content">
                         <div className="message-bubble">
                           <p className="message-text">{message.text}</p>
+                          {isSending && (
+                            <div className="message-sending-indicator">
+                              <div className="dot-pulse">
+                                <div className="dot-pulse__dot"></div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <span className="message-time">
-                          {isSending ? 'Sending...' : formatMessageTime(message.timestamp || message.createdAt)}
+                          {isFailed ? 'Failed to send' : (isSending ? 'Sending...' : formatMessageTime(message.timestamp || message.createdAt))}
                         </span>
                       </div>
                     </div>
@@ -227,10 +249,10 @@ function ChatWindow({ conversation, currentUser, onSendMessage, onBack }) {
             disabled={!messageText.trim() || sendingMessage}
           >
             {sendingMessage ? (
-              <div className="sending-indicator">
-                <div className="sending-dot"></div>
-                <div className="sending-dot"></div>
-                <div className="sending-dot"></div>
+              <div className="sending-spinner">
+                <div className="spinner-dot"></div>
+                <div className="spinner-dot"></div>
+                <div className="spinner-dot"></div>
               </div>
             ) : (
               <svg 
