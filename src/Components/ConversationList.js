@@ -9,6 +9,20 @@ function ConversationList({
   currentUserId 
 }) {
 
+  const formatLastMessage = (conversation) => {
+    const text = conversation.lastMessage;
+    if (!text) return 'No messages yet';
+
+    const senderId = conversation.lastMessageSenderId;
+    const prefix = senderId === currentUserId
+      ? 'You'
+      : (conversation.participant?.name?.split(' ')[0] || 'Them');
+
+    const maxLen = 28;
+    const truncated = text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
+    return `${prefix}: ${truncated}`;
+  };
+
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return '';
     const date = new Date(timestamp);
@@ -108,7 +122,7 @@ function ConversationList({
                   <span className={`conversation-last-message ${
                     conversation.unreadCount > 0 ? 'unread' : ''
                   }`}>
-                    {conversation.lastMessage || 'No messages yet'}
+                    {formatLastMessage(conversation)}
                   </span>
                   {conversation.unreadCount > 0 && (
                     <span className="unread-badge">

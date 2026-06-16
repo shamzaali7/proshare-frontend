@@ -38,6 +38,7 @@ function Messaging() {
         ...conv,
         id: conv.conversationId || conv.id,
         lastMessage: conv.lastMessage || '',
+        lastMessageSenderId: conv.lastMessageSenderId || '',
         lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
         unreadCount: conv.unreadCount || 0
       }));
@@ -96,6 +97,7 @@ function Messaging() {
               return {
                 ...conv,
                 lastMessage: message.text,
+                lastMessageSenderId: message.senderId,
                 lastMessageTime: message.createdAt || message.timestamp,
                 unreadCount: selectedConversationRef.current?.id === conversationId ? 0 : (conv.unreadCount || 0) + 1
               };
@@ -154,6 +156,7 @@ function Messaging() {
         ...conv,
         id: conv.conversationId || conv.id,
         lastMessage: conv.lastMessage || '',
+        lastMessageSenderId: conv.lastMessageSenderId || '',
         lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
         unreadCount: conv.unreadCount || 0
       }));
@@ -272,12 +275,13 @@ function Messaging() {
 
       setConversations(prevConvs => {
         const updated = prevConvs.map(conv => {
-          if (conv.id === result.conversationId || 
+          if (conv.id === result.conversationId ||
               conv.participant.googleid === selectedConversation.participant.googleid) {
             return {
               ...conv,
               id: result.conversationId,
               lastMessage: messageText,
+              lastMessageSenderId: user.googleid,
               lastMessageTime: newMessage.createdAt,
               unreadCount: 0
             };
@@ -290,6 +294,7 @@ function Messaging() {
             id: result.conversationId,
             participant: selectedConversation.participant,
             lastMessage: messageText,
+            lastMessageSenderId: user.googleid,
             lastMessageTime: newMessage.createdAt,
             unreadCount: 0,
             messages: [newMessage]
@@ -344,6 +349,7 @@ function Messaging() {
               ...conv,
               id: conv.conversationId || conv.id,
               lastMessage: conv.lastMessage || '',
+              lastMessageSenderId: conv.lastMessageSenderId || '',
               lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
               unreadCount: conv.unreadCount || 0
             }));
