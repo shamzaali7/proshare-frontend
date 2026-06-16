@@ -109,10 +109,15 @@ function Header({
               
               <div className="flex">
                 <div className="nav-links">
-                  {authorized && (        
+                  {authorized && (
                     <Link to="/accounts" className="nav-link">
                       <span className="nav-link-icon">
-                        <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="3" width="7" height="7" rx="1"/>
+                          <rect x="14" y="3" width="7" height="7" rx="1"/>
+                          <rect x="14" y="14" width="7" height="7" rx="1"/>
+                          <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        </svg>
                       </span>
                       Dashboard
                     </Link>
@@ -133,7 +138,10 @@ function Header({
                   
                   <Link to="/ide" className="nav-link">
                     <span className="nav-link-icon">
-                      <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="16 18 22 12 16 6"/>
+                        <polyline points="8 6 2 12 8 18"/>
+                      </svg>
                     </span>
                     Test
                   </Link>
@@ -245,7 +253,12 @@ function Header({
                         <Link to="/accounts" className="mobile-nav-link" onClick={onMobileMenuToggle}>
                           <div className="mobile-nav-content">
                             <div className="mobile-nav-icon">
-                              <img className="w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg4.svg" alt="dashboard" />
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                                <rect x="14" y="14" width="7" height="7" rx="1"/>
+                                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                              </svg>
                             </div>
                             <p className="mobile-nav-text">Dashboard</p>
                           </div>
@@ -274,7 +287,10 @@ function Header({
                       <Link to="/ide" className="mobile-nav-link" onClick={onMobileMenuToggle}>
                         <div className="mobile-nav-content">
                           <div className="mobile-nav-icon">
-                            <img className="w-7 h-7" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/light-with-button-svg5.svg" alt="products" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="16 18 22 12 16 6"/>
+                              <polyline points="8 6 2 12 8 18"/>
+                            </svg>
                           </div>
                           <p className="mobile-nav-text">Test</p>
                         </div>
