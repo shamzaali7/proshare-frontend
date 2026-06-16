@@ -23,10 +23,52 @@ function Messaging() {
   const [loading, setLoading] = useState(false);
   
   const selectedConversationRef = useRef(null);
+  const pollRef = useRef(null);
 
   useEffect(() => {
     selectedConversationRef.current = selectedConversation;
   }, [selectedConversation]);
+
+  // Keep pollRef fresh so the interval always uses latest context/state
+  pollRef.current = async () => {
+    if (!authorized) return;
+    try {
+      const freshConvs = await getConversations();
+      const enrichedConvs = freshConvs.map(conv => ({
+        ...conv,
+        id: conv.conversationId || conv.id,
+        lastMessage: conv.lastMessage || '',
+        lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
+        unreadCount: conv.unreadCount || 0
+      }));
+      enrichedConvs.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+      setConversations(enrichedConvs);
+
+      const currentConv = selectedConversationRef.current;
+      if (currentConv?.id && !currentConv.id.startsWith('new-')) {
+        const freshMessages = await getMessages(currentConv.id);
+        setSelectedConversation(prev => {
+          if (!prev || prev.id !== currentConv.id) return prev;
+          // Keep any in-flight optimistic messages not yet confirmed by server
+          const pendingMsgs = (prev.messages || []).filter(m => m.status === 'sending');
+          const serverMsgs = freshMessages.map(msg => ({
+            ...msg,
+            id: msg._id || msg.id,
+            timestamp: msg.createdAt || msg.timestamp,
+            status: 'sent'
+          }));
+          const serverIds = new Set(serverMsgs.map(m => m.id || m._id));
+          const stillPending = pendingMsgs.filter(m => !serverIds.has(m.id));
+          const merged = [...serverMsgs, ...stillPending].sort(
+            (a, b) => new Date(a.timestamp || a.createdAt) - new Date(b.timestamp || b.createdAt)
+          );
+          return { ...prev, messages: merged };
+        });
+      }
+    } catch (err) {
+      console.log("Polling error:", err);
+    }
+  };
 
   useEffect(() => {
     if (authorized) {
@@ -94,6 +136,14 @@ function Messaging() {
       };
     }
   }, [socket, authorized, markMessagesAsRead]);
+
+  // Polling fallback: refreshes conversations + active messages every 10s
+  // Handles cases where socket is unavailable (Heroku cold starts, reconnects)
+  useEffect(() => {
+    if (!authorized) return;
+    const interval = setInterval(() => pollRef.current?.(), 10000);
+    return () => clearInterval(interval);
+  }, [authorized]);
 
   const loadConversations = async () => {
     try {
@@ -255,17 +305,68 @@ function Messaging() {
       
     } catch (err) {
       console.log("Error sending message:", err);
-      
-      setSelectedConversation(prev => ({
-        ...prev,
-        messages: prev.messages.map(msg => 
-          msg.id === optimisticMessage.id 
-            ? { ...msg, status: 'failed' } 
-            : msg
-        )
-      }));
-      
-      return false;
+
+      // Recovery: the message may have reached the server despite the error
+      // (e.g. Heroku cold start causes a 503 timeout even though the dyno saved the message)
+      let recovered = false;
+      try {
+        const freshConvs = await getConversations();
+        const matchingConv = freshConvs.find(
+          c => c.participant?.googleid === selectedConversation.participant.googleid
+        );
+        if (matchingConv) {
+          const convId = matchingConv.conversationId || matchingConv.id;
+          const serverMessages = await getMessages(convId);
+          const recentMsg = serverMessages.find(
+            m => m.senderId === user.googleid &&
+                 m.text === messageText &&
+                 Date.now() - new Date(m.createdAt).getTime() < 120000
+          );
+          if (recentMsg) {
+            recovered = true;
+            const newMessage = {
+              id: recentMsg._id || recentMsg.id,
+              text: recentMsg.text,
+              senderId: recentMsg.senderId,
+              timestamp: recentMsg.createdAt,
+              createdAt: recentMsg.createdAt,
+              status: 'sent'
+            };
+            setSelectedConversation(prev => ({
+              ...prev,
+              id: convId,
+              lastMessage: messageText,
+              messages: prev.messages.map(msg =>
+                msg.id === optimisticMessage.id ? newMessage : msg
+              )
+            }));
+            const enrichedConvs = freshConvs.map(conv => ({
+              ...conv,
+              id: conv.conversationId || conv.id,
+              lastMessage: conv.lastMessage || '',
+              lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
+              unreadCount: conv.unreadCount || 0
+            }));
+            enrichedConvs.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+            setConversations(enrichedConvs);
+          }
+        }
+      } catch (recoveryErr) {
+        console.log("Recovery check failed:", recoveryErr);
+      }
+
+      if (!recovered) {
+        setSelectedConversation(prev => ({
+          ...prev,
+          messages: prev.messages.map(msg =>
+            msg.id === optimisticMessage.id
+              ? { ...msg, status: 'failed' }
+              : msg
+          )
+        }));
+      }
+
+      return recovered;
     }
   };
 
