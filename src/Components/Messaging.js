@@ -457,10 +457,9 @@ function Messaging() {
             />
           ) : (
             <div className="no-conversation-selected">
-              <img 
-                src="https://img.icons8.com/clouds/200/000000/message.png" 
-                alt="messages" 
-              />
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
               <h2>Select a conversation</h2>
               <p>Choose from your existing conversations or start a new one</p>
             </div>
