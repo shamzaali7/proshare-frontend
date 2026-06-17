@@ -162,7 +162,7 @@ function Header({
                             </div>
                             <div className="user-dropdown-item" onClick={onProfilePictureModalToggle}>
                               <img src="https://img.icons8.com/windows/96/null/edit-user.png" alt="Edit Icon"/>
-                              <span>Change Picture</span>
+                              <span>Change Icon</span>
                             </div>
                           </div>
                         )}
