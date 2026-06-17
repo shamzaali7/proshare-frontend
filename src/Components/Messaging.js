@@ -349,14 +349,101 @@ function Messaging() {
     } catch (err) {
       console.log("Error sending message:", err);
 
-      // Recovery: the message may have reached the server despite the error
-      // (e.g. Heroku cold start causes a 503 timeout even though the dyno saved the message)
+      // Helper: update UI after we've confirmed a message landed on the server
+      const applyRecoveredMessage = (serverMsg, realConvId, convsList) => {
+        const confirmed = {
+          id: serverMsg._id || serverMsg.id,
+          text: serverMsg.text,
+          senderId: serverMsg.senderId,
+          timestamp: serverMsg.createdAt,
+          createdAt: serverMsg.createdAt,
+          status: 'sent'
+        };
+        setSelectedConversation(prev => ({
+          ...prev,
+          id: realConvId,
+          lastMessage: messageText,
+          messages: prev.messages.map(m =>
+            m.id === optimisticMessage.id ? confirmed : m
+          )
+        }));
+        if (convsList) {
+          const enriched = convsList.map(c => ({
+            ...c,
+            id: c.conversationId || c.id,
+            lastMessage: c.lastMessage || '',
+            lastMessageSenderId: c.lastMessageSenderId || '',
+            lastMessageTime: c.lastMessageTime || c.updatedAt || new Date().toISOString(),
+            unreadCount: c.unreadCount || 0
+          }));
+          enriched.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+          setConversations(enriched);
+        }
+      };
+
+      // Helper: update UI after a retry returned a proper HTTP response
+      const applyRetryResult = (retryResult) => {
+        const retryMsg = {
+          id: retryResult.message._id || retryResult.message.id,
+          text: retryResult.message.text,
+          senderId: retryResult.message.senderId,
+          timestamp: retryResult.message.createdAt || new Date().toISOString(),
+          createdAt: retryResult.message.createdAt || new Date().toISOString(),
+          status: 'sent'
+        };
+        setSelectedConversation(prev => ({
+          ...prev,
+          id: retryResult.conversationId,
+          lastMessage: messageText,
+          lastMessageTime: retryMsg.createdAt,
+          messages: prev.messages.map(m =>
+            m.id === optimisticMessage.id ? retryMsg : m
+          )
+        }));
+        setConversations(prevConvs => {
+          const updated = prevConvs.map(conv => {
+            if (conv.id === retryResult.conversationId ||
+                conv.participant?.googleid === selectedConversation.participant.googleid) {
+              return {
+                ...conv,
+                id: retryResult.conversationId,
+                lastMessage: messageText,
+                lastMessageSenderId: user.googleid,
+                lastMessageTime: retryMsg.createdAt,
+                unreadCount: 0
+              };
+            }
+            return conv;
+          });
+          if (!updated.find(c => c.id === retryResult.conversationId)) {
+            updated.unshift({
+              id: retryResult.conversationId,
+              participant: selectedConversation.participant,
+              lastMessage: messageText,
+              lastMessageSenderId: user.googleid,
+              lastMessageTime: retryMsg.createdAt,
+              unreadCount: 0
+            });
+          }
+          return updated.sort((a, b) =>
+            new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
+          );
+        });
+      };
+
       let recovered = false;
       try {
+        // IMPORTANT: Wait before checking the server. When Heroku's 30-second request
+        // timeout fires, the backend may still be mid-write. A short pause ensures
+        // MongoDB has committed before we query — this prevents a false "not found"
+        // that would trigger a duplicate-creating retry.
+        await new Promise(resolve => setTimeout(resolve, 4000));
+
         const freshConvs = await getConversations();
         const matchingConv = freshConvs.find(
           c => c.participant?.googleid === selectedConversation.participant.googleid
         );
+
         if (matchingConv) {
           const convId = matchingConv.conversationId || matchingConv.id;
           const serverMessages = await getMessages(convId);
@@ -365,94 +452,51 @@ function Messaging() {
                  m.text === messageText &&
                  Date.now() - new Date(m.createdAt).getTime() < 120000
           );
+
           if (recentMsg) {
-            // Message did reach the server — restore it in the UI
+            // The original request landed — recover without retrying
+            applyRecoveredMessage(recentMsg, convId, freshConvs);
             recovered = true;
-            const newMessage = {
-              id: recentMsg._id || recentMsg.id,
-              text: recentMsg.text,
-              senderId: recentMsg.senderId,
-              timestamp: recentMsg.createdAt,
-              createdAt: recentMsg.createdAt,
-              status: 'sent'
-            };
-            setSelectedConversation(prev => ({
-              ...prev,
-              id: convId,
-              lastMessage: messageText,
-              messages: prev.messages.map(msg =>
-                msg.id === optimisticMessage.id ? newMessage : msg
-              )
-            }));
-            const enrichedConvs = freshConvs.map(conv => ({
-              ...conv,
-              id: conv.conversationId || conv.id,
-              lastMessage: conv.lastMessage || '',
-              lastMessageSenderId: conv.lastMessageSenderId || '',
-              lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
-              unreadCount: conv.unreadCount || 0
-            }));
-            enrichedConvs.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
-            setConversations(enrichedConvs);
           } else {
-            // Conversation exists but message wasn't saved (Heroku cold-start timeout).
-            // Dyno is now warm from the recovery calls above — retry the send once.
+            // Not on server yet. Dyno is definitely warm now — retry once.
             try {
               const retryResult = await sendMessage(
                 selectedConversation.participant.googleid,
                 selectedConversation.participant.name,
                 messageText
               );
-              const retryMsg = {
-                id: retryResult.message._id || retryResult.message.id,
-                text: retryResult.message.text,
-                senderId: retryResult.message.senderId,
-                timestamp: retryResult.message.createdAt || new Date().toISOString(),
-                createdAt: retryResult.message.createdAt || new Date().toISOString(),
-                status: 'sent'
-              };
-              setSelectedConversation(prev => ({
-                ...prev,
-                id: retryResult.conversationId,
-                lastMessage: messageText,
-                lastMessageTime: retryMsg.createdAt,
-                messages: prev.messages.map(m =>
-                  m.id === optimisticMessage.id ? retryMsg : m
-                )
-              }));
-              setConversations(prevConvs => {
-                const updated = prevConvs.map(conv => {
-                  if (conv.id === retryResult.conversationId ||
-                      conv.participant?.googleid === selectedConversation.participant.googleid) {
-                    return {
-                      ...conv,
-                      id: retryResult.conversationId,
-                      lastMessage: messageText,
-                      lastMessageSenderId: user.googleid,
-                      lastMessageTime: retryMsg.createdAt,
-                      unreadCount: 0
-                    };
-                  }
-                  return conv;
-                });
-                if (!updated.find(c => c.id === retryResult.conversationId)) {
-                  updated.unshift({
-                    id: retryResult.conversationId,
-                    participant: selectedConversation.participant,
-                    lastMessage: messageText,
-                    lastMessageSenderId: user.googleid,
-                    lastMessageTime: retryMsg.createdAt,
-                    unreadCount: 0
-                  });
-                }
-                return updated.sort((a, b) =>
-                  new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
-                );
-              });
+              applyRetryResult(retryResult);
               recovered = true;
             } catch (retryErr) {
-              console.log("Retry also failed:", retryErr);
+              // Retry also timed out. Wait, then do a final server-side check.
+              // The retry may have succeeded on the backend even though we never
+              // got a response.
+              console.log("Retry timed out, doing final check:", retryErr);
+              await new Promise(resolve => setTimeout(resolve, 4000));
+              const finalMsgs = await getMessages(convId);
+              const finalMsg = finalMsgs.find(
+                m => m.senderId === user.googleid &&
+                     m.text === messageText &&
+                     Date.now() - new Date(m.createdAt).getTime() < 300000
+              );
+              if (finalMsg) {
+                applyRecoveredMessage(finalMsg, convId, null);
+                recovered = true;
+              }
             }
+          }
+        } else {
+          // Conversation was never created — retry the full send
+          try {
+            const retryResult = await sendMessage(
+              selectedConversation.participant.googleid,
+              selectedConversation.participant.name,
+              messageText
+            );
+            applyRetryResult(retryResult);
+            recovered = true;
+          } catch (retryErr) {
+            console.log("Full retry failed:", retryErr);
           }
         }
       } catch (recoveryErr) {
