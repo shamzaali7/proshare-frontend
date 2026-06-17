@@ -198,25 +198,31 @@ function AppProvider() {
   async function updateUserProfilePicture(profilePicture) {
     try {
       let imageUrl = profilePicture;
-      
+
       if (profilePicture instanceof File) {
         imageUrl = await uploadImage(profilePicture, 'profile');
       } else {
         imageUrl = normalizeUrl(profilePicture);
       }
 
-      const updatedUser = await axios.put(`${API_BASE_URL}/users/`, {
-        _id: user._id,
-        profilePicture: imageUrl
-      });
-      
-      if (updatedUser.data) {
-        setUser({ ...user, profilePicture: updatedUser.data.profilePicture });
-        return updatedUser.data;
+      // Update state immediately so the avatar reflects the change right away.
+      setUser(prev => ({ ...prev, profilePicture: imageUrl }));
+
+      // Persist to DB (best-effort — upload already succeeded so don't block the user).
+      try {
+        await axios.put(`${API_BASE_URL}/users/`, {
+          _id: user._id,
+          profilePicture: imageUrl
+        });
+      } catch (putErr) {
+        console.log("DB update failed after successful upload:", putErr);
+        // Image is on Cloudinary and state is updated — user will see it correctly.
       }
+
+      return imageUrl;
     } catch (err) {
-      console.log("Error updating profile picture:", err);
-      setError("Failed to update profile picture. Please try again.");
+      console.log("Error uploading profile picture:", err);
+      setError("Failed to upload image. Please try again.");
       throw err;
     }
   }

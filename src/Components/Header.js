@@ -59,24 +59,19 @@ function Header({
   const fileUploader = async (e) => {
     e.preventDefault();
     setUploadingImage(true);
-    
+
     try {
       if (imageFile) {
-        const result = await updateUserProfilePicture(imageFile);
-        if (result) {
-          setProfilePic({ profilePicture: "" });
-          setImageFile(null);
-          onProfilePictureModalToggle();
-        }
+        await updateUserProfilePicture(imageFile);
       } else if (profilePic.profilePicture) {
-        const result = await updateUserProfilePicture(profilePic.profilePicture);
-        if (result) {
-          setProfilePic({ profilePicture: "" });
-          setImageFile(null);
-          onProfilePictureModalToggle();
-        }
+        await updateUserProfilePicture(profilePic.profilePicture);
       }
+      // Upload succeeded — close modal and reset form.
+      setProfilePic({ profilePicture: "" });
+      setImageFile(null);
+      onProfilePictureModalToggle();
     } catch (err) {
+      // Upload itself failed — keep modal open so user can retry.
       console.log("Error updating profile picture:", err);
     } finally {
       setUploadingImage(false);
