@@ -366,6 +366,7 @@ function Messaging() {
                  Date.now() - new Date(m.createdAt).getTime() < 120000
           );
           if (recentMsg) {
+            // Message did reach the server — restore it in the UI
             recovered = true;
             const newMessage = {
               id: recentMsg._id || recentMsg.id,
@@ -393,6 +394,65 @@ function Messaging() {
             }));
             enrichedConvs.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
             setConversations(enrichedConvs);
+          } else {
+            // Conversation exists but message wasn't saved (Heroku cold-start timeout).
+            // Dyno is now warm from the recovery calls above — retry the send once.
+            try {
+              const retryResult = await sendMessage(
+                selectedConversation.participant.googleid,
+                selectedConversation.participant.name,
+                messageText
+              );
+              const retryMsg = {
+                id: retryResult.message._id || retryResult.message.id,
+                text: retryResult.message.text,
+                senderId: retryResult.message.senderId,
+                timestamp: retryResult.message.createdAt || new Date().toISOString(),
+                createdAt: retryResult.message.createdAt || new Date().toISOString(),
+                status: 'sent'
+              };
+              setSelectedConversation(prev => ({
+                ...prev,
+                id: retryResult.conversationId,
+                lastMessage: messageText,
+                lastMessageTime: retryMsg.createdAt,
+                messages: prev.messages.map(m =>
+                  m.id === optimisticMessage.id ? retryMsg : m
+                )
+              }));
+              setConversations(prevConvs => {
+                const updated = prevConvs.map(conv => {
+                  if (conv.id === retryResult.conversationId ||
+                      conv.participant?.googleid === selectedConversation.participant.googleid) {
+                    return {
+                      ...conv,
+                      id: retryResult.conversationId,
+                      lastMessage: messageText,
+                      lastMessageSenderId: user.googleid,
+                      lastMessageTime: retryMsg.createdAt,
+                      unreadCount: 0
+                    };
+                  }
+                  return conv;
+                });
+                if (!updated.find(c => c.id === retryResult.conversationId)) {
+                  updated.unshift({
+                    id: retryResult.conversationId,
+                    participant: selectedConversation.participant,
+                    lastMessage: messageText,
+                    lastMessageSenderId: user.googleid,
+                    lastMessageTime: retryMsg.createdAt,
+                    unreadCount: 0
+                  });
+                }
+                return updated.sort((a, b) =>
+                  new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
+                );
+              });
+              recovered = true;
+            } catch (retryErr) {
+              console.log("Retry also failed:", retryErr);
+            }
           }
         }
       } catch (recoveryErr) {
