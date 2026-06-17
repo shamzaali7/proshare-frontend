@@ -87,36 +87,74 @@ function Messaging() {
   useEffect(() => {
     if (socket && authorized) {
       socket.off("receiveMessage");
-      
+
       socket.on("receiveMessage", async (data) => {
         const { message, conversationId } = data;
-        
+        const convIdStr = String(conversationId);
+
+        let conversationFound = false;
+
         setConversations(prevConvs => {
-          const updated = prevConvs.map(conv => {
-            if (conv.id === conversationId) {
-              return {
-                ...conv,
-                lastMessage: message.text,
-                lastMessageSenderId: message.senderId,
-                lastMessageTime: message.createdAt || message.timestamp,
-                unreadCount: selectedConversationRef.current?.id === conversationId ? 0 : (conv.unreadCount || 0) + 1
-              };
-            }
-            return conv;
-          });
-          
-          return updated.sort((a, b) => 
+          const exists = prevConvs.some(conv => String(conv.id) === convIdStr);
+          conversationFound = exists;
+
+          if (!exists) {
+            // Conversation not in list yet (first message from this person).
+            // Return unchanged — the async refresh below will add it.
+            return prevConvs;
+          }
+
+          const updated = prevConvs.map(conv =>
+            String(conv.id) === convIdStr
+              ? {
+                  ...conv,
+                  lastMessage: message.text,
+                  lastMessageSenderId: message.senderId,
+                  lastMessageTime: message.createdAt || message.timestamp,
+                  unreadCount:
+                    String(selectedConversationRef.current?.id) === convIdStr
+                      ? 0
+                      : (conv.unreadCount || 0) + 1
+                }
+              : conv
+          );
+
+          return updated.sort((a, b) =>
             new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
           );
         });
-        
-        if (selectedConversationRef.current && selectedConversationRef.current.id === conversationId) {
+
+        // If the conversation wasn't in the list (first message), fetch fresh data
+        // so the sidebar shows the new conversation immediately.
+        if (!conversationFound) {
+          try {
+            const freshConvs = await getConversations();
+            const enrichedConvs = freshConvs.map(conv => ({
+              ...conv,
+              id: conv.conversationId || conv.id,
+              lastMessage: conv.lastMessage || '',
+              lastMessageSenderId: conv.lastMessageSenderId || '',
+              lastMessageTime: conv.lastMessageTime || conv.updatedAt || new Date().toISOString(),
+              unreadCount: conv.unreadCount || 0
+            }));
+            enrichedConvs.sort((a, b) =>
+              new Date(b.lastMessageTime) - new Date(a.lastMessageTime)
+            );
+            setConversations(enrichedConvs);
+          } catch (err) {
+            console.log("Error refreshing conversations after new message:", err);
+          }
+        }
+
+        // Update the open chat window if this conversation is active.
+        if (selectedConversationRef.current && String(selectedConversationRef.current.id) === convIdStr) {
           setSelectedConversation(prev => {
-            const messageExists = prev.messages?.some(m => m.id === message.id || m._id === message._id);
-            if (messageExists) {
-              return prev;
-            }
-            
+            if (!prev) return prev;
+            const messageExists = prev.messages?.some(
+              m => String(m.id) === String(message.id) || String(m._id) === String(message._id)
+            );
+            if (messageExists) return prev;
+
             return {
               ...prev,
               lastMessage: message.text,
@@ -128,7 +166,7 @@ function Messaging() {
               }]
             };
           });
-          
+
           await markMessagesAsRead(conversationId);
         }
       });
