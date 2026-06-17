@@ -24,7 +24,7 @@ React client for [ProShare](https://main--proshares.netlify.app), a platform whe
 |---|---|
 | React 18 | UI framework |
 | React Router v6 | Client-side routing |
-| Firebase (Google OAuth) | Authentication |
+| Firebase (Google OAuth + Email/Password) | Authentication |
 | Axios | HTTP client for backend API |
 | Socket.io-client | Real-time messaging |
 | Tailwind CSS | Utility-first styling |
@@ -34,11 +34,12 @@ React client for [ProShare](https://main--proshares.netlify.app), a platform whe
 
 ## Features
 
-- **Google Sign-In** — Firebase-powered OAuth, no passwords required
-- **Project feed** — Browse all developer projects on the home page
-- **Full project CRUD** — Create, edit, and delete your own projects with image uploads
-- **Real-time messaging** — 1-on-1 chat with typing indicators and read receipts via Socket.io
-- **Developer profiles** — Personal dashboard showing your projects and profile picture
+- **Authentication** — Sign in with Google OAuth or create an account with email + password; email/password accounts require email verification before access is granted
+- **Project feed** — Browse all developer projects on the home page with a loading spinner during Heroku cold starts
+- **Full project CRUD** — Create, edit, and delete your own projects; images can be uploaded directly as a file or provided as a URL
+- **Real-time messaging** — 1-on-1 chat via Socket.io with a 10-second polling fallback; sidebar always shows the true latest message read directly from the database
+- **Reliable first message** — Auto-retry logic with server-side verification prevents duplicate messages and false "Failed to send" states caused by Heroku cold-start timeouts
+- **Developer profiles** — Personal dashboard showing your projects; update your profile icon via file upload or URL
 - **Search** — Find projects and developers across the platform
 - **IDE viewer** — Embedded code sandbox for viewing project code
 - **Responsive design** — Optimized for desktop, tablet, and mobile
@@ -52,11 +53,13 @@ src/
 ├── Components/
 │   ├── Header.js             # Navigation bar with auth state
 │   ├── Footer.js             # Site footer
-│   ├── Home.js               # Project feed (all projects)
+│   ├── Home.js               # Project feed (all projects) with cold-start spinner
 │   ├── Profile.js            # User dashboard (own projects)
 │   ├── ProjectCard.js        # Reusable project card component
-│   ├── ProjectFormModal.js   # Create / edit project form
+│   ├── ProjectFormModal.js   # Create / edit project form (file upload + URL)
 │   ├── CommentModal.js       # Project comment modal
+│   ├── AuthModal.js          # Sign-in / sign-up modal (Google + email/password)
+│   ├── EmailVerification.js  # Email verification pending screen
 │   ├── Messaging.js          # Messaging page (conversation list + chat)
 │   ├── ConversationList.js   # Sidebar list of conversations
 │   ├── ChatWindow.js         # Active chat thread
@@ -69,8 +72,8 @@ src/
 │   ├── Header.css            # Header-specific styles
 │   ├── Messaging.css         # Messaging layout styles
 │   └── ProjectCard.css       # Project card styles
-├── App.js                    # Routes + global state + Socket.io setup
-└── index.js                  # React entry point + app context
+├── App.js                    # Routes + global state; renders EmailVerification when pending
+└── index.js                  # React entry point + AppContext (auth, projects, messages)
 ```
 
 ---
@@ -80,7 +83,7 @@ src/
 ### Prerequisites
 
 - Node.js v18+
-- A [Firebase](https://console.firebase.google.com) project with Google sign-in enabled
+- A [Firebase](https://console.firebase.google.com) project with **Google** and **Email/Password** sign-in methods enabled (Authentication → Sign-in method)
 - The [proshare-backend](https://github.com/shamzaali7/proshare-backend) running locally or deployed
 
 ### Installation
