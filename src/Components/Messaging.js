@@ -501,7 +501,6 @@ function Messaging() {
                       />
                       <div className="user-list-info">
                         <div className="user-list-name">{user.name}</div>
-                        <div className="user-list-email">{user.email}</div>
                       </div>
                     </div>
                   ))
