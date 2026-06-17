@@ -51,8 +51,11 @@ function Home({
 
   if (loading && projects.length === 0) {
     return (
-      <div className="container-home font-change flex justify-center items-center min-h-screen">
-        <div className="text-xl">Loading projects...</div>
+      <div className="container-home font-change">
+        <div className="spinner-container">
+          <div className="spinner"></div>
+          <div className="spinner-text">Loading projects...</div>
+        </div>
       </div>
     );
   }

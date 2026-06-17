@@ -223,6 +223,7 @@ function AppProvider() {
 
   // Project Management Functions
   async function getAllProjects() {
+    setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/projects`);
       setProjects(response.data);
@@ -231,6 +232,8 @@ function AppProvider() {
       console.log("Error fetching projects:", err);
       setError("Failed to fetch projects");
       throw err;
+    } finally {
+      setLoading(false);
     }
   }
 
