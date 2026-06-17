@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../index';
+import AuthModal from './AuthModal';
 import '../Styling/Header.css';
 
 function Header({
@@ -11,18 +12,26 @@ function Header({
   onProfileDropdownToggle,
   onProfilePictureModalToggle
 }) {
-  const { 
-    user, 
-    authorized, 
-    handleGoogleLogin, 
+  const {
+    user,
+    authorized,
+    verificationPending,
     handleLogout,
     updateUserProfilePicture,
-    loading 
+    loading
   } = useContext(AppContext);
-  
+
   const [profilePic, setProfilePic] = useState({ profilePicture: "" });
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Close AuthModal once auth state resolves (login success or verification pending)
+  useEffect(() => {
+    if (authorized || verificationPending) {
+      setShowAuthModal(false);
+    }
+  }, [authorized, verificationPending]);
 
   const navigate = useNavigate();
 
@@ -185,15 +194,11 @@ function Header({
                 )}
                 
                 {!authorized && (
-                  <div className="login-section" onClick={handleGoogleLogin}>
+                  <div className="login-section" onClick={() => setShowAuthModal(true)}>
                     <div className="box-signin">
                       <button className="login-button" disabled={loading}>
-                        {loading ? "Signing in..." : (
-                          <>
-                            Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
-                          </>
-                        )}
-                      </button> 
+                        {loading ? "Signing in..." : "Login / Sign Up"}
+                      </button>
                     </div>
                   </div>
                 )}
@@ -328,17 +333,13 @@ function Header({
                   </div>
                 ) : (
                   <div className="mobile-login">
-                    <button 
-                      className="mobile-login-button" 
-                      onClick={handleGoogleLogin}
+                    <button
+                      className="mobile-login-button"
+                      onClick={() => { setShowAuthModal(true); onMobileMenuToggle(); }}
                       disabled={loading}
                     >
-                      {loading ? "Signing in..." : (
-                        <>
-                          Login with <span className="google-blue">G</span><span className="google-red">o</span><span className="google-yellow">o</span><span className="google-blue">g</span><span className="google-green">l</span><span className="google-red">e</span>
-                        </>
-                      )}
-                    </button> 
+                      {loading ? "Signing in..." : "Login / Sign Up"}
+                    </button>
                   </div>
                 )}
               </div>
@@ -347,6 +348,9 @@ function Header({
         </nav>  
       </div>
       
+      {/* Auth Modal */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+
       {/* Profile Picture Modal */}
       {showProfilePictureModal && (
         <div className="modal">

@@ -7,10 +7,11 @@ import Footer from './Components/Footer';
 import Profile from './Components/Profile';
 import IDE from './Components/IDE';
 import Search from './Components/Search';
-import Messaging from './Components/Messaging'; 
+import Messaging from './Components/Messaging';
+import EmailVerification from './Components/EmailVerification';
 
 function App() {
-  const { user, userID, allUsers, authorized, userCred, error, clearError } = useContext(AppContext);
+  const { user, userID, allUsers, authorized, userCred, error, clearError, verificationPending } = useContext(AppContext);
   
   const [dropDown, setDropDown] = useState(true);
   const [currentProject, setCurrentProject] = useState({});
@@ -78,6 +79,11 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [error, clearError]);
+
+  // Show verification screen until email is confirmed
+  if (verificationPending) {
+    return <EmailVerification />;
+  }
 
   return (
     <div className="App">

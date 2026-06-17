@@ -9,12 +9,27 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import App from './App';
 
+function getFirebaseErrorMessage(code) {
+  const messages = {
+    'auth/email-already-in-use': 'This email is already registered.',
+    'auth/invalid-email': 'Please enter a valid email address.',
+    'auth/weak-password': 'Password must be at least 6 characters.',
+    'auth/user-not-found': 'No account found with this email.',
+    'auth/wrong-password': 'Incorrect password.',
+    'auth/too-many-requests': 'Too many attempts. Please try again later.',
+    'auth/invalid-credential': 'Invalid email or password.',
+    'auth/network-request-failed': 'Network error. Please check your connection.',
+  };
+  return messages[code] || 'An error occurred. Please try again.';
+}
+
 export const AppContext = createContext();
 
 function AppProvider() {
   const [userID, setUserID] = useState({});
   const [allUsers, setAllUsers] = useState([]);
   const [authorized, setAuthorized] = useState(false);
+  const [verificationPending, setVerificationPending] = useState(false);
   const [userCred, setUserCred] = useState({});
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -83,27 +98,62 @@ function AppProvider() {
   }, []);
 
   const authListener = async () => {
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        const userid = user.multiFactor.user.providerData[0].uid;
+    firebase.auth().onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        const providerId = firebaseUser.providerData[0]?.providerId;
+        const isEmailPassword = providerId === 'password';
+
+        // Gate email/password users until their email is verified
+        if (isEmailPassword && !firebaseUser.emailVerified) {
+          setVerificationPending(true);
+          setAuthorized(false);
+          // Expose the email so the verification screen can display it
+          setUser(prev => ({ ...prev, email: firebaseUser.email }));
+          return;
+        }
+        setVerificationPending(false);
+
+        // Google users: use their Google OAuth ID (existing behavior)
+        // Email/password users: use Firebase UID (stable, doesn't change with email changes)
+        const userid = isEmailPassword
+          ? firebaseUser.uid
+          : (firebaseUser.multiFactor?.user?.providerData?.[0]?.uid || firebaseUser.uid);
+
         setGoogleUser({
           googleid: userid,
-          email: user.multiFactor.user.email,
-          name: user.multiFactor.user.displayName,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName,
         });
         setUserID({ userID: userid });
-        
+
         try {
           const person = await axios.get(`${API_BASE_URL}/users/${userid}`);
           if (person.data && person.data.length > 0) {
             setUser(person.data[0]);
             setAuthorized(true);
+          } else if (isEmailPassword) {
+            // Email/password user verified but missing from DB (backend creation failed at sign-up)
+            try {
+              const newUser = await axios.post(`${API_BASE_URL}/users`, {
+                googleid: userid,
+                email: firebaseUser.email,
+                name: firebaseUser.displayName || firebaseUser.email,
+                firstName: firebaseUser.displayName?.split(' ')[0] || '',
+                lastName: firebaseUser.displayName?.split(' ').slice(1).join(' ') || ''
+              });
+              setUser(newUser.data);
+              setAuthorized(true);
+            } catch (createErr) {
+              console.log("Error creating user in DB:", createErr);
+              setError("Failed to set up account. Please try again.");
+            }
           }
         } catch (err) {
           console.log("Error fetching user:", err);
           setError("Failed to fetch user data");
         }
       } else {
+        setVerificationPending(false);
         setAuthorized(false);
         setUser({
           _id: "",
@@ -167,6 +217,84 @@ function AppProvider() {
     } catch (error) {
       console.error("Logout error:", error);
       setError("Failed to logout");
+    }
+  };
+
+  const handleEmailSignUp = async (firstName, lastName, email, password) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const creds = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      await creds.user.updateProfile({ displayName: `${firstName} ${lastName}` });
+      await creds.user.sendEmailVerification();
+      // Create the DB record (best-effort — authListener will retry if this fails)
+      try {
+        await axios.post(`${API_BASE_URL}/users`, {
+          googleid: creds.user.uid,
+          email,
+          name: `${firstName} ${lastName}`,
+          firstName,
+          lastName
+        });
+      } catch (backendErr) {
+        console.log("Backend user creation failed:", backendErr);
+      }
+      setVerificationPending(true);
+    } catch (err) {
+      console.error("Sign up error:", err);
+      setError(getFirebaseErrorMessage(err.code));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEmailSignIn = async (email, password) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+      // authListener handles the rest
+    } catch (err) {
+      console.error("Sign in error:", err);
+      setError(getFirebaseErrorMessage(err.code));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resendVerificationEmail = async () => {
+    try {
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        await currentUser.sendEmailVerification();
+      }
+    } catch (err) {
+      console.error("Error resending verification:", err);
+      setError("Failed to resend verification email. Please try again.");
+    }
+  };
+
+  const checkEmailVerification = async () => {
+    try {
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        await currentUser.reload();
+        if (currentUser.emailVerified) {
+          const userid = currentUser.uid;
+          setVerificationPending(false);
+          setUserID({ userID: userid });
+          const person = await axios.get(`${API_BASE_URL}/users/${userid}`);
+          if (person.data && person.data.length > 0) {
+            setUser(person.data[0]);
+            setAuthorized(true);
+          }
+        } else {
+          setError("Email not verified yet. Please check your inbox and click the link.");
+        }
+      }
+    } catch (err) {
+      console.error("Error checking verification:", err);
+      setError("Error checking verification status. Please try again.");
     }
   };
 
@@ -482,9 +610,17 @@ function AppProvider() {
     error,
     socket,
     
+    // Auth state
+    verificationPending,
+    setVerificationPending,
+
     // Auth functions
     handleGoogleLogin,
     handleLogout,
+    handleEmailSignUp,
+    handleEmailSignIn,
+    resendVerificationEmail,
+    checkEmailVerification,
     getUserByID,
     updateUserProfilePicture,
     uploadImage,
