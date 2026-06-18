@@ -570,7 +570,12 @@ function AppProvider() {
   // Comment Management
   async function addCommentToProject(projectId, comments, newComment) {
     try {
-      const allComments = [...comments, newComment];
+      const commentObj = {
+        text: newComment,
+        author: user.name || 'Anonymous',
+        timestamp: new Date().toISOString()
+      };
+      const allComments = [...comments, commentObj];
       const combinedComments = {
         _id: projectId,
         comments: allComments

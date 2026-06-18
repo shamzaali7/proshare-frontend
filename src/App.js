@@ -109,12 +109,10 @@ function App() {
       
       <main>
         <Routes>
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
-              <Home 
-                dropDown={dropDown}
-                setDropDown={setDropDown}
+              <Home
                 addCommentModal={addCommentModal}
                 handleAddCommentModal={handleAddCommentModal}
                 comment={comment}
@@ -122,7 +120,7 @@ function App() {
                 currentProject={currentProject}
                 setCurrentProject={handleSetCurrentProject}
               />
-            } 
+            }
           />
           <Route 
             path="/accounts" 
@@ -134,12 +132,10 @@ function App() {
             } 
           />
           <Route path="/ide" element={<IDE />} />
-          <Route 
-            path="/search" 
+          <Route
+            path="/search"
             element={
-              <Search 
-                dropDown={dropDown}
-                setDropDown={setDropDown}
+              <Search
                 addCommentModal={addCommentModal}
                 handleAddCommentModal={handleAddCommentModal}
                 comment={comment}
@@ -151,7 +147,7 @@ function App() {
                 searchInput={searchInput}
                 setSearchInput={handleSearchInputChange}
               />
-            } 
+            }
           />
           <Route path="/messages" element={<Messaging />} />
         </Routes>
