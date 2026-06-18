@@ -1242,8 +1242,41 @@ body.active-modal {
   font-family: 'Roboto', sans-serif;
 }
 
-.breach{
+.breach {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
   text-align: center;
+  padding: 2rem;
+}
+
+.breach-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 360px;
+}
+
+.breach-icon {
+  width: 48px;
+  height: 48px;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
+.breach-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.breach-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
 }
 
 /* Error banner */

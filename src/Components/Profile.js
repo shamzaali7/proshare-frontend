@@ -179,7 +179,14 @@ function Profile({ dropDown, handleDropDownModal }) {
   if (!authorized) {
     return (
       <div className="breach">
-        Please Sign In
+        <div className="breach-content">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="breach-icon">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <h2 className="breach-title">Sign in to view your dashboard</h2>
+          <p className="breach-subtitle">Please log in to access this page.</p>
+        </div>
       </div>
     );
   }
